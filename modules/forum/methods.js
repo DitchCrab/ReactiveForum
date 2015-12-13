@@ -1,64 +1,86 @@
 import ThreadImgs from 'forum/collections/thread_imgs';
 import Threads from 'forum/collections/threads';
+import Categories from 'forum/collections/categories';
 
 Meteor.methods({
-  createGroup: function(params) {
+  createThread: function(params) {
     checkUser();
-    params['imgUrl'] = ThreadImgs.findOne({_id: params.imgId}).url();
-    return Theads.insert(params);
+    if(params.imgId) {
+      params['imgUrl'] = ThreadImgs.findOne({_id: params.imgId}).url();      
+    }
+    return Threads.insert(params);
   },
 
-  likeGroup: function(groupId) {
+  likeThread: function(threadId) {
     checkUser();
     let user = Meteor.user();
-    let group = Theads.findOne({_id: groupId});
-    if (_.find(group.likeIds, (id) => { return id === user._id})) {
-      return Theads.update({_id: groupId}, {$pull: {likeIds: user._id}, $inc: {likes: -1}});
+    let thread = Threads.findOne({_id: threadId});
+    if (_.find(thread.likeIds, (id) => { return id === user._id})) {
+      return Threads.update({_id: threadId}, {$pull: {likeIds: user._id}, $inc: {likes: -1}});
     } else {
-      return Theads.update({_id: groupId}, {$push: {likeIds: user._id}, $inc: {likes: 1}});
+      return Threads.update({_id: threadId}, {$push: {likeIds: user._id}, $inc: {likes: 1}});
     }
   },
 
-  createComment: function(groupId, params) {
+  createComment: function(threadId, params) {
     checkUser();
-    return Theads.update({_id: groupId}, {$push: params});
+    return Threads.update({_id: threadId}, {$push: params});
   },
 
-  createSubcomment: function(groupId, commendId, params) {
+  createSubcomment: function(threadId, commendId, params) {
     checkUser();
     params['likeIds'] = [];
-    return  Theads.update({_id: groupId, comments: {$elemMatch: {_id: commendId}}}, {$addToSet: {"comments.$.replies": params}});
+    return  Threads.update({_id: threadId, comments: {$elemMatch: {_id: commendId}}}, {$addToSet: {"comments.$.replies": params}});
   },
 
-  likeCommend: function(groupId, commendId) {
+  likeCommend: function(threadId, commendId) {
     checkUser();
     let user = Meteor.user();
-    let group = Theads.findOne({_id: groupId});
-    if (_.find(_.find(group.comments, (commend) => { return commend._id === commendId}).likeIds, (id) => {return id === user._id})) {
-      return Theads.update({_id: groupId, comments: {$elemMatch: {_id: commendId}}}, {$inc: {"comments.$.likes": -1}, $pull: {"comments.$.likeIds": user._id}});
+    let thread = Threads.findOne({_id: threadId});
+    if (_.find(_.find(thread.comments, (commend) => { return commend._id === commendId}).likeIds, (id) => {return id === user._id})) {
+      return Threads.update({_id: threadId, comments: {$elemMatch: {_id: commendId}}}, {$inc: {"comments.$.likes": -1}, $pull: {"comments.$.likeIds": user._id}});
     } else {
-      return Theads.update({_id: groupId, comments: {$elemMatch: {_id: commendId}}}, {$inc: {"comments.$.likes": 1}, $push: {"comments.$.likeIds": user._id}});
+      return Threads.update({_id: threadId, comments: {$elemMatch: {_id: commendId}}}, {$inc: {"comments.$.likes": 1}, $push: {"comments.$.likeIds": user._id}});
           
     }
   },
 
-  likeSubCommend: function(groupId, commendId, index) {
+  likeSubCommend: function(threadId, commendId, index) {
     checkUser();
     let paramsId = {};
     let params = {};
     let user = Meteor.user();
-    let group = Theads.findOne({_id: groupId});
-    if (_.find(_.find(group.comments, (commend) => { return commend._id === commendId}).replies[index].likeIds, (id) => { return id === user._id})) {
+    let thread = Threads.findOne({_id: threadId});
+    if (_.find(_.find(thread.comments, (commend) => { return commend._id === commendId}).replies[index].likeIds, (id) => { return id === user._id})) {
       paramsId["comments.$.replies." + index + ".likeIds"] = user._id;
       params["comments.$.replies." + index + ".likes"] = -1;
-      return Theads.update({_id: groupId, comments: {$elemMatch: {_id: commendId}}}, {$inc: params, $pull: paramsId});
+      return Threads.update({_id: threadId, comments: {$elemMatch: {_id: commendId}}}, {$inc: params, $pull: paramsId});
     } else {
       paramsId["comments.$.replies." + index + ".likeIds"] = user._id;
       params["comments.$.replies." + index + ".likes"] = 1;
-      return Theads.update({_id: groupId, comments: {$elemMatch: {_id: commendId}}}, {$inc: params, $push: paramsId});
+      return Threads.update({_id: threadId, comments: {$elemMatch: {_id: commendId}}}, {$inc: params, $push: paramsId});
     }
-      
-  }
+  },
+
+  flagThread: function(threadId) {
+    return Meteor.users.update({_id: Meteor.user()._id}, {$addToSet: {"profile.flags": threadId}});
+  },
+  
+  unflagThread: function(threadId) {
+    return Meteor.users.update({_id: Meteor.user()._id}, {$pull: {"profile.flags": threadId}});
+  },
+
+  removeAllUsers: function() {
+    return Meteor.users.remove({});
+  },
+  
+  removeAllCategories: function() {
+    return Categories.remove({});
+  },
+
+  removeAllThreads: function() {
+    return Threads.remove({});
+  },
 });
 
 function checkUser() {

@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, PropTypes } from 'react';
 import { SelectField, TextField, FlatButton } from 'material-ui';
 import Immutable from 'immutable';
 
@@ -110,3 +110,14 @@ export default class ThreadForm extends Component {
     this.props.onEdit.bind(null, 'tags', tags)();
   }
 };
+
+ThreadForm.propTypes = {
+  categories: PropTypes.arrayOf(PropTypes.object),
+  threadParams: PropTypes.object,
+  onEdit: PropTypes.func
+};
+
+ThreadForm.defaultProps = {
+  categories: [],
+  threadParams: {}
+}

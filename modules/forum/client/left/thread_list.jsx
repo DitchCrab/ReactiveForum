@@ -1,7 +1,9 @@
-import { Component } from 'react';
+import { Component, PropTypes } from 'react';
+import ReactMixin from 'react-mixin';
 import { Card, CardMedia, CardTitle, IconButton } from 'material-ui';
 import { ContentFlag, ToggleStar, CommunicationComment } from 'material-ui/lib/svg-icons';
 
+@ReactMixin.decorate(ReactMeteorData)
 export default  class ThreadList extends Component {
   constructor(props, context) {
     super(props);
@@ -11,8 +13,14 @@ export default  class ThreadList extends Component {
     this.renderFlag = this.renderFlag.bind(this);
   }
 
+  getMeteorData() {
+    return {
+      user: Meteor.user()
+    }
+  }
+
   render() {
-    let user = Meteor.user();
+    let user = this.data.user;
     let cards = this.props.threads.map((thread) => {
       return (
         <Card key={thread._id} style={{marginBottom: 12}}  onClick={this.props.viewThread.bind(null, thread._id)}>
@@ -24,11 +32,11 @@ export default  class ThreadList extends Component {
             <IconButton touch={true} onClick={this.likeThread.bind(null, thread._id)} >
               <ToggleStar/>
             </IconButton>
-            <div style={{display: 'inline-block',fontSize: '80%'}}>{thread.likes}</div>                              
+            <div className="thread-like" style={{display: 'inline-block',fontSize: '80%'}}>{thread.likes}</div>                              
             <IconButton touch={true} >
               <CommunicationComment/>
             </IconButton>
-            <div style={{display: 'inline-block',fontSize: '80%'}}>{thread.comments ? thread.comments.length: null }</div>
+            <div className="thread-comment" style={{display: 'inline-block',fontSize: '80%'}}>{thread.comments ? thread.comments.length: null }</div>
             {this.renderFlag(user, thread._id)}
           </div>
         </Card>          
@@ -64,28 +72,27 @@ export default  class ThreadList extends Component {
   likeThread(id, e) {
     e.stopPropagation();
     Meteor.call('likeThread', id, (err, result) => {
-      console.log(err);
-      console.log(result);
     })
   }
 
   flagThread(id, e) {
     e.stopPropagation();
     Meteor.call('flagThread', id, (err, result) => {
-      console.log(err);
-      console.log(result);
     })
   }
 
   unflagThread(id, e) {
     e.stopPropagation();
     Meteor.call('unflagThread', id, (err, result) => {
-      console.log(err);
-      console.log(result);
     })
   }
 
-}
+};
+
+ThreadList.propTypes = {
+  threads: PropTypes.arrayOf(PropTypes.object),
+  viewThread: PropTypes.func
+};
 
 ThreadList.defaultProps = {
   threads: []

@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, PropTypes } from 'react';
 import ReactMixin from 'react-mixin';
 import { CircularProgress, ListItem, TextField, List, IconButton, Styles } from 'material-ui';
 import { ContentAdd } from 'material-ui/lib/svg-icons';
@@ -30,6 +30,7 @@ export default class LeftWrapper extends Component {
       user: Meteor.user()
     }
   }
+  
   componentWIllUpdate() {
     if (this.data.threads.length < 1 && Session.get('search')) {
       this.setState({searchError: `Sorry, no post found with "${Session.get('search')}"`});
@@ -38,7 +39,7 @@ export default class LeftWrapper extends Component {
       this.setState({searchError: null});
     }
   }
-  p
+
   componentWillMount() {
     Tracker.autorun(() => {
       var params = {};
@@ -123,3 +124,9 @@ export default class LeftWrapper extends Component {
   }
 
 };
+
+LeftWrapper.propTypes = {
+  viewThread: PropTypes.func,
+  onSearch: PropTypes.func,
+  onSelectCategory: PropTypes.func
+}
