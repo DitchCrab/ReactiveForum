@@ -30,16 +30,20 @@ export default class App extends Component {
       user: Meteor.user()
     }      
   }
+
+  componentWillMount() {
+    Tracker.autorun(() => {
+      Meteor.user();
+      this.setState({activePopover: false});
+      if (this.refs.signInButton) {
+        this.setState({signinButton: this.refs.signInButton.getDOMNode()});
+      }
+    })  
+  }
   
   componentDidMount() {
     this.setState({signinButton: ReactDOM.findDOMNode(this.refs.signInButton)})  ;
   }
-
-  /* componentDidUpdate() {
-     setTimeout(() => {
-     this.setState({signinButton: ReactDOM.findDOMNode(this.refs.signInButton)})  ;      
-     }, 1);
-     } */
 
   render() {
     let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);

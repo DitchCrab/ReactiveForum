@@ -1,6 +1,6 @@
-import { Component } from 'react';
+import { Component, PropTypes } from 'react';
 import ReactMixin from 'react-mixin';
-import { List, ListItem, Checkbox, FlatButton, Styles } from 'material-ui';
+import { List, ListItem, Checkbox, FlatButton, Styles, Avatar } from 'material-ui';
 import Immutable from 'immutable';
 const {Colors} = Styles;
 
@@ -15,13 +15,13 @@ export default class ThreadUsers extends Component {
   }
 
   getMeteorData() {
-    let users = [];
+    let user_list = [];
     if (this.state.userList) {
-      users = Meteor.users.find({_id: {$in: this.state.userList}}).fetch();      
+      user_list = this.state.userList;
     }
+    let users = Meteor.users.find({_id: {$in: user_list}}).fetch();          
     return {
-      user: Meteor.user(),
-      users: users,  
+      users: users,
     }
   }
   
@@ -31,16 +31,12 @@ export default class ThreadUsers extends Component {
         this.setState({userList: Session.get('userList')});
       }
       if (Session.get('notSeenUser')) {
-        this.setState({'notSeenUser': Session.get('notSeenUser')});
+        this.setState({notSeenUser: Session.get('notSeenUser')});
       }
     })  
   }
 
   render() {
-    var userId;
-    if (this.data.user) {
-      userId = this.data.user._id;
-    }
     let w_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 100;
     const wrapper_style = {
       height: `${w_h}px`
@@ -114,4 +110,8 @@ export default class ThreadUsers extends Component {
       }
     }
   }
+};
+
+ThreadUsers.propTypes = {
+  onGeneralUser: PropTypes.func
 }

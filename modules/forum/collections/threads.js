@@ -32,6 +32,9 @@ Schemas.Thread = new SimpleSchema({
   },
   "comments.$": {
     type: Schemas.Comment
+  },
+  user: {
+    type: Schemas.object
   }
 });
 

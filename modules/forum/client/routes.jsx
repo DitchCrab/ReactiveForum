@@ -7,7 +7,7 @@ export default (
   <Router>
     <Route path="/" component={Landing}/>
     <Route path="/" component={App}>
-      <Route path="explore(/:group)" component={Main} />
+      <Route path="explore(:thread)" component={Main} />
     </Route>
   </Router>
 );

@@ -45,7 +45,7 @@ Meteor.methods({
     }
   },
 
-  likeSubCommend: function(threadId, commendId, index) {
+  likeReply: function(threadId, commendId, index) {
     checkUser();
     let paramsId = {};
     let params = {};
@@ -70,17 +70,6 @@ Meteor.methods({
     return Meteor.users.update({_id: Meteor.user()._id}, {$pull: {"profile.flags": threadId}});
   },
 
-  removeAllUsers: function() {
-    return Meteor.users.remove({});
-  },
-  
-  removeAllCategories: function() {
-    return Categories.remove({});
-  },
-
-  removeAllThreads: function() {
-    return Threads.remove({});
-  },
 });
 
 function checkUser() {

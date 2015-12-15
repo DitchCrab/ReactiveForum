@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, PropTypes } from 'react';
 import { GridTile, IconButton, GridList } from 'material-ui';
 import { ToggleStarBorder } from 'material-ui/lib/svg-icons';
 
@@ -44,5 +44,13 @@ export default class Featured extends Component {
       </GridList>
     )
   }
+}
 
+Featured.propTypes = {
+  threads: PropTypes.arrayOf(PropTypes.object),
+  viewThread: PropTypes.func
+};
+
+Featured.defaultProps = {
+  threads: []
 }

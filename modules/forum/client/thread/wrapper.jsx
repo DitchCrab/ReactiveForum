@@ -1,4 +1,5 @@
-import { Component } from 'react';
+import { Component, PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import ReactMixin from 'react-mixin';
 import Featured from './featured';
 import Thread from './thread';
@@ -15,7 +16,7 @@ export default class Wrapper extends Component {
     this.radian = this.radian.bind(this);
     this.viewingThread = this.viewingThread.bind(this);
     this.toggleCarousel = this.toggleCarousel.bind(this);
-    this.closeCarousel = this.closeCarousel.bind(this);
+    this.viewMessage = this.viewMessage.bind(this);
   }
 
   getMeteorData() {
@@ -47,11 +48,14 @@ export default class Wrapper extends Component {
         // Add to carousel list if thread is not added
         if (!found) {
           var newThreadList = threadList.push(Immutable.fromJS(thread)).toJS();
-          this.setState({threadList:  newThreadList})
+          Session.set('threadList', newThreadList);
         }
       }
       // Compute list of user on thread
-      let userList = imThread.get('comments').map(x => x.get('userId')).toJS();
+      let userList = [];
+      if (imThread.get('comments')) {
+        userList = imThread.get('comments').map(x => x.get('userId')).toJS();        
+      }
       Session.set('userList', userList);
     }
 
@@ -66,6 +70,7 @@ export default class Wrapper extends Component {
     Tracker.autorun(() => {
       this.setState({onGeneralUser: Session.get("onGeneralUser")});
       this.setState({viewThread: Session.get('viewThread')});
+      this.setState({threadList: Session.get('threadList')});
       if (Session.get('notSeenUser')) {
         let not_users = Immutable.fromJS(this.state.notSeenUser);
         let new_not_users = Immutable.fromJS(Session.get('notSeenUser'));
@@ -89,15 +94,15 @@ export default class Wrapper extends Component {
       margin: 0
     };
     return (
-      <div style={wrapper_style}>
-        { this.viewingThread() ? <MessageBoard  currentUser={this.data.user} thread={this.data.thread} toggleCarousel={this.toggleCarousel} viewingCarousel={this.state.viewingCarousel} notSeenUser={this.state.notSeenUser}/> : <Featured  viewThread={this.props.viewThread.bind(null)} threads={this.data.threads} /> }
+      <div style={wrapper_style} className="thread-wrapper">
+        { this.viewingThread() ? <Thread currentUser={this.data.user} thread={this.data.thread} toggleCarousel={this.toggleCarousel} viewingCarousel={this.state.viewingCarousel} notSeenUser={this.state.notSeenUser}/> : <Featured  viewThread={this.props.viewThread.bind(null)} threads={this.data.threads} /> }
         <Snackbar
             ref="snackbar"
             message="New Messages"
             action="view"
             autoHideDuration={3000}
             onActionTouchTap={this.viewMessage}/>
-        {this.state.viewingCarousel ? <BoardCarousel threadList={this.state.threadList} viewThread={this.props.viewThread.bind(null)}/> : null }
+        {this.state.viewingCarousel ? <ThreadCarousel threadList={this.state.threadList} viewThread={this.props.viewThread.bind(null)}/> : null }
       </div>
     );
   }
@@ -137,12 +142,10 @@ export default class Wrapper extends Component {
     this.setState({viewingCarousel: !this.state.viewingCarousel});
   }
 
-  closeCarousel() {
-    if (this.state.viewingCarousel) {
-      this.setState({viewingCarousel: false})  ;        
-    }
+  viewMessage() {
+    
   }
-
+  
   radian(arg1, arg2) {
     var isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
     // Opera 8.0+ (UA detection to detect Blink/v8-powered Opera)
@@ -161,4 +164,8 @@ export default class Wrapper extends Component {
       return `linear-gradient(${arg1}, ${arg2})`;
     }
   }
+};
+
+Wrapper.propTypes = {
+  viewThread: PropTypes.func
 }

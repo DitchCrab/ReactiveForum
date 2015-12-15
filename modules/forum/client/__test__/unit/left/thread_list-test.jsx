@@ -5,6 +5,7 @@ import ThreadList from 'forum/client/left/thread_list';
 import Threads from 'forum/collections/threads';
 import {Card, CardMedia, CardTitle, IconButton} from 'material-ui';
 import { ContentFlag } from 'material-ui/lib/svg-icons';
+import moment from 'moment';
 
 describe('Thread list', () => {
   var component;
@@ -81,16 +82,12 @@ describe('Thread list', () => {
       view: () => { return 1},      
     };
     beforeEach(() => {
-      Meteor.call('removeAllThreads', (err, res) => {});      
-      Threads.insert({category: 1, title: 'None', description: 'none', tags: ['a', 'b']});
-      const threads = Threads.find().fetch();
+      const threads = [
+        {user: {_id: 1, username: 'Tom'}, category: 1, title: 'None', description: 'None', tags: ['hi', 'there'], comments: [], createdAt: moment.utc().format(), updatedAt: moment.utc().format()}
+      ];
       component = TestUtils.renderIntoDocument(
         <ThreadList threads={threads} viewThread={foo.view}/>
       )
-    });
-    
-    afterEach(() => {
-      Meteor.call('removeAllThreads', (err, res) => {});
     });
 
     it('has no effect on like click', () => {
@@ -107,21 +104,17 @@ describe('Thread list', () => {
     };
     var threads;
     beforeEach(() => {
-      Meteor.call('removeAllThreads', (err, res) => {});      
       spyOn(Meteor, 'user').and.returnValue({_id: 1, username: 'Tom'});
       spyOn(Meteor, 'call');
-      Threads.insert({category: 1, title: 'None', description: 'none', tags: ['a', 'b']});
-      threads = Threads.find().fetch();
+      const threads = [
+        {user: {_id: 1, username: 'Tom'}, category: 1, title: 'None', description: 'None', tags: ['hi', 'there'], comments: [], createdAt: moment.utc().format(), updatedAt: moment.utc().format()}
+      ];
       component = TestUtils.renderIntoDocument(
         <ThreadList threads={threads} viewThread={foo.view}/>
       )
     });
-    
-    afterEach(() => {
-      Meteor.call('removeAllThreads', (err, res) => {});
-    });
-    
-    it('has on flag if user sign in', () => {
+
+    it('has one flag if user sign in', () => {
       const flags = TestUtils.scryRenderedComponentsWithType(component, ContentFlag);
       expect(flags.length).toEqual(1);
     });

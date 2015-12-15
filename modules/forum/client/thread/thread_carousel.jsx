@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, PropTypes } from 'react';
 import { GridTile, IconButton, GridList } from 'material-ui';
 import { ToggleStarBorder } from 'material-ui/lib/svg-icons';
 import Swipeable from 'react-swipeable';
@@ -80,4 +80,13 @@ export default class ThreadCarousel extends Component {
   }
 
 };
+
+ThreadCarousel.propTypes = {
+  threadList: PropTypes.arrayOf(PropTypes.object),
+  viewThread: PropTypes.func
+};
+
+ThreadCarousel.defaultProps = {
+  threadList: []
+}
 

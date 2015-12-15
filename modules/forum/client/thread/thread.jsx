@@ -1,20 +1,22 @@
-import { Component } from 'react';
+import { Component, PropTypes } from 'react';
 import BottomToolbar from './bottom_toolbar';
 import CommentList from 'forum/client/widgets/comment_list';
-import { FlatButton, Card, CardHeader, CardMedia, CardTitle, CardActions, IconButton, CardText, Dialog, TextField} from 'material-ui';
+import { FlatButton, Card, CardHeader, CardMedia, CardTitle, CardActions, IconButton, CardText, Dialog, TextField, Styles } from 'material-ui';
 import { ToggleStar, CommunicationComment, SocialShare } from 'material-ui/lib/svg-icons';
+const { Colors } = Styles;
+import moment from 'moment';
 
 export default class Thread extends Component {
   constructor(props, context) {
     super(props);
     this.state = {showCommentDialog: false};
-    this.addSubComment = this.addSubComment.bind(this);
-    this.openCommentDialog = this.openCommentDialog.bind(this);
-    this.closeCommentDialog = this.closeCommentDialog.bind(this);
-    this._cancelComment = this._cancelComment.bind(this);
-    this.likeSubComment = this.likeSubComment.bind(this);
+    this.openReplyDialog = this.openReplyDialog.bind(this);
+    this.closeReplyDialog = this.closeReplyDialog.bind(this);
+    this.likeReply = this.likeReply.bind(this);
     this.likeComment = this.likeComment.bind(this);
     this.likeThread = this.likeThread.bind(this);
+    this.addReply = this.addReply.bind(this);
+    this.cancelReply = this.cancelReply.bind(this);
   }
 
   render() {
@@ -28,18 +30,18 @@ export default class Thread extends Component {
         <FlatButton
             label="Submit"
             primary={true}
-            onTouchTap={this.addSubComment} />,
+            onTouchTap={this.addReply} />,
         <FlatButton
             label="Cancel"
             secondary={true}
-            onTouchTap={this._cancelComment} />
+            onTouchTap={this.cancelReply} />
       ];
     } else {
       var customActions = [
         <FlatButton
             label="Cancel"
             secondary={true}
-            onTouchTap={this._cancelComment} />
+            onTouchTap={this.cancelReply} />
       ]
     }
     let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
@@ -48,8 +50,8 @@ export default class Thread extends Component {
       <div>
         <Card style={{paddingBottom: 60}}>
           <CardHeader
-              title={<span style={{fontWeight: 'bold', color: Colors.cyan700}}>{thread.user.username}</span>}
-                                         avatar={thread.user.avatar ? thread.user.avatar : 'avatar.png'}/>
+              title={<span className="thread-main-user" style={{fontWeight: 'bold', color: Colors.cyan700}}>{thread.user.username}</span>}
+              avatar={thread.user.avatar ? thread.user.avatar : 'avatar.png'}/>
           <CardMedia overlay={<CardTitle title={thread.title}/>}>
             <img src={thread.imgUrl}/>
           </CardMedia>
@@ -67,19 +69,19 @@ export default class Thread extends Component {
             </IconButton>
           </div>
           <CardText>
-            {thread.description}
+            <span className="thread-main-description">{thread.description}</span>
           </CardText>
           <CardActions style={{margin: 0, padding: 0}}>
-            <CommentList comments={thread.comments} onComment={this.openCommentDialog} onLike={this.likeComment} onLikeSub={this.likeSubComment} notSeenUser={this.props.notSeenUser}/>
+            <CommentList comments={thread.comments} onComment={this.openReplyDialog} onLike={this.likeComment} onLikeReply={this.likeReply} notSeenUser={this.props.notSeenUser}/>
           </CardActions>
         </Card>
         <Dialog
-            title={this.props.currentUser ? "Comment" : null }
+            title={this.props.currentUser ? "Reply" : null }
             autoDetectWindowHeight={true}
             autoScrollBodyContent={true}
             actions={customActions}
             open={this.state.showCommentDialog}
-            onRequestClose={this.closeCommentDialog}>
+            onRequestClose={this.closeReplyDialog}>
           {this.props.currentUser ? <TextField multiLine={true} ref="subComment" style={{width: width}}/> : <h4>Please signup to reply</h4>}
         </Dialog>
         { comment_field }
@@ -87,34 +89,13 @@ export default class Thread extends Component {
     )
   }
 
-  openCommentDialog(commentId) {
+  openReplyDialog(commentId) {
     this.setState({onComment: commentId});
     this.setState({showCommentDialog: true});
   }
 
-  closeCommentDialog() {
+  closeReplyDialog() {
     this.setState({showCommentDialog: false});
-  }
-
-  _cancelComment() {
-    this.setState({showCommentDialog: false});
-  }
-
-  addSubComment(commentId) {
-    event.preventDefault();
-    let comment = this.refs.subComment.getValue();
-    let user = Meteor.user();
-    var avatar;
-    if (user.profile) {
-      avatar = user.profile.avatar;
-    }
-    var params = {_id: uuid.v1(), userId: user._id, username: user.username, avatar: avatar, comment: comment, createdAt: DateHelper.createdAt(), like: 0};
-    if (comment && comment.length > 1) {
-      Meteor.call('createSubcomment', this.props.thread._id, this.state.onComment, params, (err, result) => {
-        this.setState({showCommentDialog: false});
-        Session.set("moveToCommentId", params._id);
-      });
-    }
   }
 
   likeThread() {
@@ -131,11 +112,40 @@ export default class Thread extends Component {
     })
   }
 
-  likeSubComment(c_id, s_id) {
-    Meteor.call('likeSubComment', this.props.thread._id, c_id, s_id, (err, result) => {
+  likeReply(c_id, s_id) {
+    Meteor.call('likeReply', this.props.thread._id, c_id, s_id, (err, result) => {
       console.log(err);
       console.log(result);
     });
   }
 
+  cancelReply() {
+    this.setState({showCommentDialog: false});
+  }
+
+  addReply(commentId) {
+    event.preventDefault();
+    let comment = this.refs.subComment.getValue();
+    let user = Meteor.user();
+    var avatar;
+    if (user.profile) {
+      avatar = user.profile.avatar;
+    }
+    var params = {_id: uuid.v1(), userId: user._id, username: user.username, avatar: avatar, comment: comment, createdAt: moment.utc().format(), like: 0};
+    if (comment && comment.length > 1) {
+      Meteor.call('createSubcomment', this.props.thread._id, this.state.onComment, params, (err, result) => {
+        this.setState({showCommentDialog: false});
+        Session.set("moveToCommentId", params._id);
+      });
+    }
+  }
+
 };
+
+Thread.propTypes = {
+  thread: PropTypes.object,
+  currentUser: PropTypes.object,
+  toggleCarousel: PropTypes.func,
+  viewingCarousel: PropTypes.bool,
+  notSeenUser: PropTypes.arrayOf[PropTypes.string]
+}

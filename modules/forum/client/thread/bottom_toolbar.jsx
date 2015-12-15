@@ -1,14 +1,14 @@
 import { Component, PropTypes } from 'react';
 import { Toolbar, TextField, IconButton } from 'material-ui';
-import { ActionDone, EditorModeEdit, NavigationClose } from 'material-ui/lib/svg-icons';
-import ThreadCarousel from './thread_carousel';
+import { ActionDone, EditorModeEdit, NavigationClose, ActionViewCarousel } from 'material-ui/lib/svg-icons';
+import moment from 'moment';
 
 export default class BottomToolbar extends Component {
   constructor(props) {
     super(props);
     this.state = {comment: null, defaultHeight: 56, textFieldHeight: 24};
     this.typeComment = this.typeComment.bind(this);
-    this.addCommendToPost = this.addCommendToPost.bind(this);
+    this.addCommentToThread = this.addCommentToThread.bind(this);
   }
 
   render() {
@@ -36,11 +36,11 @@ export default class BottomToolbar extends Component {
     return(
       <Toolbar style={toolbar_style}>
         <TextField multiLine={true} ref="commentField" defaultValue={this.state.comment} style={textfield_style} hintText="Commend" onChange={this.typeComment} />
-        <IconButton tooltip="Star" touch={true} onClick={this.addCommendToPost}>
+        <IconButton tooltip="Star" touch={true} onClick={this.addCommentToThread}>
           {this.state.comment ? <ActionDone/> : <EditorModeEdit/>}
         </IconButton>
         <IconButton tooltip="Star" touch={true} onClick={this.props.toggleCarousel.bind(null)}>
-          { this.props.viewingCarousel ?<NavigationClose /> :  <ThreadCarousel/>}
+          { this.props.viewingCarousel ?<NavigationClose /> :  <ActionViewCarousel/>}
         </IconButton>
       </Toolbar>          
     )
@@ -49,9 +49,9 @@ export default class BottomToolbar extends Component {
   typeComment(event) {
     event.preventDefault();
     let comment = this.refs.commentField.getValue();
+    this.setState({comment: comment});
     let new_height = event.target.clientHeight;
     let old_height = this.state.textFieldHeight;
-    this.setState({comment: comment});
     if (new_height > old_height) {
       this.setState({textFieldHeight: new_height, defaultHeight: this.state.defaultHeight + 24});
     } else if (new_height < old_height) {
@@ -59,14 +59,14 @@ export default class BottomToolbar extends Component {
     }
   }
 
-  addCommendToPost() {
+  addCommentToThread() {
     let commend = this.state.comment;
     let user = Meteor.user();
     var avatar;
     if (user.profile) {
       avatar = user.profile.avatar;
     };
-    let params = {commends: {_id: uuid.v1(), userId: user._id, username: user.username, avatar: avatar, commend: commend, createdAt: DateHelper.createdAt(), likes: 0, likeIds: [], subcommends: []}};
+    let params = {commends: {_id: uuid.v1(), userId: user._id, username: user.username, avatar: avatar, commend: commend, createdAt: moment.utc().format(), likes: 0, likeIds: [], subcommends: []}};
     if (commend && commend.length > 1) {
       Meteor.call('createComment', this.props.threadId, params, (err, res) => {
         if (!err) {
@@ -80,3 +80,12 @@ export default class BottomToolbar extends Component {
   }
 };
 
+BottomToolbar.propTypes = {
+  toggleCarousel: PropTypes.func,
+  viewingCarousel: PropTypes.bool,
+  threadId: PropTypes.string
+};
+
+BottomToolbar.defaultProps = {
+  viewingCarousel: false
+}

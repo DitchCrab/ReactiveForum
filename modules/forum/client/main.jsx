@@ -7,6 +7,8 @@ import LeftWrapper from './left/left_wrapper';
 import ThreadUsers from './right/thread_users';
 import ThreadForm from './widgets/thread_form';
 import Categories from 'forum/collections/categories';
+import ThreadImgs from 'forum/collections/thread_imgs';
+import moment from 'moment';
 
 @ReactMixin.decorate(ReactMeteorData)
 export default class Main extends Component {
@@ -85,11 +87,13 @@ export default class Main extends Component {
   renderNewThread() {
     let customActions = [
       <FlatButton
+          className="thread-form-cancel"
           key="1"
           label="Cancel"
           secondary={true}
           onTouchTap={this._cancelForm} />,
       <FlatButton
+          className="thread-form-submit"
           key="2"
           label="Submit"
           primary={true}
@@ -145,8 +149,8 @@ export default class Main extends Component {
     params['imgId'] = imgObj._id;
     params.commends = [];
     params['user'] = Meteor.user();
-    params['createdAt'] = DateHelper.createdAt();
-    params['updatedAt'] = DateHelper.updatedAt();
+    params['createdAt'] = moment.utc().format();
+    params['updatedAt'] = moment.utc().format();
     Meteor.call('createThread', params, (err, res) => {
       this.setState({newThread: {}, showDialog: false});                          
     })

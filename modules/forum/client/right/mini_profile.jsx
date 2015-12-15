@@ -19,6 +19,9 @@ export default class MiniProfile extends React.Component {
   }
 
   render() {
+    if (!this.data.user) {
+      return <div/>
+    }
     let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     let user = this.data.user;
     var avatar = <Avatar>{user.username[0]}</Avatar>;
@@ -29,7 +32,7 @@ export default class MiniProfile extends React.Component {
     }
     return (
       <List style={{width: 200}}>
-        <div style={{fontWeight: 'bold', color: Colors.cyan700, textAlign: 'center', padding: 5}}>Hello {user.username}</div>
+        <div className="greeting-user" style={{fontWeight: 'bold', color: Colors.cyan700, textAlign: 'center', padding: 5}}>Hello {user.username}</div>
         <ListItem primaryText="Edit profile" leftIcon={<ContentInbox />} />
         <ListItem primaryText="Sign out" leftIcon={<ActionGrade />} onClick={this.userLogout} />
         {w_w < 640 ? <ThreadUsers/> : null }
@@ -39,8 +42,6 @@ export default class MiniProfile extends React.Component {
 
   userLogout() {
     Meteor.logout((res, err) => {
-      console.log(res);
-      console.log(err);
     })
   }
 };

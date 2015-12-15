@@ -16,6 +16,7 @@ describe('Left wrapper', () => {
         search: () => {return 2;},
         select: () => {return 3;}
       };
+      spyOn(Categories, 'find').and.returnValue({fetch: () => {return [];}});
       jasmineReact.spyOnClass(LeftWrapper, 'clearSearch');
       jasmineReact.spyOnClass(LeftWrapper, 'searchThreadsByEnter');      
       component = TestUtils.renderIntoDocument(
@@ -69,18 +70,13 @@ describe('Left wrapper', () => {
         username: 'Tom'
       });
       jasmineReact.spyOnClass(LeftWrapper, 'selectCategory');
-      Categories.insert({name: 'General'});
+      spyOn(Categories, 'find').and.returnValue({fetch: () => {return [{_id: 1, name: 'General'}];}});      
       component = TestUtils.renderIntoDocument(
         <LeftWrapper viewThread={foo.view} onSearch={foo.search} onSelectCategory={foo.select}/>
       );
     });
 
-    afterEach(() => {
-      Meteor.call('removeAllCategories', (err, res) => {
-      });
-    });
-
-    it('has two categories', () => {
+    it('has one category', () => {
       const categories = TestUtils.scryRenderedComponentsWithType(component, ListItem);
       expect(categories.length).toEqual(1);
     });
