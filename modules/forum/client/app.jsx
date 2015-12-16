@@ -54,9 +54,9 @@ export default class App extends Component {
     )})();
     let icon_left = <IconButton onClick={this.openMenu}>{this.state.openMenu ? <NavigationMenu /> : <NavigationClose /> }</IconButton>;
     if (this.data.user) {
-      var icon_right = <Avatar src="avatar.png" ref="signInButton" onClick={this.openPopover} />;
+      var icon_right = <Avatar id="avatar-anchor" src="avatar.png" ref="signInButton" onClick={this.openPopover} />;
     } else {
-      var icon_right = <FlatButton ref="signInButton" label="Sign In" onClick={this.openPopover}/>;
+      var icon_right = <FlatButton id="signin-anchor" ref="signInButton" label="Sign In" onClick={this.openPopover}/>;
     }
     if ( w_w < 640)  {
       var app_bar = <AppBar
@@ -73,7 +73,7 @@ export default class App extends Component {
       <div>
         {app_bar}
         {w_w < 640 ? nav : null }
-        <Popover open={this.state.activePopover}
+        <Popover className="right-popover" open={this.state.activePopover}
                  anchorEl={this.state.signinButton}
                  anchorOrigin={{horizontal: "right", vertical: "bottom"}}
                  targetOrigin={{horizontal: "right", vertical: "top"}}
@@ -121,7 +121,7 @@ export default class App extends Component {
 
   viewThread(id) {
     Session.set('viewThread', id);
-    this.props.history.pushState(null, `/explore/${id}`);
+    this.props.history.pushState(null, `/forum/${id}`);
   }
 
 };

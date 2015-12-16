@@ -7,7 +7,8 @@ export default (
   <Router>
     <Route path="/" component={Landing}/>
     <Route path="/" component={App}>
-      <Route path="explore(:thread)" component={Main} />
+      <Route path="forum" component={Main} />
+      <Route path="forum/:thread" component={Main} />
     </Route>
   </Router>
 );

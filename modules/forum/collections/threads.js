@@ -31,14 +31,31 @@ Schemas.Thread = new SimpleSchema({
     optional: true
   },
   "comments.$": {
-    type: Schemas.Comment
+    type: Object,
+    blackbox: true
+  },
+  likeIds: {
+    type: Array,
+    optional: true
+  },
+  "likeIds.$": {
+    type: String,
+    optional: true
+  },
+  likes: {
+    type: Number,
+    optional: true
   },
   user: {
-    type: Schemas.object
+    type: Object,
+    blackbox: true
   }
 });
 
 Schemas.Comment = new SimpleSchema({
+  _id: {
+    type: String
+  },
   userId: {
     type: String
   },
@@ -46,7 +63,8 @@ Schemas.Comment = new SimpleSchema({
     type: String
   },
   avatar: {
-    type: String
+    type: String,
+    optional: true
   },
   comment: {
     type: String
@@ -56,13 +74,26 @@ Schemas.Comment = new SimpleSchema({
     optional: true
   },
   "replies.$": {
-    type: Schemas.Reply
+    type: Schemas.Reply,
+    optional: true
   },
   createdAt: {
     type: Date,
   },
   updatedAt: {
     type: Date,
+    optional: true
+  },
+  likeIds: {
+    type: Array,
+    optional: true
+  },
+  'likeIds.$': {
+    type: String,
+    optional: true
+  },
+  likes: {
+    type: Number,
     optional: true
   }
 });
@@ -91,3 +122,5 @@ Schemas.Reply = new SimpleSchema({
 
 Threads.attachSchema(Schemas.Thread);
 export default Threads;
+
+global.Threads = Threads;

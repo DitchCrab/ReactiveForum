@@ -39,6 +39,23 @@ Meteor.methods({
   },
 
   'fixtures/create_thread': function() {
+    if (Meteor.users.find({username: 'MockUser'}).count() === 0) {
+      Accounts.createUser({username: 'MockUser', password: '12345'});
+    }
+    if (Categories.find().count() === 0) {
+      var categories = [
+        {name: "General"},
+        {name: "Places"},
+        {name: "Jobs"},
+        {name: "Home"},
+        {name: "Hangouts"}
+      ];
+      _.each(categories, function (category) {
+        Categories.insert({
+          name: category.name
+        });
+      });    
+    };
     const user = Meteor.users.findOne({username: 'MockUser'});
     const category = Categories.findOne({name: "General"});
     var params = {

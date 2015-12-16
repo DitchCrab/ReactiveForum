@@ -1,7 +1,8 @@
 import { Component, PropTypes } from 'react';
 import ReactMixin from 'react-mixin';
-import { Card, CardMedia, CardTitle, IconButton } from 'material-ui';
+import { Card, CardMedia, CardTitle, IconButton, Styles } from 'material-ui';
 import { ContentFlag, ToggleStar, CommunicationComment } from 'material-ui/lib/svg-icons';
+const { Colors } = Styles;
 
 @ReactMixin.decorate(ReactMeteorData)
 export default  class ThreadList extends Component {

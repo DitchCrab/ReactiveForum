@@ -1,13 +1,24 @@
 import ThreadImgs from 'forum/collections/thread_imgs';
 import Threads from 'forum/collections/threads';
 import Categories from 'forum/collections/categories';
+import moment from 'moment';
 
 Meteor.methods({
   createThread: function(params) {
     checkUser();
     if(params.imgId) {
-      params['imgUrl'] = ThreadImgs.findOne({_id: params.imgId}).url();      
+      let img = ThreadImgs.findOne({_id: params.imgId});
+      params['imgUrl'] = img.url();
+    };
+    let current_user = Meteor.user();
+    var avatar;
+    if (current_user.profile) {
+      avatar = current_user.profile.avatar;
     }
+    params['user'] = {_id: current_user._id, username: current_user.username, avatar: avatar};
+    params['comments'] = [];
+    params['createdAt'] = moment.utc().format();
+    params['updatedAt'] = moment.utc().format();
     return Threads.insert(params);
   },
 
@@ -24,7 +35,7 @@ Meteor.methods({
 
   createComment: function(threadId, params) {
     checkUser();
-    return Threads.update({_id: threadId}, {$push: params});
+    return Threads.update({_id: threadId}, {$push: {comments: params}});
   },
 
   createSubcomment: function(threadId, commendId, params) {

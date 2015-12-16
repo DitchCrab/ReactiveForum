@@ -12,7 +12,7 @@ const { Colors } = Styles;
 export default class LeftWrapper extends Component {
   constructor(props, context) {
     super(props);
-    this.state = {};
+    this.state = {filterParams: {}};
     this.selectCategory = this.selectCategory.bind(this);
     this.clearSearch = this.clearSearch.bind(this);
     this.searchThreadsByEnter = this.searchThreadsByEnter.bind(this);
@@ -23,6 +23,8 @@ export default class LeftWrapper extends Component {
   getMeteorData() {
     if (this.state.filterParams) {
       var threads = Threads.find(this.state.filterParams, {sort: {createdAt: -1}}).fetch();
+    } else {
+      var threads = Threads.find({}, {sort: {createdAt: -1}}).fetch();      
     }
     return {
       categories: Categories.find().fetch(),

@@ -25,14 +25,14 @@ export default class Landing extends Component {
         </GridList>
         <GridList
             cols={1}>
-          <RaisedButton label="Discover" primary={true} style={centerStyle} onClick={this.redirect}/>
+          <RaisedButton id="landing-discover" label="Discover" primary={true} style={centerStyle} onClick={this.redirect}/>
         </GridList>
       </div>
     );
   }
 
   redirect() {
-    this.props.history.pushState(null, '/explore');
+    this.props.history.pushState(null, '/forum');
   }
 };
 

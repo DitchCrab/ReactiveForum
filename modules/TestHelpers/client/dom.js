@@ -1,36 +1,47 @@
-const DEFAULT_TIMEOUT = 1000;
-const DEFAULT_INTERVAL = 50;
-
-// Waits for a specific count of a DOM query selector
-export function waitsFor(selector, count, opt, cb) {
-  let intervalCount = 0;
-
-  if (typeof opt === 'function') {
-    cb = opt;
-    opt = {};
-  }
-
-  if (!opt.timeout) {
-    opt.timeout = DEFAULT_TIMEOUT;
-  }
-
-  if (!opt.interval) {
-    opt.interval = DEFAULT_INTERVAL;
-  }
-
-  const maxInterval = opt.timeout / opt.interval;
-
-  let interval = setInterval(() => {
-    const el = $(selector);
-
-    if (el.length === count) {
-      clearInterval(interval);
-      cb(el);
-    } else if (++intervalCount >= maxInterval) {
-      clearInterval(interval);
-      fail('The DOM query selector "' + selector + '" should have ' + count + ' element' + (count > 1 ? 's' : ''));
-    }
-  }, opt.interval);
-
-  return interval;
+function asyncWait(delay) {
+  return new $.Deferred(function () {
+    var _self = this;
+    setTimeout(function () {
+      _self.resolve();
+    }, delay || 0);
+  }).promise();
 }
+
+var Async = function(init) {
+  var d = new $.Deferred(init);
+  this.promise = d.promise();
+  d.resolve();
+};
+
+Async.prototype.continueWith = function (continuation, delay) {
+  var _self = this;
+  _self.promise.then(function () {
+    _self.promise = asyncWait(delay).then(continuation);
+  });
+  return _self;
+};
+
+Async.prototype.waitsFor = function (condition, timeout, pollInterval) {
+  pollInterval = pollInterval || 10;
+  timeout = timeout || 5000;
+  var _self = this,
+      wait_d = new $.Deferred(),
+      t = 0,
+      ln = function () {
+        if (condition()) {
+          wait_d.resolve();
+          return;
+        }
+        if (t >= timeout) {
+          wait_d.reject();
+          throw "timeout was reached during waitsFor";
+        }
+        t += pollInterval;
+        setTimeout(ln, pollInterval);
+      };
+  _self.promise.then(ln);
+  _self.promise = wait_d.promise();
+  return _self;
+};
+
+export default Async;

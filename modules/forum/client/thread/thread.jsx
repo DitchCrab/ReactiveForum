@@ -72,7 +72,7 @@ export default class Thread extends Component {
             <span className="thread-main-description">{thread.description}</span>
           </CardText>
           <CardActions style={{margin: 0, padding: 0}}>
-            <CommentList comments={thread.comments} onComment={this.openReplyDialog} onLike={this.likeComment} onLikeReply={this.likeReply} notSeenUser={this.props.notSeenUser}/>
+            <CommentList comments={thread.comments} onCommend={this.openReplyDialog} onLike={this.likeComment} onLikeReply={this.likeReply} notSeenUser={this.props.notSeenUser}/>
           </CardActions>
         </Card>
         <Dialog

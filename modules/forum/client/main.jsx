@@ -123,7 +123,7 @@ export default class Main extends Component {
 
   viewThread(id) {
     Session.set('viewThread', id);
-    this.props.history.pushState(null, `/explore/${id}`);
+    this.props.history.pushState(null, `/forum/${id}`);
   }
 
   setGeneralUser(id) {
@@ -144,16 +144,14 @@ export default class Main extends Component {
   }
 
   _submitForm() {
-    let imgObj = ThreadImgs.insert(this.state.newThread.img);
-    let params = this.state.newThread;
-    params['imgId'] = imgObj._id;
-    params.commends = [];
-    params['user'] = Meteor.user();
-    params['createdAt'] = moment.utc().format();
-    params['updatedAt'] = moment.utc().format();
-    Meteor.call('createThread', params, (err, res) => {
-      this.setState({newThread: {}, showDialog: false});                          
-    })
+    ThreadImgs.insert(this.state.newThread.img, (err, imgObj) => {
+      let params = this.state.newThread;
+      params['imgId'] = imgObj._id;
+      params.commends = [];
+      Meteor.call('createThread', params, (err, res) => {
+        this.setState({newThread: {}, showDialog: false});                          
+      })
+    });
   }
 
   editNewThread(key, value) {

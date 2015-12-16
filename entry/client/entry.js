@@ -11,7 +11,6 @@ if (process.env.NODE_ENV !== 'production') {
   } else {
     // Run unit tests on client
     const context = require.context('../../modules', true, /\/client\/(.*)\/unit\/(.*)\-test\.jsx?$/);
-    context.keys().forEach(context);
+    context.keys().forEach(context); 
   }
 }
-
