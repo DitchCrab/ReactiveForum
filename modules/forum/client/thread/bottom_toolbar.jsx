@@ -2,7 +2,6 @@ import { Component, PropTypes } from 'react';
 import { Toolbar, TextField, IconButton } from 'material-ui';
 import { ActionDone, EditorModeEdit, NavigationClose, ActionViewCarousel } from 'material-ui/lib/svg-icons';
 import moment from 'moment';
-import uuid from 'node-uuid';
 
 export default class BottomToolbar extends Component {
   constructor(props) {
@@ -62,16 +61,10 @@ export default class BottomToolbar extends Component {
 
   addCommentToThread() {
     let comment = this.state.comment;
-    let user = Meteor.user();
-    var avatar;
-    if (user.profile) {
-      avatar = user.profile.avatar;
-    };
-    let params = {_id: uuid.v1(), userId: user._id, username: user.username, avatar: avatar, comment: comment, createdAt: moment.utc().format(), likes: 0, likeIds: [], replies: []};
     if (comment && comment.length > 1) {
-      Meteor.call('createComment', this.props.threadId, params, (err, res) => {
+      Meteor.call('createComment', this.props.threadId, comment, (err, res) => {
         if (!err) {
-          Session.set("moveToCommentId", params._id);
+          Session.set("moveToCommentId", res);
           Session.set("iJustComment", true);
         }
       })

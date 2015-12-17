@@ -3,13 +3,16 @@ import { GridTile, IconButton, GridList } from 'material-ui';
 import { ToggleStarBorder } from 'material-ui/lib/svg-icons';
 import Swipeable from 'react-swipeable';
 import Immutable from 'immutable';
+import listensToClickOutside from 'react-onclickoutside/decorator';
 
+@listensToClickOutside
 export default class ThreadCarousel extends Component {
   constructor(props) {
     super(props);
     this.state={viewIndex: 0, threads: Immutable.fromJS(props.threadList).slice(0, 3).toJS()};
     this.handleRightSwipe = this.handleRightSwipe.bind(this);
     this.handleLeftSwipe = this.handleLeftSwipe.bind(this);
+    this.handleClickOutside = this.handleClickOutside.bind(this);
   }
 
   render() {
@@ -77,6 +80,10 @@ export default class ThreadCarousel extends Component {
     if (threads.length > 0) {
       this.setState({viewIndex: index, threads: threads});        
     }
+  }
+
+  handleClickOutside(event) {
+    this.props.onClickOutside.bind(null)();
   }
 
 };

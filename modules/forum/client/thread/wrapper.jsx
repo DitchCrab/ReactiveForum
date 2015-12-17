@@ -16,6 +16,7 @@ export default class Wrapper extends Component {
     this.radian = this.radian.bind(this);
     this.viewingThread = this.viewingThread.bind(this);
     this.toggleCarousel = this.toggleCarousel.bind(this);
+    this.closeCarousel = this.closeCarousel.bind(this);
     this.viewMessage = this.viewMessage.bind(this);
   }
 
@@ -70,7 +71,9 @@ export default class Wrapper extends Component {
     Tracker.autorun(() => {
       this.setState({onGeneralUser: Session.get("onGeneralUser")});
       this.setState({viewThread: Session.get('viewThread')});
-      this.setState({threadList: Session.get('threadList')});
+      if (Session.get('threadList')) {
+        this.setState({threadList: Session.get('threadList')});        
+      }
       if (Session.get('notSeenUser')) {
         let not_users = Immutable.fromJS(this.state.notSeenUser);
         let new_not_users = Immutable.fromJS(Session.get('notSeenUser'));
@@ -83,6 +86,10 @@ export default class Wrapper extends Component {
         }
       }
     })
+  }
+
+  componentDidMount() {
+    this.setState({viewThread: Session.get('viewThread')});
   }
 
   render() {
@@ -102,7 +109,7 @@ export default class Wrapper extends Component {
             action="view"
             autoHideDuration={3000}
             onActionTouchTap={this.viewMessage}/>
-        {this.state.viewingCarousel ? <ThreadCarousel threadList={this.state.threadList} viewThread={this.props.viewThread.bind(null)}/> : null }
+        {this.state.viewingCarousel ? <ThreadCarousel onClickOutside={this.closeCarousel} threadList={this.state.threadList} viewThread={this.props.viewThread.bind(null)}/> : null }
       </div>
     );
   }
@@ -140,6 +147,10 @@ export default class Wrapper extends Component {
 
   toggleCarousel() {
     this.setState({viewingCarousel: !this.state.viewingCarousel});
+  }
+
+  closeCarousel() {
+    this.setState({viewingCarousel: false});
   }
 
   viewMessage() {

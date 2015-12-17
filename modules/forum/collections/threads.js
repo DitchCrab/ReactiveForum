@@ -66,7 +66,7 @@ Schemas.Comment = new SimpleSchema({
     type: String,
     optional: true
   },
-  comment: {
+  text: {
     type: String
   },
   replies: {

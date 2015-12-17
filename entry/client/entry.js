@@ -1,7 +1,5 @@
 import 'forum/methods';
 import './routes';
-import injectTapEventPlugin from 'react-tap-event-plugin';
-injectTapEventPlugin();
 
 if (process.env.NODE_ENV !== 'production') {
   if (process.env.FRAMEWORK === 'jasmine-client-integration') {

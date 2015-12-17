@@ -5,6 +5,7 @@ import { FlatButton, Card, CardHeader, CardMedia, CardTitle, CardActions, IconBu
 import { ToggleStar, CommunicationComment, SocialShare } from 'material-ui/lib/svg-icons';
 const { Colors } = Styles;
 import moment from 'moment';
+import uuid from 'node-uuid';
 
 export default class Thread extends Component {
   constructor(props, context) {
@@ -46,12 +47,16 @@ export default class Thread extends Component {
     }
     let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     let width = w_w * 7 / 12;
+    var avatar = require('../img/avatar.png');
+    if (thread.user.avatar) {
+      avatar = thread.user.avatar;
+    }
     return (
       <div>
         <Card style={{paddingBottom: 60}}>
           <CardHeader
               title={<span className="thread-main-user" style={{fontWeight: 'bold', color: Colors.cyan700}}>{thread.user.username}</span>}
-              avatar={thread.user.avatar ? thread.user.avatar : 'avatar.png'}/>
+              avatar={avatar}/>
           <CardMedia overlay={<CardTitle title={thread.title}/>}>
             <img src={thread.imgUrl}/>
           </CardMedia>
@@ -82,7 +87,7 @@ export default class Thread extends Component {
             actions={customActions}
             open={this.state.showCommentDialog}
             onRequestClose={this.closeReplyDialog}>
-          {this.props.currentUser ? <TextField multiLine={true} ref="subComment" style={{width: width}}/> : <h4>Please signup to reply</h4>}
+          {this.props.currentUser ? <TextField multiLine={true} ref="Reply" style={{width: width}}/> : <h4>Please signup to reply</h4>}
         </Dialog>
         { comment_field }
       </div>
@@ -125,17 +130,13 @@ export default class Thread extends Component {
 
   addReply(commentId) {
     event.preventDefault();
-    let comment = this.refs.subComment.getValue();
-    let user = Meteor.user();
-    var avatar;
-    if (user.profile) {
-      avatar = user.profile.avatar;
-    }
-    var params = {_id: uuid.v1(), userId: user._id, username: user.username, avatar: avatar, comment: comment, createdAt: moment.utc().format(), like: 0};
-    if (comment && comment.length > 1) {
-      Meteor.call('createSubcomment', this.props.thread._id, this.state.onComment, params, (err, result) => {
-        this.setState({showCommentDialog: false});
-        Session.set("moveToCommentId", params._id);
+    let text = this.refs.Reply.getValue();
+    if (text && text.length > 1) {
+      Meteor.call('createReply', this.props.thread._id, this.state.onComment, text, (err, res) => {
+        if (!err) {
+          this.setState({showCommentDialog: false});
+          Session.set("moveToCommentId", res);
+        }
       });
     }
   }

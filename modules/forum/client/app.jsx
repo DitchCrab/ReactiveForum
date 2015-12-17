@@ -42,19 +42,25 @@ export default class App extends Component {
   }
   
   componentDidMount() {
-    this.setState({signinButton: ReactDOM.findDOMNode(this.refs.signInButton)})  ;
+    this.setState({signinButton: ReactDOM.findDOMNode(this.refs.signInButton)});
   }
 
   render() {
     let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    let user = this.data.user;
     let nav = (() => { return (
       <LeftNav ref="leftNav" docked={false} onNavClose={this.closeMenu} disableSwipeToOpen={true}>
         <LeftWrapper onSelectCategory={this.selectCategory} onSearch={this.searchThreads} viewThread={this.viewThread}/>
       </LeftNav>
     )})();
     let icon_left = <IconButton onClick={this.openMenu}>{this.state.openMenu ? <NavigationMenu /> : <NavigationClose /> }</IconButton>;
-    if (this.data.user) {
-      var icon_right = <Avatar id="avatar-anchor" src="avatar.png" ref="signInButton" onClick={this.openPopover} />;
+    if (user) {
+      var icon_right = <Avatar id="avatar-anchor" ref="signInButton" onClick={this.openPopover}>{user.username[0]}</Avatar>
+      if (user.profile) {
+        if (user.profile.avatar) {
+          icon_right = <Avatar id="avatar-anchor" src={user.profile.avatar} ref="signInButton" onClick={this.openPopover} />;
+        }
+      }
     } else {
       var icon_right = <FlatButton id="signin-anchor" ref="signInButton" label="Sign In" onClick={this.openPopover}/>;
     }
@@ -78,7 +84,7 @@ export default class App extends Component {
                  anchorOrigin={{horizontal: "right", vertical: "bottom"}}
                  targetOrigin={{horizontal: "right", vertical: "top"}}
                  onRequestClose={this.closePopover.bind(this, 'pop')} >
-          {this.data.user ? <MiniProfile /> : <Login /> }
+          {user ? <MiniProfile /> : <Login /> }
         </Popover>
         {this.props.children}
       </div>

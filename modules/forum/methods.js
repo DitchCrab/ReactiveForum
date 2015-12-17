@@ -2,10 +2,11 @@ import ThreadImgs from 'forum/collections/thread_imgs';
 import Threads from 'forum/collections/threads';
 import Categories from 'forum/collections/categories';
 import moment from 'moment';
+import * as Helper from 'forum/server/helpers';
 
 Meteor.methods({
   createThread: function(params) {
-    checkUser();
+    Helper.checkUser();
     if(params.imgId) {
       let img = ThreadImgs.findOne({_id: params.imgId});
       params['imgUrl'] = img.url();
@@ -23,7 +24,7 @@ Meteor.methods({
   },
 
   likeThread: function(threadId) {
-    checkUser();
+    Helper.checkUser();
     let user = Meteor.user();
     let thread = Threads.findOne({_id: threadId});
     if (_.find(thread.likeIds, (id) => { return id === user._id})) {
@@ -33,43 +34,62 @@ Meteor.methods({
     }
   },
 
-  createComment: function(threadId, params) {
-    checkUser();
-    return Threads.update({_id: threadId}, {$push: {comments: params}});
+  createComment: function(threadId, comment) {
+    Helper.checkUser();
+    let user = Meteor.user();
+    var avatar;
+    if (user.profile) {
+      avatar = user.profile.avatar;
+    };
+    let params = {_id: Random.id(), userId: user._id, username: user.username, avatar: avatar, text: comment, createdAt: moment.utc().format(), likes: 0, likeIds: [], replies: []};
+    if (Threads.update({_id: threadId}, {$push: {comments: params}}) ) {
+      return params._id; 
+    } else {
+      throw new Meteor.Error(500, "Fail to commend");
+    }
   },
 
-  createSubcomment: function(threadId, commendId, params) {
-    checkUser();
-    params['likeIds'] = [];
-    return  Threads.update({_id: threadId, comments: {$elemMatch: {_id: commendId}}}, {$addToSet: {"comments.$.replies": params}});
+  createReply: function(threadId, commentId, reply) {
+    Helper.checkUser();
+    let user = Meteor.user();
+    var avatar;
+    if (user.profile) {
+      avatar = user.profile.avatar;
+    };
+    let params = {_id: Random.id(12), userId: user._id, username: user.username, avatar: avatar, text: reply, createdAt: moment.utc().format(), like: 0, likeIds: []};    
+    if (Threads.update({_id: threadId, comments: {$elemMatch: {_id: commentId}}}, {$addToSet: {"comments.$.replies": params}}) ) {
+      return params._id;
+    } else {
+      throw new Meteor.Error(500, "Fail to reply");
+    }
   },
 
-  likeCommend: function(threadId, commendId) {
-    checkUser();
+  likeComment: function(threadId, commentId) {
+    Helper.checkUser();
     let user = Meteor.user();
     let thread = Threads.findOne({_id: threadId});
-    if (_.find(_.find(thread.comments, (commend) => { return commend._id === commendId}).likeIds, (id) => {return id === user._id})) {
-      return Threads.update({_id: threadId, comments: {$elemMatch: {_id: commendId}}}, {$inc: {"comments.$.likes": -1}, $pull: {"comments.$.likeIds": user._id}});
+    if (_.find(_.find(thread.comments, (comment) => { return comment._id === commentId}).likeIds, (id) => {return id === user._id})) {
+      return Threads.update({_id: threadId, comments: {$elemMatch: {_id: commentId}}}, {$inc: {"comments.$.likes": -1}, $pull: {"comments.$.likeIds": user._id}});
     } else {
-      return Threads.update({_id: threadId, comments: {$elemMatch: {_id: commendId}}}, {$inc: {"comments.$.likes": 1}, $push: {"comments.$.likeIds": user._id}});
+      return Threads.update({_id: threadId, comments: {$elemMatch: {_id: commentId}}}, {$inc: {"comments.$.likes": 1}, $push: {"comments.$.likeIds": user._id}});
           
     }
   },
 
-  likeReply: function(threadId, commendId, index) {
-    checkUser();
+  likeReply: function(threadId, commentId, index) {
+    Helper.checkUser();
     let paramsId = {};
     let params = {};
     let user = Meteor.user();
     let thread = Threads.findOne({_id: threadId});
-    if (_.find(_.find(thread.comments, (commend) => { return commend._id === commendId}).replies[index].likeIds, (id) => { return id === user._id})) {
+    if (_.find(_.find(thread.comments, (comment) => { return comment._id === commentId}).replies[index].likeIds, (id) => { return id === user._id})) {
       paramsId["comments.$.replies." + index + ".likeIds"] = user._id;
       params["comments.$.replies." + index + ".likes"] = -1;
-      return Threads.update({_id: threadId, comments: {$elemMatch: {_id: commendId}}}, {$inc: params, $pull: paramsId});
+      return Threads.update({_id: threadId, comments: {$elemMatch: {_id: commentId}}}, {$inc: params, $pull: paramsId});
     } else {
       paramsId["comments.$.replies." + index + ".likeIds"] = user._id;
       params["comments.$.replies." + index + ".likes"] = 1;
-      return Threads.update({_id: threadId, comments: {$elemMatch: {_id: commendId}}}, {$inc: params, $push: paramsId});
+      return Threads.update({_id: threadId, comments: {$elemMatch: {_id: commentId}}}, {$inc: params, $push: paramsId});
     }
   },
 
@@ -83,8 +103,3 @@ Meteor.methods({
 
 });
 
-function checkUser() {
-  if (!Meteor.user()) {
-    throw new Meteor.Error(403, "Access denied")
-  }
-}

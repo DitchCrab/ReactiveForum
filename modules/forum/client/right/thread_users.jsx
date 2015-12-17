@@ -42,10 +42,10 @@ export default class ThreadUsers extends Component {
       height: `${w_h}px`
     };
     let user_list = this.data.users.map((user, index) => {
-      let avatar = "avatar.png";
+      let avatar = <Avatar onClick={this.linkToUserPost.bind(null, user._id)}>{user.username[0]}</Avatar>;
       if (user.profile) {
         if (user.profile.avatar) {
-          avatar = user.profile.avatar            
+          <Avatar src={user.profile.avatar} onClick={this.linkToUserPost.bind(null, user._id)} />;
         }
       }
       let checked = true;
@@ -55,11 +55,11 @@ export default class ThreadUsers extends Component {
       return (
         <ListItem
             key={user._id}
-            leftAvatar={<Avatar src={avatar} onClick={this.linkToUserPost.bind(null, user._id)} />}
-                                primaryText={user.username}
-                                rightIconButton={ <Checkbox style={{width: 30, paddingTop: 10}}
-                                                            defaultChecked={checked}
-                                                            onCheck={this.filterUser.bind(null, user._id)}/>}>
+            leftAvatar={avatar}
+            primaryText={user.username}
+            rightIconButton={ <Checkbox style={{width: 30, paddingTop: 10}}
+                                         defaultChecked={checked}
+                                         onCheck={this.filterUser.bind(null, user._id)}/>}>
         </ListItem>
       )
     });
