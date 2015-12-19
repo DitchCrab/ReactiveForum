@@ -5,7 +5,6 @@ import { FlatButton, Card, CardHeader, CardMedia, CardTitle, CardActions, IconBu
 import { ToggleStar, CommunicationComment, SocialShare } from 'material-ui/lib/svg-icons';
 const { Colors } = Styles;
 import moment from 'moment';
-import uuid from 'node-uuid';
 
 export default class Thread extends Component {
   constructor(props, context) {
