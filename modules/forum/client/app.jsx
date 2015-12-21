@@ -14,10 +14,12 @@ export default class App extends Component {
     super(props);
     this.state = {activePopover: false, openMenu: true};
     this.context = context;
-    this.redirect = this.redirect.bind(this);
+    this.renderLeft = this.renderLeft.bind(this);
+    this.renderRightIcon = this.renderRightIcon.bind(this);
+    this.renderLeftIcon = this.renderLeftIcon.bind(this);
+    this.renderUserAvatar = this.renderUserAvatar.bind(this);
     this.openMenu = this.openMenu.bind(this);
     this.closeMenu = this.closeMenu.bind(this);
-    this.redirectMain = this.redirectMain.bind(this);
     this.openPopover = this.openPopover.bind(this);
     this.closePopover = this.closePopover.bind(this);
     this.selectCategory = this.selectCategory.bind(this);
@@ -32,15 +34,17 @@ export default class App extends Component {
   }
 
   componentWillMount() {
+    /* Track Sign In and Sign Out event
+       anchor the right DOM element for popover */
     Tracker.autorun(() => {
       Meteor.user();
       this.setState({activePopover: false});
       if (this.refs.signInButton) {
-        this.setState({signinButton: this.refs.signInButton.getDOMNode()});
+        this.setState({signinButton: ReactDOM.findDOMNode(this.refs.signInButton)});
       }
     })  
   }
-  
+
   componentDidMount() {
     this.setState({signinButton: ReactDOM.findDOMNode(this.refs.signInButton)});
   }
@@ -48,42 +52,30 @@ export default class App extends Component {
   render() {
     let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     let user = this.data.user;
-    let nav = (() => { return (
-      <LeftNav ref="leftNav" docked={false} onNavClose={this.closeMenu} disableSwipeToOpen={true}>
-        <LeftWrapper onSelectCategory={this.selectCategory} onSearch={this.searchThreads} viewThread={this.viewThread}/>
-      </LeftNav>
-    )})();
-    let icon_left = <IconButton onClick={this.openMenu}>{this.state.openMenu ? <NavigationMenu /> : <NavigationClose /> }</IconButton>;
-    if (user) {
-      var icon_right = <Avatar id="avatar-anchor" ref="signInButton" onClick={this.openPopover}>{user.username[0]}</Avatar>
-      if (user.profile) {
-        if (user.profile.avatar) {
-          icon_right = <Avatar id="avatar-anchor" src={user.profile.avatar} ref="signInButton" onClick={this.openPopover} />;
-        }
-      }
-    } else {
-      var icon_right = <FlatButton id="signin-anchor" ref="signInButton" label="Sign In" onClick={this.openPopover}/>;
-    }
+    // Props for AppBar element
+    let app_bar_props = {
+      title: "Modrn",
+      iconElementRight: this.renderRightIcon(),
+    };
     if ( w_w < 640)  {
-      var app_bar = <AppBar
-                        title="Meet Expat"
-                        iconElementLeft={icon_left}
-                        iconElementRight={icon_right} />
+      app_bar_props.iconElementLeft = this.renderLeftIcon();
     } else {
-      var app_bar = <AppBar
-                        title="Meet Expat"
-                        showMenuIconButton={false}
-                        iconElementRight={icon_right} />
+      app_bar_props.showMenuIconButton = false;
     }
+    //Props for Popover element
+    let pop_over_props = {
+      open: this.state.activePopover,
+      anchorEl: this.state.signinButton,
+      anchorOrigin: {horizontal: "right", vertical: "bottom"},
+      targetOrigin: {horizontal: "right", vertical: "top"},
+      onRequestClose: this.closePopover.bind(this, 'pop')
+    };
+    
     return (
       <div>
-        {app_bar}
-        {w_w < 640 ? nav : null }
-        <Popover className="right-popover" open={this.state.activePopover}
-                 anchorEl={this.state.signinButton}
-                 anchorOrigin={{horizontal: "right", vertical: "bottom"}}
-                 targetOrigin={{horizontal: "right", vertical: "top"}}
-                 onRequestClose={this.closePopover.bind(this, 'pop')} >
+        <AppBar {...app_bar_props}/>
+        {w_w < 640 ? this.renderLeft() : null }
+        <Popover className="right-popover" {...pop_over_props} >
           {user ? <MiniProfile /> : <Login /> }
         </Popover>
         {this.props.children}
@@ -91,6 +83,55 @@ export default class App extends Component {
     )
   }
 
+  renderLeft() {
+    const left_nav_props = {
+      docked: false,
+      onNavClose: this.closeMenu,
+      disableSwipeToOpen: true
+    };
+    const left_wrapper_props = {
+      onSelectCategory: this.selectCategory,
+      onSearch: this.searchThreads,
+      viewThread: this.viewThread
+    };
+    return (
+      <LeftNav ref="leftNav" {...left_nav_props}>
+        <LeftWrapper {...left_wrapper_props}/>
+      </LeftNav>
+    )  
+  }
+
+  renderRightIcon() {
+    let user = this.data.user;
+    if (user) {
+      return this.renderUserAvatar();
+    } else {
+      return (
+        <FlatButton id="signin-anchor" ref="signInButton" label="Sign In" onClick={this.openPopover}/>        
+      ) 
+    }
+  }
+
+  renderLeftIcon() {
+    return (
+      <IconButton onClick={this.openMenu}>
+        {this.state.openMenu ? <NavigationMenu /> : <NavigationClose /> }
+      </IconButton>      
+    )
+  }
+
+  renderUserAvatar() {
+    let user = this.data.user;    
+    if (user.profile) {
+      if (user.profile.avatar) {
+        return (
+          <Avatar id="avatar-anchor" src={user.profile.avatar} ref="signInButton" onClick={this.openPopover} />                )
+      }
+    }
+    return (
+      <Avatar id="avatar-anchor" ref="signInButton" onClick={this.openPopover}>{user.username[0]}</Avatar>            )
+  }
+  
   openPopover() {
     this.setState({activePopover: true});
   }
@@ -108,15 +149,6 @@ export default class App extends Component {
     this.setState({openMenu: true});
   }
 
-  redirect() {
-    this.props.history.pushState(null, '/discover');
-  }
-
-  redirectMain(url) {
-    this.props.history.pushState(null, url);
-    this.refs.leftNav.close();
-  }
-
   selectCategory(id) {
     Session.set('category', id);
   }
@@ -131,17 +163,4 @@ export default class App extends Component {
   }
 
 };
-
-App.contextTypes = {
-  location: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired
-};
-
-App.defaultProps = {
-  appLinks: [{text: 'Life Style', route: '/life_style'},
-             {text: 'Expat', route: '/expat'},
-             {text: 'Shared Experiences', route: '/shared_experiences'},
-             {text: 'Opportunity', route: '/opportunity'}
-  ]
-}
 

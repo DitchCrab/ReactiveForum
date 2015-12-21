@@ -12,6 +12,10 @@ import moment from 'moment';
 
 @ReactMixin.decorate(ReactMeteorData)
 export default class Main extends Component {
+  static contextTypes = {
+    history: PropTypes.object.isRequired    
+  }
+  
   constructor(props, context) {
     super(props);
     this.context = context;
@@ -38,16 +42,14 @@ export default class Main extends Component {
   }
   
   componentWillMount() {
+    // Hack to open dialog to create new thread.
+    // Todo: bind callback
     Tracker.autorun(() => {
       if (Session.get('openNewThreadDialog') && !this.state.showDialog) {
         this._openDialog();
         Session.set('openNewThreadDialog', null);
       }
     })
-  }
-
-  componentDidMount() {
-    Session.set('viewThread', this.props.params.thread)
   }
 
   render() {
@@ -159,9 +161,5 @@ export default class Main extends Component {
     thread_params[key] = value;
     this.setState({newThread: thread_params});
   }
-};
-
-Main.contextTypes = {
-  history: PropTypes.object.isRequired
 };
 
