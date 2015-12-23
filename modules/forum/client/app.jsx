@@ -23,6 +23,8 @@ export default class App extends Component {
     this.selectCategory = this.selectCategory.bind(this);
     this.searchThreads = this.searchThreads.bind(this);
     this.viewThread = this.viewThread.bind(this);
+    this.openSideNav = this.openSideNav.bind(this);
+    this.closeSideNav = this.closeSideNav.bind(this);
   }
 
   getMeteorData() {
@@ -54,6 +56,7 @@ export default class App extends Component {
     let app_bar_props = {
       title: "Modrn",
       iconElementRight: this.renderRightIcon(),
+      style: {position: 'fixed', top: 0, left: 0}
     };
     if ( w_w < 640)  {
       app_bar_props.iconElementLeft = this.renderLeftIcon();
@@ -75,7 +78,7 @@ export default class App extends Component {
         <Popover className="right-popover" {...pop_over_props} >
           {user ? <MiniProfile /> : <Login /> }
         </Popover>
-        {React.cloneElement(this.props.children, {section: this.state.section, viewSection: this.viewSection})}
+        {React.cloneElement(this.props.children, {section: this.state.section, viewSection: this.viewSection, openSideNav: this.state.sideNavOpen, closeSideNav: this.closeSideNav})}
       </div>
     )
   }
@@ -91,8 +94,8 @@ export default class App extends Component {
     }
     return (
       <div>
-        { this.props.params.thread && this.state.section === 'browsing' && w_w < 640 ? <IconButton><ActionHistory color={Colors.white}/></IconButton> : null }
-        { w_w < 640 ? <IconButton> <SocialPerson color={Colors.white}/> </IconButton> : null }
+        { this.props.params.thread && this.state.section === 'browsing' && w_w < 640 ? <IconButton onClick={this.viewSection.bind(null, 'thread')}><ActionHistory color={Colors.white}/></IconButton> : null }
+        { w_w < 640 ? <IconButton onClick={this.openSideNav}> <SocialPerson color={Colors.white}/> </IconButton> : null }
         <span style={{marginLeft: 10}}>
           {button}
         </span>
@@ -142,6 +145,14 @@ export default class App extends Component {
   viewThread(id) {
     Session.set('viewThread', id);
     this.props.history.pushState(null, `/forum/${id}`);
+  }
+
+  openSideNav() {
+    this.setState({sideNavOpen: true});
+  }
+
+  closeSideNav() {
+    this.setState({sideNavOpen: false});
   }
 
 };

@@ -1,6 +1,6 @@
 import { Component, PropTypes} from 'react';
 import ReactMixin from 'react-mixin';
-import { FlatButton } from 'material-ui';
+import { FlatButton, LeftNav } from 'material-ui';
 import Dialog from 'material-ui/lib/dialog';
 import Wrapper from './thread/wrapper';
 import LeftWrapper from './left/left_wrapper';
@@ -64,6 +64,12 @@ export default class Main extends Component {
       this.props.viewSection.bind(null, 'thread')();
     }
   }
+
+  componentDidUpdate() {
+    if (this.props.openSideNav === true) {
+      this.refs.rightNav.toggle();
+    }
+  }
   
   render() {
     let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
@@ -72,7 +78,7 @@ export default class Main extends Component {
     let thread = this.renderThread();
     if (w_w >= 640) {
       return (
-        <section className="s-grid-top">
+        <section className="s-grid-top main-section">
           {browsing}
           {thread}
           {filter_user}
@@ -80,11 +86,20 @@ export default class Main extends Component {
         </section>
       )
     } else {
+      const right_nav_props = {
+        docked: false,
+        onNavClose: this.props.closeSideNav,
+        disableSwipeToOpen: true,
+        openRight: true,
+        onNavClose: this.props.closeSideNav.bind(null)
+      }
       return (
-        <section className="s-grid-top">        
+        <section className="s-grid-top main-section">        
           { this.props.section === 'browsing' ? browsing : null }
           { this.props.section === 'thread' ? thread : null }
-          { this.props.section === 'filter_user' ? filter_user : null}
+          <LeftNav ref="rightNav" {...right_nav_props}>
+            {filter_user}
+          </LeftNav>
           { this.data.user ? this.renderNewThread() : null }
         </section>
       )      
