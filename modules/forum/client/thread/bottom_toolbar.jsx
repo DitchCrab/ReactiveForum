@@ -4,6 +4,16 @@ import { ActionDone, EditorModeEdit, NavigationClose, ActionViewCarousel } from 
 import moment from 'moment';
 
 export default class BottomToolbar extends Component {
+  static propTypes = {
+    toggleCarousel: PropTypes.func,
+    viewingCarousel: PropTypes.bool,
+    threadId: PropTypes.string
+  }
+
+  static defaultProps = {
+    viewingCarousel: false
+  }
+  
   constructor(props) {
     super(props);
     this.state = {comment: null, defaultHeight: 56, textFieldHeight: 24};
@@ -74,12 +84,3 @@ export default class BottomToolbar extends Component {
   }
 };
 
-BottomToolbar.propTypes = {
-  toggleCarousel: PropTypes.func,
-  viewingCarousel: PropTypes.bool,
-  threadId: PropTypes.string
-};
-
-BottomToolbar.defaultProps = {
-  viewingCarousel: false
-}

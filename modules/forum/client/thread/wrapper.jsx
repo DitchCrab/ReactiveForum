@@ -10,6 +10,11 @@ import Threads from 'forum/collections/threads';
 
 @ReactMixin.decorate(ReactMeteorData)
 export default class Wrapper extends Component {
+
+  static propTypes = {
+    viewThread: PropTypes.func
+  }
+
   constructor(props, context) {
     super(props);
     this.state = {showSnack: false, viewingCarousel: false, threadList: [], notSeenUser: []};
@@ -176,7 +181,3 @@ export default class Wrapper extends Component {
     }
   }
 };
-
-Wrapper.propTypes = {
-  viewThread: PropTypes.func
-}

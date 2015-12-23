@@ -3,6 +3,15 @@ import { GridTile, IconButton, GridList } from 'material-ui';
 import { ToggleStarBorder } from 'material-ui/lib/svg-icons';
 
 export default class Featured extends Component {
+  static propTypes = {
+    threads: PropTypes.arrayOf(PropTypes.object),
+    viewThread: PropTypes.func
+  }
+
+  static defaultProps = {
+    threads: []
+  }
+
   constructor(props, context) {
     super(props);
   }
@@ -46,11 +55,3 @@ export default class Featured extends Component {
   }
 }
 
-Featured.propTypes = {
-  threads: PropTypes.arrayOf(PropTypes.object),
-  viewThread: PropTypes.func
-};
-
-Featured.defaultProps = {
-  threads: []
-}

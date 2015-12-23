@@ -7,9 +7,20 @@ import listensToClickOutside from 'react-onclickoutside/decorator';
 
 @listensToClickOutside
 export default class ThreadCarousel extends Component {
+
+  static propTypes = {
+    threadList: PropTypes.arrayOf(PropTypes.object),
+    viewThread: PropTypes.func
+  }
+
+  static defaultProps = {
+    threadList: []
+  }
+
   constructor(props) {
     super(props);
     this.state={viewIndex: 0, threads: Immutable.fromJS(props.threadList).slice(0, 3).toJS()};
+    this.renderEachCarouselThread = this.renderEachCarouselThread.bind(this);
     this.handleRightSwipe = this.handleRightSwipe.bind(this);
     this.handleLeftSwipe = this.handleLeftSwipe.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
@@ -32,28 +43,30 @@ export default class ThreadCarousel extends Component {
       width: width,
       background: 'rgba(0, 0, 0, 0.2)',
     };
-    let threads = this.state.threads.map((thread) => {
-      return (
-        <GridTile key={thread._id}
-                  title={thread.title}
-                  subtitle={<span>by <b>{thread.user.username}</b></span>}
-                                                      actionIcon={<IconButton><ToggleStarBorder color="white"/></IconButton>}
-            onClick={this.props.viewThread.bind(null, thread._id)}
-                                                                                                               ><img src={thread.imgUrl} />
-        </GridTile>
-      )
-    })
-      return (
-        <Swipeable style={carousel_style} onSwipedRight={this.handleRightSwipe} onSwipedLeft={this.handleLeftSwipe}>
-          <GridList
-              cols={3}
-              cellHeight={150}
-              style={{maxHeight: "100%"}}
-          >
-            {threads}
-          </GridList>
-        </Swipeable>
-      )
+    let threads = this.state.threads.map(thread => this.renderEachCarouselThread(thread));
+    return (
+      <Swipeable style={carousel_style} onSwipedRight={this.handleRightSwipe} onSwipedLeft={this.handleLeftSwipe}>
+        <GridList
+            cols={3}
+            cellHeight={150}
+            style={{maxHeight: "100%"}}
+        >
+          {threads}
+        </GridList>
+      </Swipeable>
+    )
+  }
+
+  renderEachCarouselThread(thread) {
+    return (
+      <GridTile key={thread._id}
+                title={thread.title}
+                subtitle={<span>by <b>{thread.user.username}</b></span>}
+                                                            actionIcon={<IconButton><ToggleStarBorder color="white"/></IconButton>}
+                  onClick={this.props.viewThread.bind(null, thread._id)} >
+        <img src={thread.imgUrl} />
+      </GridTile>
+    )
   }
 
   handleRightSwipe(e) {
@@ -87,13 +100,4 @@ export default class ThreadCarousel extends Component {
   }
 
 };
-
-ThreadCarousel.propTypes = {
-  threadList: PropTypes.arrayOf(PropTypes.object),
-  viewThread: PropTypes.func
-};
-
-ThreadCarousel.defaultProps = {
-  threadList: []
-}
 

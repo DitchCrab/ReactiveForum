@@ -29,7 +29,7 @@ export default class Thread extends Component {
   }
 
   render() {
-    let thread = this.props.thread;
+xb    let thread = this.props.thread;
     var comment_field;
     if (this.props.currentUser !== null && this.props.currentUser !== undefined) {
       comment_field = <BottomToolbar threadId={this.props.thread._id} toggleCarousel={this.props.toggleCarousel.bind(null)} viewingCarousel={this.props.viewingCarousel}/>;

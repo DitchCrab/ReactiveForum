@@ -10,9 +10,16 @@ const { Colors } = Styles;
 
 @ReactMixin.decorate(ReactMeteorData)
 export default class LeftWrapper extends Component {
+  static propTypes = {
+    viewThread: PropTypes.func,
+    onSearch: PropTypes.func,
+    onSelectCategory: PropTypes.func
+  }
+
   constructor(props, context) {
     super(props);
     this.state = {filterParams: {}};
+    this.renderEachCategory = this.renderEachCategory.bind(this);
     this.selectCategory = this.selectCategory.bind(this);
     this.clearSearch = this.clearSearch.bind(this);
     this.searchThreadsByEnter = this.searchThreadsByEnter.bind(this);
@@ -63,15 +70,7 @@ export default class LeftWrapper extends Component {
     if (this.data.categories == undefined) {
       return <CircularProgress mode="indeterminate" />
     }
-    let list = this.data.categories.map((category, index) => {
-      let style = {};
-      if (category._id === this.state.categorySelected) {
-        style['color'] = 'red';
-      }
-      return (
-        <ListItem key={index} style={style} primaryText={category.name} onClick={this.selectCategory.bind(null, category._id)}/>
-      )
-    });
+    let list = this.data.categories.map((category, index) => this.renderEachCategory(category, index));
     let w_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 100;
     const wrapper_style = {
       height: `${w_h}px`,
@@ -94,6 +93,16 @@ export default class LeftWrapper extends Component {
     )
   }
 
+  renderEachCategory(category, index) {
+    let style = {};
+    if (category._id === this.state.categorySelected) {
+      style['color'] = 'red';
+    }
+    return (
+      <ListItem key={index} style={style} primaryText={category.name} onClick={this.selectCategory.bind(null, category._id)}/>
+    )
+  }
+  
   renderNewThread() {
     return (
       <div style={{position: "fixed", bottom: "10px", left: "10px" }}>
@@ -127,8 +136,3 @@ export default class LeftWrapper extends Component {
 
 };
 
-LeftWrapper.propTypes = {
-  viewThread: PropTypes.func,
-  onSearch: PropTypes.func,
-  onSelectCategory: PropTypes.func
-}
