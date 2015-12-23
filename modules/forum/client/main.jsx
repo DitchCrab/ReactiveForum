@@ -12,8 +12,13 @@ import moment from 'moment';
 
 @ReactMixin.decorate(ReactMeteorData)
 export default class Main extends Component {
+    
   static contextTypes = {
     history: PropTypes.object.isRequired    
+  }
+
+  static defaultProps = {
+    section: 'browsing'
   }
   
   constructor(props, context) {
@@ -23,8 +28,9 @@ export default class Main extends Component {
     this.selectCategory = this.selectCategory.bind(this);
     this.searchThreads = this.searchThreads.bind(this);
     this.viewThread = this.viewThread.bind(this);
-    this.renderNav = this.renderNav.bind(this);
-    this.renderFriendList = this.renderFriendList.bind(this);
+    this.renderThread = this.renderThread.bind(this);
+    this.renderBrowsing = this.renderBrowsing.bind(this);
+    this.renderFilterUser = this.renderFilterUser.bind(this);
     this.setGeneralUser = this.setGeneralUser.bind(this);
     this.renderNewThread = this.renderNewThread.bind(this);
     this._openDialog = this._openDialog.bind(this);      
@@ -52,25 +58,48 @@ export default class Main extends Component {
     })
   }
 
+  componentDidMount() {
+    if (this.props.params.thread) {
+      Session.set('viewThread', this.props.params.thread);
+      this.props.viewSection.bind(null, 'thread')();
+    }
+  }
+  
   render() {
-    Session.set('viewThread', this.props.params.thread);
     let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    let nav = this.renderNav();
-    let friend_list = this.renderFriendList();
+    let browsing = this.renderBrowsing();
+    let filter_user = this.renderFilterUser();
+    let thread = this.renderThread();
+    if (w_w >= 640) {
+      return (
+        <section className="s-grid-top">
+          {browsing}
+          {thread}
+          {filter_user}
+          { this.data.user ? this.renderNewThread() : null }
+        </section>
+      )
+    } else {
+      return (
+        <section className="s-grid-top">        
+          { this.props.section === 'browsing' ? browsing : null }
+          { this.props.section === 'thread' ? thread : null }
+          { this.props.section === 'filter_user' ? filter_user : null}
+          { this.data.user ? this.renderNewThread() : null }
+        </section>
+      )      
+    }
+  }
 
+  renderThread() {
     return (
-      <section className="s-grid-top">
-        { w_w >= 640 ? nav : null }
-        <div className="s-grid-cell s-grid-cell-sm-12 s-grid-cell-md-6 s-grid-cell-lg-7">
-          <Wrapper viewThread={this.viewThread} category={this.state.category}/>
-        </div>
-        { w_w >= 640 ? friend_list : null }
-        { this.data.user ? this.renderNewThread() : null }
-      </section>
+      <div className="s-grid-cell s-grid-cell-sm-12 s-grid-cell-md-6 s-grid-cell-lg-7">
+        <Wrapper viewThread={this.viewThread} category={this.state.category}/>
+      </div>
     )
   }
 
-  renderNav() {
+  renderBrowsing() {
     return (
       <div className="s-grid-cell s-grid-cell-sm-12 s-grid-cell-md-3 s-grid-cell-lg-3">
         <LeftWrapper onSelectCategory={this.selectCategory} onSearch={this.searchThreads} viewThread={this.viewThread}/>
@@ -78,7 +107,7 @@ export default class Main extends Component {
     )
   }
 
-  renderFriendList() {
+  renderFilterUser() {
     return (
       <div className="s-grid-cell s-grid-cell-sm-12 s-grid-cell-md-3 s-grid-cell-lg-2">
         <ThreadUsers onGeneralUser={this.setGeneralUser}/>
@@ -125,6 +154,7 @@ export default class Main extends Component {
 
   viewThread(id) {
     Session.set('viewThread', id);
+    this.props.viewSection.bind(null, 'thread')();
     this.props.history.pushState(null, `/forum/${id}`);
   }
 

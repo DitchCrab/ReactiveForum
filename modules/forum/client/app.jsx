@@ -5,21 +5,19 @@ import { LeftNav, IconButton, Avatar, FlatButton, AppBar, Popover, Styles } from
 import LeftWrapper from './left/left_wrapper';
 import MiniProfile from './right/mini_profile';
 import Login from './right/login';
-import { NavigationMenu, NavigationClose } from 'material-ui/lib/svg-icons';
+import { ActionViewList, ActionHistory, SocialPerson } from 'material-ui/lib/svg-icons';
 const { Colors } = Styles;
 
 @ReactMixin.decorate(ReactMeteorData)
 export default class App extends Component {
   constructor(props, context) {
     super(props);
-    this.state = {activePopover: false, openMenu: true};
+    this.state = {activePopover: false, section: 'browsing'};
     this.context = context;
-    this.renderLeft = this.renderLeft.bind(this);
     this.renderRightIcon = this.renderRightIcon.bind(this);
     this.renderLeftIcon = this.renderLeftIcon.bind(this);
     this.renderUserAvatar = this.renderUserAvatar.bind(this);
-    this.openMenu = this.openMenu.bind(this);
-    this.closeMenu = this.closeMenu.bind(this);
+    this.viewSection = this.viewSection.bind(this);
     this.openPopover = this.openPopover.bind(this);
     this.closePopover = this.closePopover.bind(this);
     this.selectCategory = this.selectCategory.bind(this);
@@ -74,62 +72,55 @@ export default class App extends Component {
     return (
       <div>
         <AppBar {...app_bar_props}/>
-        {w_w < 640 ? this.renderLeft() : null }
         <Popover className="right-popover" {...pop_over_props} >
           {user ? <MiniProfile /> : <Login /> }
         </Popover>
-        {this.props.children}
+        {React.cloneElement(this.props.children, {section: this.state.section, viewSection: this.viewSection})}
       </div>
     )
   }
 
-  renderLeft() {
-    const left_nav_props = {
-      docked: false,
-      onNavClose: this.closeMenu,
-      disableSwipeToOpen: true
-    };
-    const left_wrapper_props = {
-      onSelectCategory: this.selectCategory,
-      onSearch: this.searchThreads,
-      viewThread: this.viewThread
-    };
-    return (
-      <LeftNav ref="leftNav" {...left_nav_props}>
-        <LeftWrapper {...left_wrapper_props}/>
-      </LeftNav>
-    )  
-  }
-
   renderRightIcon() {
+    let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);    
     let user = this.data.user;
+    var button;
     if (user) {
-      return this.renderUserAvatar();
+      button = this.renderUserAvatar();
     } else {
-      return (
-        <FlatButton id="signin-anchor" ref="signInButton" label="Sign In" onClick={this.openPopover}/>        
-      ) 
+      button =  <FlatButton id="signin-anchor" ref="signInButton" label="Sign In" onClick={this.openPopover}/>        
     }
+    return (
+      <div>
+        { this.props.params.thread && this.state.section === 'browsing' && w_w < 640 ? <IconButton><ActionHistory color={Colors.white}/></IconButton> : null }
+        { w_w < 640 ? <IconButton> <SocialPerson color={Colors.white}/> </IconButton> : null }
+        <span style={{marginLeft: 10}}>
+          {button}
+        </span>
+      </div>
+    )
   }
 
   renderLeftIcon() {
     return (
-      <IconButton onClick={this.openMenu}>
-        {this.state.openMenu ? <NavigationMenu /> : <NavigationClose /> }
-      </IconButton>      
+      <IconButton onClick={this.viewSection.bind(null, 'browsing')}>
+        <ActionViewList />
+      </IconButton>
     )
   }
 
   renderUserAvatar() {
-    let user = this.data.user;    
+    let user = this.data.user;
+    let avatar = <Avatar id="avatar-anchor" ref="signInButton" onClick={this.openPopover}>{user.username[0]}</Avatar>;
     if (user.profile) {
       if (user.profile.avatar) {
-        return (
-          <Avatar id="avatar-anchor" src={user.profile.avatar} ref="signInButton" onClick={this.openPopover} />                )
+        avatar = <Avatar id="avatar-anchor" src={user.profile.avatar} ref="signInButton" onClick={this.openPopover} />;
       }
     }
-    return (
-      <Avatar id="avatar-anchor" ref="signInButton" onClick={this.openPopover}>{user.username[0]}</Avatar>            )
+    return avatar;
+  }
+
+  viewSection(name) {
+    this.setState({section: name});
   }
   
   openPopover() {
@@ -138,15 +129,6 @@ export default class App extends Component {
 
   closePopover() {
     this.setState({activePopover: false});
-  }
-
-  openMenu() {
-    this.setState({openMenu: !this.state.openMenu});
-    this.refs.leftNav.toggle();
-  }
-
-  closeMenu() {
-    this.setState({openMenu: true});
   }
 
   selectCategory(id) {
