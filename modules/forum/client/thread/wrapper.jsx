@@ -68,7 +68,6 @@ export default class Wrapper extends Component {
     return {
       threads: threads,
       thread: thread,
-      user: Meteor.user(),
     }
   }
 
@@ -107,7 +106,7 @@ export default class Wrapper extends Component {
     };
     return (
       <div style={wrapper_style} className="thread-wrapper">
-        { this.viewingThread() ? <Thread currentUser={this.data.user} thread={this.data.thread} toggleCarousel={this.toggleCarousel} viewingCarousel={this.state.viewingCarousel} notSeenUser={this.state.notSeenUser}/> : <Featured  viewThread={this.props.viewThread.bind(null)} threads={this.data.threads} /> }
+        { this.viewingThread() ? <Thread currentUser={this.props.currentUser} thread={this.data.thread} toggleCarousel={this.toggleCarousel} viewingCarousel={this.state.viewingCarousel} notSeenUser={this.state.notSeenUser}/> : <Featured  viewThread={this.props.viewThread.bind(null)} threads={this.data.threads} /> }
         <Snackbar
             ref="snackbar"
             message="New Messages"

@@ -49,6 +49,13 @@ Schemas.Thread = new SimpleSchema({
   user: {
     type: Object,
     blackbox: true
+  },
+  createdAt: {
+    type: Date,
+  },
+  updatedAt: {
+    type: Date,
+    optional: true
   }
 });
 

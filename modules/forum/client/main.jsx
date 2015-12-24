@@ -6,9 +6,11 @@ import Wrapper from './thread/wrapper';
 import LeftWrapper from './left/left_wrapper';
 import ThreadUsers from './right/thread_users';
 import ThreadForm from './widgets/thread_form';
-import Categories from 'forum/collections/categories';
 import ThreadImgs from 'forum/collections/thread_imgs';
 import moment from 'moment';
+import Categories from 'forum/collections/categories';
+import Threads from 'forum/collections/threads';
+
 
 @ReactMixin.decorate(ReactMeteorData)
 export default class Main extends Component {
@@ -27,6 +29,7 @@ export default class Main extends Component {
     this.state = {showDialog: false, newThread: {}};
     this.selectCategory = this.selectCategory.bind(this);
     this.searchThreads = this.searchThreads.bind(this);
+    this.resetSearch = this.resetSearch.bind(this);
     this.viewThread = this.viewThread.bind(this);
     this.renderThread = this.renderThread.bind(this);
     this.renderBrowsing = this.renderBrowsing.bind(this);
@@ -41,9 +44,13 @@ export default class Main extends Component {
   }
 
   getMeteorData() {
+    let threads = Threads.find({}, {sort: {createdAt: -1}}).fetch();
+    if (this.state.filterParams) {
+      threads = Threads.find(this.state.filterParams, {sort: {createdAt: -1}}).fetch();
+    }
     return {
       categories: Categories.find().fetch(),
-      user: Meteor.user()
+      threads: threads
     }
   }
   
@@ -70,10 +77,16 @@ export default class Main extends Component {
       this.refs.rightNav.toggle();
     }
   }
-  
+
   render() {
+    var search_error;
+    if (this.state.filterParams && this.data.threads.length < 1) {
+      if (this.state.filterParams.tags) {
+        search_error = 'Sorry, no post found';
+      }
+    }
     let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    let browsing = this.renderBrowsing();
+    let browsing = this.renderBrowsing(search_error);
     let filter_user = this.renderFilterUser();
     let thread = this.renderThread();
     if (w_w >= 640) {
@@ -82,7 +95,7 @@ export default class Main extends Component {
           {browsing}
           {thread}
           {filter_user}
-          { this.data.user ? this.renderNewThread() : null }
+          { this.props.currentUser ? this.renderNewThread() : null }
         </section>
       )
     } else {
@@ -100,7 +113,7 @@ export default class Main extends Component {
           <LeftNav ref="rightNav" {...right_nav_props}>
             {filter_user}
           </LeftNav>
-          { this.data.user ? this.renderNewThread() : null }
+          { this.props.currentUser ? this.renderNewThread() : null }
         </section>
       )      
     }
@@ -109,15 +122,15 @@ export default class Main extends Component {
   renderThread() {
     return (
       <div className="s-grid-cell s-grid-cell-sm-12 s-grid-cell-md-6 s-grid-cell-lg-7">
-        <Wrapper viewThread={this.viewThread} category={this.state.category}/>
+        <Wrapper currentUser={this.props.currentUser} viewThread={this.viewThread} category={this.state.category}/>
       </div>
     )
   }
 
-  renderBrowsing() {
+  renderBrowsing(error) {
     return (
       <div className="s-grid-cell s-grid-cell-sm-12 s-grid-cell-md-3 s-grid-cell-lg-3">
-        <LeftWrapper onSelectCategory={this.selectCategory} onSearch={this.searchThreads} viewThread={this.viewThread}/>
+        <LeftWrapper searchError={error} resetSearch={this.resetSearch} threads={this.data.threads} categories={this.data.categories} currentUser={this.props.currentUser} onSelectCategory={this.selectCategory} onSearch={this.searchThreads} viewThread={this.viewThread}/>
       </div>
     )
   }
@@ -160,11 +173,16 @@ export default class Main extends Component {
   }    
 
   selectCategory(id) {
-    Session.set('category', id);
+    this.setState({filterParams: {category: id}});
   }
 
   searchThreads(params) {
-    Session.set('search', params);
+    let tags = _.map(params.split(' '), (x) => x.trim());
+    this.setState({filterParams: {tags: {$all: tags}}});
+  }
+
+  resetSearch() {
+    this.setState({filterParams: null});
   }
 
   viewThread(id) {
@@ -182,7 +200,6 @@ export default class Main extends Component {
   }
 
   _closeDialog() {
-    console.log("yes");
     this.setState({showDialog: false});
   }
 
@@ -194,7 +211,6 @@ export default class Main extends Component {
     ThreadImgs.insert(this.state.newThread.img, (err, imgObj) => {
       let params = this.state.newThread;
       params['imgId'] = imgObj._id;
-      params.commends = [];
       Meteor.call('createThread', params, (err, res) => {
         this.setState({newThread: {}, showDialog: false});                          
       })

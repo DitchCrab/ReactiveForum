@@ -1,10 +1,8 @@
 import { Component, PropTypes } from 'react';
-import ReactMixin from 'react-mixin';
 import { Card, CardMedia, CardTitle, IconButton, Styles } from 'material-ui';
 import { ContentFlag, ToggleStar, CommunicationComment } from 'material-ui/lib/svg-icons';
 const { Colors } = Styles;
 
-@ReactMixin.decorate(ReactMeteorData)
 export default  class ThreadList extends Component {
   static propTypes = {
     threads: PropTypes.arrayOf(PropTypes.object),
@@ -24,12 +22,6 @@ export default  class ThreadList extends Component {
     this.renderFlag = this.renderFlag.bind(this);
   }
 
-  getMeteorData() {
-    return {
-      user: Meteor.user()
-    }
-  }
-
   render() {
     let cards = this.props.threads.map(thread => this.renderEachThread(thread));
     return (
@@ -40,7 +32,7 @@ export default  class ThreadList extends Component {
   }
 
   renderEachThread(thread) {
-    let user = this.data.user;
+    let user = this.props.currentUser;
     return (
       <Card key={thread._id} style={{marginBottom: 12}}  onClick={this.props.viewThread.bind(null, thread._id)}>
         <CardMedia>
