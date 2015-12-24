@@ -49,7 +49,7 @@ export default class Comment extends Component {
         </div>
         <div>
           <div style={{paddingLeft: 30}}>
-            <div className="comment-text" style={{fontSize: "90%", paddingLeft: 25, whiteSpace: 'pre'}}>
+            <div className="comment-text" style={{fontSize: "80%", wordWrap: 'break-word', paddingLeft: 25, whiteSpace: 'pre'}}>
               {comment.text}
             </div>
             {replies}

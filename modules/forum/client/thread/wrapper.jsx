@@ -72,7 +72,7 @@ export default class Wrapper extends Component {
     };
     return (
       <div style={wrapper_style} className="thread-wrapper">
-        { this.viewingThread() ? <Thread currentUser={this.props.currentUser} thread={this.props.thread} toggleCarousel={this.toggleCarousel} viewingCarousel={this.state.viewingCarousel} notSeenUser={this.props.userBlackList}/> : <Featured  viewThread={this.props.viewThread.bind(null)} threads={this.props.mainThreads} /> }
+        { this.viewingThread() ? <Thread currentUser={this.props.currentUser} thread={this.props.thread} toggleCarousel={this.toggleCarousel} viewingCarousel={this.state.viewingCarousel} notSeenUser={this.props.usersBlackList}/> : <Featured  viewThread={this.props.viewThread.bind(null)} threads={this.props.mainThreads} /> }
         <Snackbar
             ref="snackbar"
             message="New Messages"

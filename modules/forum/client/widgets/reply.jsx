@@ -32,7 +32,7 @@ export default class Reply extends Component {
             <span className="reply-like" onClick={this.props.onLikeReply.bind(null)}>Like: {reply.likes}</span>
           </p>
         </div>
-        <div className="reply-text" style={{marginLeft: 55, fontSize: "90%"}}>
+        <div className="reply-text" style={{fontSize: "80%", wordWrap: 'break-word', marginLeft: 55}}>
           {reply.text}
         </div>
       </div>

@@ -69,7 +69,7 @@ export default class App extends Component {
       anchorEl: this.state.signinButton,
       anchorOrigin: {horizontal: "right", vertical: "bottom"},
       targetOrigin: {horizontal: "right", vertical: "top"},
-      onRequestClose: this.closePopover.bind(this, 'pop')
+      onRequestClose: this.closePopover
     };
     
     return (
@@ -127,11 +127,15 @@ export default class App extends Component {
   }
   
   openPopover() {
-    this.setState({activePopover: true});
+    if (this.state.activePopover === false) {
+      this.setState({activePopover: true});      
+    }
   }
 
   closePopover() {
-    this.setState({activePopover: false});
+    if (this.state.activePopover === true) {
+      this.setState({activePopover: false});      
+    }
   }
 
   selectCategory(id) {
