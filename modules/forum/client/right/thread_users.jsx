@@ -7,6 +7,8 @@ const {Colors} = Styles;
 @ReactMixin.decorate(ReactMeteorData)
 export default class ThreadUsers extends Component {
   static propTypes = {
+    userBlackList: PropTypes.arrayOf(PropTypes.string),
+    updateBlackList: PropTypes.func,
     onGeneralUser: PropTypes.func
   }
     
@@ -21,8 +23,8 @@ export default class ThreadUsers extends Component {
 
   getMeteorData() {
     let user_list = [];
-    if (this.state.userList) {
-      user_list = this.state.userList;
+    if (this.props.threadUsers) {
+      user_list = this.props.threadUsers;
     }
     let users = Meteor.users.find({_id: {$in: user_list}}).fetch();          
     return {
@@ -30,17 +32,6 @@ export default class ThreadUsers extends Component {
     }
   }
   
-  componentWillMount() {
-    Tracker.autorun(() => {
-      if (!Immutable.is(Immutable.fromJS(Session.get('userList')), Immutable.fromJS(this.state.userList))) {
-        this.setState({userList: Session.get('userList')});
-      }
-      if (Session.get('notSeenUser')) {
-        this.setState({notSeenUser: Session.get('notSeenUser')});
-      }
-    })  
-  }
-
   render() {
     let w_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 100;
     const wrapper_style = {
@@ -81,7 +72,7 @@ export default class ThreadUsers extends Component {
       }
     }
     let checked = true;
-    if (Immutable.fromJS(this.state.notSeenUser).find(x => x === user._id)) {
+    if (Immutable.fromJS(this.props.userBlackList).find(x => x === user._id)) {
       checked = false;
     }
     return (
@@ -102,21 +93,21 @@ export default class ThreadUsers extends Component {
 
   filterUser(id, event, checked) {
     if (checked == false) {
-      let newList = Immutable.fromJS(this.state.notSeenUser).concat(Immutable.fromJS(id)).toJS();
-      Session.set('notSeenUser', newList);
+      let newList = Immutable.fromJS(this.props.userBlackList).concat(Immutable.fromJS(id)).toJS();
+      this.props.updateBlackList.bind(null, newList)();
     } else {
-      let newList = Immutable.fromJS(this.state.notSeenUser).filter(x => x !== id).toJS();
-      Session.set('notSeenUser', newList);
+      let newList = Immutable.fromJS(this.props.userBlackList).filter(x => x !== id).toJS();
+      this.props.updateBlackList.bind(null, newList)();      
     }
   }
 
   makeSelection(value) {
     if (value == true) {
-      Session.set('notSeenUser', []);
+      this.props.updateBlackList.bind(null, [])();
     } else {
       if (this.data.users) {
         let user_list = Immutable.fromJS(this.data.users).map(x => x.get('_id')).toJS();
-        Session.set('notSeenUser', user_list);
+        this.props.updateBlackList.bind(null, user_list)();
       }
     }
   }

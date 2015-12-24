@@ -1,14 +1,11 @@
 import { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import ReactMixin from 'react-mixin';
 import Featured from './featured';
 import Thread from './thread';
 import ThreadCarousel from './thread_carousel';
 import { Snackbar } from 'material-ui';
 import Immutable from 'immutable';
-import Threads from 'forum/collections/threads';
 
-@ReactMixin.decorate(ReactMeteorData)
 export default class Wrapper extends Component {
 
   static propTypes = {
@@ -17,7 +14,7 @@ export default class Wrapper extends Component {
 
   constructor(props, context) {
     super(props);
-    this.state = {showSnack: false, viewingCarousel: false, threadList: [], notSeenUser: []};
+    this.state = {showSnack: false, viewingCarousel: false};
     this.radian = this.radian.bind(this);
     this.viewingThread = this.viewingThread.bind(this);
     this.toggleCarousel = this.toggleCarousel.bind(this);
@@ -25,97 +22,21 @@ export default class Wrapper extends Component {
     this.viewMessage = this.viewMessage.bind(this);
   }
 
-  getMeteorData() {
-    //Get threads of particular user
-    let threads = [];
-    let onGeneralUser = this.state.onGeneralUser;          
-    if (onGeneralUser) {
-      let threads_1 = Threads.find({"user._id": onGeneralUser}).fetch();
-      let threads_2 = Threads.find({comments: {$elemMatch: {userId: onGeneralUser}}}).fetch();
-      threads = _.uniq(_.union(threads_1, threads_2), (thread) => { return thread._id; });
-    } else {
-      threads = Threads.find().fetch();                
-    }
-    //Get thread when user click on particular thread on menu or carousel
-    let thread = Threads.findOne({_id: this.state.viewThread});
-    let imThread = Immutable.fromJS(thread);
-    let imOldThread = Immutable.fromJS(this.data.thread);
-    if (!Immutable.is(imThread, imOldThread)) {
-      //Notify user if there is new message on her current thread
-      if (this.data.thread && (thread._id == this.data.thread._id)) {
-        if (thread.comments.length > this.data.thread.comments.length && !Session.get("iJustComment")) {
-          this.refs.snackbar.show();
-        }
-        Session.set("iJustComment", null);
-      }
-      let threadList = Immutable.fromJS(this.state.threadList);
-      if (threadList) {
-        let found = threadList.find(x => { return x.get("_id") === thread._id});
-        // Add to carousel list if thread is not added
-        if (!found) {
-          var newThreadList = threadList.push(Immutable.fromJS(thread)).toJS();
-          Session.set('threadList', newThreadList);
-        }
-      }
-      // Compute list of user on thread
-      let userList = [];
-      if (imThread.get('comments')) {
-        userList = imThread.get('comments').map(x => x.get('userId')).toJS();        
-      }
-      Session.set('userList', userList);
-    }
-
-    return {
-      threads: threads,
-      thread: thread,
-    }
-  }
-
-  componentWillMount() {
-    Tracker.autorun(() => {
-      this.setState({onGeneralUser: Session.get("onGeneralUser")});
-      this.setState({viewThread: Session.get('viewThread')});
-      if (Session.get('threadList')) {
-        this.setState({threadList: Session.get('threadList')});        
-      }
-      if (Session.get('notSeenUser')) {
-        let not_users = Immutable.fromJS(this.state.notSeenUser);
-        let new_not_users = Immutable.fromJS(Session.get('notSeenUser'));
-        if (!Immutable.is(not_users, new_not_users)) {
-          if (new_not_users) {
-            this.setState({notSeenUser: new_not_users.toJS()});            
-          } else {
-            this.setState({notSeenUser: []});
-          }
-        }
-      }
-    })
-  }
-
   componentDidMount() {
-    this.setState({viewThread: Session.get('viewThread')});
+    if (this.props.thread) {
+      const found = _.find(this.props.threadList, (thread) => { return thread._id === this.props.thread});
+      if (!found) {
+        this.props.updateThreadList(this.props.thread);
+      }
+    }
   }
 
-  render() {
-    let w_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 60;
-    let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    const wrapper_style = {
-      height: `${w_h}px`,
-      overflowY: w_w > 640 ? "auto" : "none",
-      margin: 0
-    };
-    return (
-      <div style={wrapper_style} className="thread-wrapper">
-        { this.viewingThread() ? <Thread currentUser={this.props.currentUser} thread={this.data.thread} toggleCarousel={this.toggleCarousel} viewingCarousel={this.state.viewingCarousel} notSeenUser={this.state.notSeenUser}/> : <Featured  viewThread={this.props.viewThread.bind(null)} threads={this.data.threads} /> }
-        <Snackbar
-            ref="snackbar"
-            message="New Messages"
-            action="view"
-            autoHideDuration={3000}
-            onActionTouchTap={this.viewMessage}/>
-        {this.state.viewingCarousel ? <ThreadCarousel onClickOutside={this.closeCarousel} threadList={this.state.threadList} viewThread={this.props.viewThread.bind(null)}/> : null }
-      </div>
-    );
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.thread && this.props.thread) {
+      if (nextProps.thread._id === this.props.thread._id && nextProps.thread.comments.length > this.props.thread.comments.length) {
+        this.refs.snackbar.show();        
+      }
+    }
   }
 
   componentWillUpdate() {
@@ -141,8 +62,30 @@ export default class Wrapper extends Component {
     }
   }
 
+  render() {
+    let w_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 60;
+    let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    const wrapper_style = {
+      height: `${w_h}px`,
+      overflowY: w_w > 640 ? "auto" : "none",
+      margin: 0
+    };
+    return (
+      <div style={wrapper_style} className="thread-wrapper">
+        { this.viewingThread() ? <Thread currentUser={this.props.currentUser} thread={this.props.thread} toggleCarousel={this.toggleCarousel} viewingCarousel={this.state.viewingCarousel} notSeenUser={this.props.userBlackList}/> : <Featured  viewThread={this.props.viewThread.bind(null)} threads={this.props.mainThreads} /> }
+        <Snackbar
+            ref="snackbar"
+            message="New Messages"
+            action="view"
+            autoHideDuration={3000}
+            onActionTouchTap={this.viewMessage}/>
+        {this.state.viewingCarousel ? <ThreadCarousel onClickOutside={this.closeCarousel} threadList={this.props.threadList} viewThread={this.props.viewThread.bind(null)}/> : null }
+      </div>
+    );
+  }
+
   viewingThread() {
-    if (this.data.thread) {
+    if (this.props.thread) {
       return true;
     } else {
       return false;

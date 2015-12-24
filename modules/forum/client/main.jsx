@@ -26,7 +26,7 @@ export default class Main extends Component {
   constructor(props, context) {
     super(props);
     this.context = context;
-    this.state = {showDialog: false, newThread: {}};
+    this.state = {showDialog: false, newThread: {}, threadList: [], userBlackList: []};
     this.selectCategory = this.selectCategory.bind(this);
     this.searchThreads = this.searchThreads.bind(this);
     this.resetSearch = this.resetSearch.bind(this);
@@ -41,16 +41,36 @@ export default class Main extends Component {
     this._cancelForm = this._cancelForm.bind(this);
     this._submitForm = this._submitForm.bind(this);
     this.editNewThread = this.editNewThread.bind(this);
+    this.updateThreadList = this.updateThreadList.bind(this);
+    this.updateBlackList = this.updateBlackList.bind(this);
   }
 
   getMeteorData() {
+    //Browsing threads
     let threads = Threads.find({}, {sort: {createdAt: -1}}).fetch();
     if (this.state.filterParams) {
       threads = Threads.find(this.state.filterParams, {sort: {createdAt: -1}}).fetch();
     }
+    // User's threads or featured threads
+    let mainThreads = [];
+    let onUser = this.state.onUser;          
+    if (onUser) {
+      let threads_1 = Threads.find({"user._id": onUser}).fetch();
+      let threads_2 = Threads.find({comments: {$elemMatch: {userId: onUser}}}).fetch();
+      mainThreads = _.uniq(_.union(threads_1, threads_2), (thread) => { return thread._id; });
+    } else {
+      mainThreads = Threads.find().fetch();                
+    }
+    //Viewing thread
+    var viewThread;
+    if (this.props.params.thread) {
+      viewThread = Threads.findOne({_id: this.props.params.thread});          
+    }
     return {
       categories: Categories.find().fetch(),
-      threads: threads
+      threads: threads,
+      mainThreads: mainThreads,
+      viewThread: viewThread
     }
   }
   
@@ -67,7 +87,6 @@ export default class Main extends Component {
 
   componentDidMount() {
     if (this.props.params.thread) {
-      Session.set('viewThread', this.props.params.thread);
       this.props.viewSection.bind(null, 'thread')();
     }
   }
@@ -85,10 +104,11 @@ export default class Main extends Component {
         search_error = 'Sorry, no post found';
       }
     }
+
     let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     let browsing = this.renderBrowsing(search_error);
     let filter_user = this.renderFilterUser();
-    let thread = this.renderThread();
+    let thread = this.data.viewThread ? this.renderThread() : null;
     if (w_w >= 640) {
       return (
         <section className="s-grid-top main-section">
@@ -122,7 +142,7 @@ export default class Main extends Component {
   renderThread() {
     return (
       <div className="s-grid-cell s-grid-cell-sm-12 s-grid-cell-md-6 s-grid-cell-lg-7">
-        <Wrapper currentUser={this.props.currentUser} viewThread={this.viewThread} category={this.state.category}/>
+        <Wrapper usersBlackList={this.state.userBlackList} mainThreads={this.data.mainThreads} thread={this.data.viewThread} currentUser={this.props.currentUser} viewThread={this.viewThread} category={this.state.category} threadList={this.state.threadList} updateThreadList={this.updateThreadList}/>
       </div>
     )
   }
@@ -136,9 +156,13 @@ export default class Main extends Component {
   }
 
   renderFilterUser() {
+    let thread_users = [];
+    if (this.data.viewThread) {
+      thread_users = _.map(this.data.viewThread.comments, (comment) => { return comment.userId});      
+    }
     return (
       <div className="s-grid-cell s-grid-cell-sm-12 s-grid-cell-md-3 s-grid-cell-lg-2">
-        <ThreadUsers onGeneralUser={this.setGeneralUser}/>
+        <ThreadUsers threadUsers={thread_users} userBlackList={this.state.userBlackList} updateBlackList={this.updateBlackList} onGeneralUser={this.setGeneralUser}/>
       </div>
     )
   }
@@ -186,13 +210,13 @@ export default class Main extends Component {
   }
 
   viewThread(id) {
-    Session.set('viewThread', id);
+    this.setState({viewThread: id});
     this.props.viewSection.bind(null, 'thread')();
     this.props.history.pushState(null, `/forum/${id}`);
   }
 
   setGeneralUser(id) {
-    Session.set('onGeneralUser', id);
+    Session.set('onUser', id);
   }
 
   _openDialog() {
@@ -221,6 +245,15 @@ export default class Main extends Component {
     let thread_params = this.state.newThread;
     thread_params[key] = value;
     this.setState({newThread: thread_params});
+  }
+
+  updateThreadList(thread) {
+    let threads = this.state.threadList;
+    this.setState({threadList: threads.concat(thread)});
+  }
+
+  updateBlackList(arr) {
+    this.setState({userBlackList: arr});
   }
 };
 

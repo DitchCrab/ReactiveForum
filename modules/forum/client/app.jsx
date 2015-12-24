@@ -76,7 +76,7 @@ export default class App extends Component {
       <div>
         <AppBar {...app_bar_props}/>
         <Popover className="right-popover" {...pop_over_props} >
-          {user ? <MiniProfile /> : <Login /> }
+          {user ? <MiniProfile currentUser={user} /> : <Login /> }
         </Popover>
         {React.cloneElement(this.props.children, {section: this.state.section, viewSection: this.viewSection, openSideNav: this.state.sideNavOpen, closeSideNav: this.closeSideNav, currentUser: this.data.user})}
       </div>

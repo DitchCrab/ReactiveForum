@@ -27,7 +27,6 @@ export default class MiniProfile extends React.Component {
         <div className="greeting-user" style={{fontWeight: 'bold', color: Colors.cyan700, textAlign: 'center', padding: 5}}>Hello {user.username}</div>
         <ListItem primaryText="Edit profile" leftIcon={<ContentInbox />} />
         <ListItem primaryText="Sign out" leftIcon={<ActionGrade />} onClick={this.userLogout} />
-        {w_w < 640 ? <ThreadUsers/> : null }
       </List>
     )
   }
