@@ -11,21 +11,30 @@ import { Dialog, FlatButton } from 'material-ui';
 
 describe('main', () => {
   var component;
+  const foo = {
+    viewSection: () => {return 1;},
+    openSideNav: () => {return 2;},
+    closeSideNav: () => {return 3;},
+    params: {}
+  };
   describe('when user sign in', () => {
     beforeEach(() => {
       jasmineReact.spyOnClass(Main, 'selectCategory');
       jasmineReact.spyOnClass(Main, 'searchThreads');
       jasmineReact.spyOnClass(Main, 'viewThread');
-      jasmineReact.spyOnClass(Main, 'setGeneralUser');
+      jasmineReact.spyOnClass(Main, 'setUser');
       jasmineReact.spyOnClass(Main, '_openDialog');
       jasmineReact.spyOnClass(Main, '_closeDialog');
       jasmineReact.spyOnClass(Main, '_cancelForm');
       jasmineReact.spyOnClass(Main, '_submitForm');
       jasmineReact.spyOnClass(Main, 'editNewThread');
       spyOn(Categories, 'find').and.returnValue({fetch: () => {}});
-      spyOn(Meteor, 'user').and.returnValue({_id: 1, username: 'Tom'});
+      const currentUser = {
+        _id: 1,
+        username: 'Tom'
+      };
       component = TestUtils.renderIntoDocument(
-        <Main params={{}}/>
+        <Main currentUser={currentUser} {...foo}/>
       );
     });
 
@@ -71,10 +80,10 @@ describe('main', () => {
       expect(jasmineReact.classPrototype(Main).viewThread).toHaveBeenCalled();
     });
 
-    it('trigger setGeneralUser on callback from ThreadUsers', () => {
+    it('trigger setUser on callback from ThreadUsers', () => {
       const right = TestUtils.findRenderedComponentWithType(component, ThreadUsers);
-      right.props.onGeneralUser();
-      expect(jasmineReact.classPrototype(Main).setGeneralUser).toHaveBeenCalled();
+      right.props.onUser();
+      expect(jasmineReact.classPrototype(Main).setUser).toHaveBeenCalled();
     });
 
     it('has dialog with ThreadForm in Dialog', () => {

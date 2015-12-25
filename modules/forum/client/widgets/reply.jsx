@@ -4,10 +4,27 @@ import { Avatar, Styles } from 'material-ui';
 const { Colors } = Styles;
 
 export default class Reply extends Component {
+  static propTypes = {
+    reply: PropTypes.object,
+    onLikeReply: PropTypes.func,
+    newReplyId: PropTypes.string,
+    moveToReplyId: PropTypes.func
+  }
+  
   constructor(props) {
     super(props);
   }
 
+  componentDidMount() {
+    if (this.props.newReplyId === this.props.reply._id) {
+      let view = ReactDOM.findDOMNode(this);
+      if (view) {
+        view.scrollIntoView();
+        this.props.moveToReplyId();
+      }
+    }  
+  }
+  
   render() {
     let reply = this.props.reply;
     if (!reply) {
@@ -39,7 +56,3 @@ export default class Reply extends Component {
     )
   }
 };
-Reply.propTypes = {
-  reply: PropTypes.object,
-  onLikeReply: PropTypes.func
-}

@@ -6,7 +6,7 @@ const { Colors } = Styles;
 export default  class ThreadList extends Component {
   static propTypes = {
     threads: PropTypes.arrayOf(PropTypes.object),
-    viewThread: PropTypes.func
+    viewThread: PropTypes.func.isRequired,
   }
 
   static defaultProps = {

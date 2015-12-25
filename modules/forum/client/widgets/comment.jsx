@@ -7,8 +7,30 @@ import { Avatar, Styles } from 'material-ui';
 const { Colors } = Styles;
 
 export default class Comment extends Component {
+
+  static propTypes = {
+    comment: PropTypes.object,
+    newReplyId: PropTypes.string,
+    newCommentId: PropTypes.string,
+    onCommend: PropTypes.func,
+    onLike: PropTypes.func,
+    onLikeReply: PropTypes.func,
+    moveToReplyId: PropTypes.func,
+    moveToCommentId: PropTypes.func
+  }
+
   constructor(props) {
     super(props);
+  }
+
+  componentDidMount() {
+    if (this.props.comment._id === this.props.newCommentId) {
+      let view = ReactDOM.findDOMNode(this);
+      if (view) {
+        view.scrollIntoView();
+        this.props.moveToCommentId.bind(null, null)();
+      }
+    }
   }
 
   render() {
@@ -24,7 +46,18 @@ export default class Comment extends Component {
     var replies;
     if (comment.replies) {
       replies = comment.replies.map((reply, index) => {
-        return <Reply key={reply._id} ref={reply._id} reply={reply} onLikeReply={this.props.onLikeReply.bind(null, index)}/>
+        let reply_props = {
+          key: reply._id,
+          ref: reply._id,
+          currentUser: this.props.currentUser,
+          reply: reply,
+          onLikeReply: this.props.onLikeReply.bind(null, index)          
+        };
+        if (this.props.newReplyId === reply._id) {
+          reply_props.newReplyId = this.props.newReplyId;
+          reply_props.moveToReplyId = this.props.moveToReplyId;
+        }
+        return <Reply {...reply_props}/>
       })
     };
     return (
@@ -58,21 +91,4 @@ export default class Comment extends Component {
       </div>
     )
   }
-
-  componentDidUpdate() {
-    if (Session.get("moveToCommentId")) {
-      let view = ReactDOM.findDOMNode(this.refs[Session.get("moveToCommentId")]);
-      if (view) {
-        view.scrollIntoView();
-        Session.set("moveToCommentId", null);
-      }
-    }
-  }
 };
-
-Comment.propTypes = {
-  comment: PropTypes.object,
-  onCommend: PropTypes.func,
-  onLike: PropTypes.func,
-  onLikeReply: PropTypes.func
-}

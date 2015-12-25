@@ -7,6 +7,24 @@ import { IconButton } from 'material-ui';
 import { NavigationMoreHoriz } from 'material-ui/lib/svg-icons';
 
 export default class CommentList extends Component {
+  static propTypes = {
+    comments: PropTypes.array,
+    notSeenUser: PropTypes.array,
+    newCommentId: PropTypes.string,
+    newReplyId: PropTypes.arrayOf(PropTypes.string),
+    onLike: PropTypes.func,
+    onCommend: PropTypes.func,
+    onLikeReply: PropTypes.func,
+    moveToCommentId: PropTypes.func,
+    moveToReplyId: PropTypes.func
+  }
+
+  static defaultProps = {
+    comments: [],
+    notSeenUser: [],
+    newReplyId: [],
+  }
+  
   constructor(props) {
     super(props);
     this.state = {timeMark: null};
@@ -33,9 +51,21 @@ export default class CommentList extends Component {
       if (Immutable.fromJS(this.props.notSeenUser).find(x => x === comment.userId)) {
         return <div/>
       }
+      let comment_props = {
+        newCommentId: this.props.newCommentId,
+        moveToCommentId: this.props.moveToCommentId.bind(null),
+        comment: comment,
+        onLike: this.props.onLike.bind(null),
+        onCommend: this.props.onCommend.bind(null),
+        onLikeReply: this.props.onLikeReply.bind(null, comment._id)        
+      };
+      if (comment._id === this.props.newReplyId[0]) {
+        comment_props.newReplyId = this.props.newReplyId[1];
+        comment_props.moveToReplyId = this.props.moveToReplyId.bind(null, []);
+      }
       return (
         <div key={comment._id} ref={comment._id} className="s-grid-cell s-grid-cell-sm-12" style={{margin: 0, flexBasis: "100%", paddingTop: 5}}>
-          <Comment comment={comment} onLike={this.props.onLike.bind(null) } onCommend={this.props.onCommend.bind(null)} onLikeReply={this.props.onLikeReply.bind(null, comment._id)}/>
+          <Comment  {...comment_props}/>
         </div>
       )
     });
@@ -49,16 +79,6 @@ export default class CommentList extends Component {
     )
   }
 
-  componentDidUpdate() {
-    if (Session.get("moveToCommentId")) {
-      let view = ReactDOM.findDOMNode(this.refs[Session.get("moveToCommentId")]);
-      if (view) {
-        view.scrollIntoView();
-        Session.set("moveToCommentId", null);
-      }
-    }
-  }
-
   getMoreComments() {
     let mark = Immutable.fromJS(this.props.comments).takeUntil(x => x.get('createdAt') >= this.state.timeMark).takeLast(2).toJS();
     if (mark.length > 0) {
@@ -67,16 +87,4 @@ export default class CommentList extends Component {
   }
 };
 
-CommentList.propTypes = {
-  comments: PropTypes.array,
-  notSeenUser: PropTypes.array,
-  onLike: PropTypes.func,
-  onCommend: PropTypes.func,
-  onLikeReply: PropTypes.func
-};
-
-CommentList.defaultProps = {
-  comments: [],
-  notSeenUser: []
-};
 

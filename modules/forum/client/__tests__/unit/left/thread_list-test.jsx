@@ -104,13 +104,16 @@ describe('Thread list', () => {
     };
     var threads;
     beforeEach(() => {
-      spyOn(Meteor, 'user').and.returnValue({_id: 1, username: 'Tom'});
       spyOn(Meteor, 'call');
       const threads = [
         {user: {_id: 1, username: 'Tom'}, category: 1, title: 'None', description: 'None', tags: ['hi', 'there'], comments: [], createdAt: moment.utc().format(), updatedAt: moment.utc().format()}
       ];
+      const currentUser = {
+        _id: 1,
+        username: 'Tom'
+      }
       component = TestUtils.renderIntoDocument(
-        <ThreadList threads={threads} viewThread={foo.view}/>
+        <ThreadList currentUser={currentUser} threads={threads} viewThread={foo.view}/>
       )
     });
 

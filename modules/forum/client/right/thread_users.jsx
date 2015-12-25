@@ -7,9 +7,15 @@ const {Colors} = Styles;
 @ReactMixin.decorate(ReactMeteorData)
 export default class ThreadUsers extends Component {
   static propTypes = {
+    threadUsers: PropTypes.arrayOf(PropTypes.string),
     userBlackList: PropTypes.arrayOf(PropTypes.string),
-    updateBlackList: PropTypes.func,
-    onGeneralUser: PropTypes.func
+    updateBlackList: PropTypes.func.isRequired,
+    onUser: PropTypes.func.isRequired
+  }
+
+  static defaultProps = {
+    threadUsers: [],
+    userBlackList: []
   }
     
   constructor(props, context) {
@@ -88,7 +94,7 @@ export default class ThreadUsers extends Component {
   }
 
   linkToUserPost(id) {
-    this.props.onGeneralUser.bind(null, id)();
+    this.props.onUser.bind(null, id)();
   }
 
   filterUser(id, event, checked) {

@@ -8,13 +8,20 @@ const { Colors } = Styles;
 export default class LeftWrapper extends Component {
   static propTypes = {
     currentUser: PropTypes.object,
+    searchError: PropTypes.string,
     categories: PropTypes.arrayOf(PropTypes.object),
     threads: PropTypes.arrayOf(PropTypes.object),
-    viewThread: PropTypes.func,
-    onSearch: PropTypes.func,
-    onSelectCategory: PropTypes.func
+    viewThread: PropTypes.func.isRequired,
+    onSearch: PropTypes.func.isRequired,
+    onSelectCategory: PropTypes.func.isRequired,
+    resetSearch: PropTypes.func.isRequired,
   }
 
+  static defaultProps = {
+    categories: [],
+    threads: []
+  }
+  
   constructor(props, context) {
     super(props);
     this.state = {filterParams: {}};

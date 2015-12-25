@@ -7,10 +7,13 @@ import { Avatar, List, ListItem } from 'material-ui';
 describe('Mini Profile', () => {
   var component;
   beforeEach(() => {
-    spyOn(Meteor, 'user').and.returnValue({_id: 1, username: 'Tom'});
     jasmineReact.spyOnClass(MiniProfile, 'userLogout');
+    const currentUser = {
+      _id: 1,
+      username: 'Tom'
+    };
     component = TestUtils.renderIntoDocument(
-      <MiniProfile />
+      <MiniProfile currentUser={currentUser}/>
     )
   });
 

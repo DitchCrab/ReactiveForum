@@ -63,7 +63,7 @@ describe('Thread wrapper', () => {
     it('has thread render if viewing thread', () => {
       const thread = TestUtils.scryRenderedComponentsWithType(component, Thread)[0];
       expect(thread).toBeDefined();
-      expect(thread.props.currentUser).toBeNull();
+      expect(thread.props.currentUser).toBeUndefined();
       expect(thread.props.viewingCarousel).toBeFalsy();
     });
 

@@ -8,12 +8,13 @@ import { GridTile } from 'material-ui';
 describe('Thread Carousel', () => {
   var component;
   var foo = {
-    view: (id) => { return id},
+    viewThread: (id) => { return id},
+    onClickOutside: () => {return 1;}
   }
   describe('with no thread', () => {
     beforeEach(() => {
       component = TestUtils.renderIntoDocument(
-        <ThreadCarousel viewThread={foo.view}/>
+        <ThreadCarousel {...foo}/>
       );
     });
 
@@ -30,7 +31,7 @@ describe('Thread Carousel', () => {
 
   describe('with threads', () => {
     beforeEach(() => {
-      spyOn(foo, 'view');
+      spyOn(foo, 'viewThread');
       jasmineReact.spyOnClass(ThreadCarousel, 'handleRightSwipe');
       jasmineReact.spyOnClass(ThreadCarousel, 'handleLeftSwipe');      
       const threads = [
@@ -38,7 +39,7 @@ describe('Thread Carousel', () => {
         {_id: 2, imgUrl: 'none', title: 'None1', user: {username: 'Tom1'}},        
       ];
       component = TestUtils.renderIntoDocument(
-        <ThreadCarousel viewThread={foo.view} threadList={threads}/>
+        <ThreadCarousel {...foo} threadList={threads}/>
       );
     });
 
@@ -50,7 +51,7 @@ describe('Thread Carousel', () => {
     it('callback viewthread on click on tile', () => {
       const thread = TestUtils.scryRenderedComponentsWithType(component, GridTile)[0];
       thread.props.onClick();
-      expect(foo.view.calls.argsFor(0)[0]).toEqual(1);
+      expect(foo.viewThread.calls.argsFor(0)[0]).toEqual(1);
     });
 
     it('trigger swipe right', () => {

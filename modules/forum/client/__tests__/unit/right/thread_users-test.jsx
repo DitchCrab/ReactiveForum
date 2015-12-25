@@ -7,10 +7,12 @@ import { List, ListItem, Checkbox, FlatButton, Avatar } from 'material-ui';
 describe('thread users', () => {
   var component;
   var foo = {
-    view: () => { return 1}
+    updateBlackList: () => {return 1;},
+    onUser: () => {return 2;}
   };
   
   beforeEach(() => {
+    const threadUsers = ['1', '2']
     spyOn(Meteor.users, 'find').and.returnValue({
       fetch: function() {
         return ([
@@ -23,7 +25,7 @@ describe('thread users', () => {
     jasmineReact.spyOnClass(ThreadUsers, 'filterUser');
     jasmineReact.spyOnClass(ThreadUsers, 'makeSelection');
     component = TestUtils.renderIntoDocument(
-      <ThreadUsers onGeneralUser={foo.view}/>
+      <ThreadUsers threadUsers={threadUsers} {...foo}/>
     )
   });
 

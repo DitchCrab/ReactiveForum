@@ -1,10 +1,14 @@
-import { Component } from 'react';
+import { Component, PropTypes } from 'react';
 import ThreadUsers from './thread_users';
 import { ContentInbox, ActionGrade } from 'material-ui/lib/svg-icons';
 import { Avatar, List, ListItem, Styles } from 'material-ui';
 const { Colors } = Styles;
 
 export default class MiniProfile extends React.Component {
+  static propTypes = {
+    currentUser: PropTypes.object
+  }
+  
   constructor(props, context) {
     super(props);
     this.userLogout = this.userLogout.bind(this);

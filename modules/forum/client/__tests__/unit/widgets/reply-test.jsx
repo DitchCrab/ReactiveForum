@@ -5,14 +5,14 @@ import moment from 'moment';
 
 describe('Reply widget', () => {
   var component;
-  var foo;
+  const foo = {
+    onLikeReply: () => { return 1;},
+    moveToReplyId: () => {return 2;}
+  };
   beforeEach(() => {
-    foo = {
-      likeReply: () => { return 1;},
-    };
-    spyOn(foo, 'likeReply');
+    spyOn(foo, 'onLikeReply');
     component = TestUtils.renderIntoDocument(
-      <Reply reply={{username: 'Tom', createdAt: new Date(), text: "Hello"}} onLikeReply={foo.likeReply}/>
+      <Reply reply={{username: 'Tom', createdAt: new Date(), text: "Hello"}} {...foo}/>
     );
   });
 
@@ -38,7 +38,7 @@ describe('Reply widget', () => {
 
   it ('display 1 like', () => {
     component = TestUtils.renderIntoDocument(
-      <Reply reply={{username: 'Tom', createdAt: new Date(), text: "Hello", likes: 1}} onLikeReply={foo.likeReply}/>
+      <Reply reply={{username: 'Tom', createdAt: new Date(), text: "Hello", likes: 1}} {...foo}/>
     );
     const like = TestUtils.findRenderedDOMComponentWithClass(component, 'reply-like');
     expect(like.innerText).toEqual('Like: 1');
@@ -47,7 +47,7 @@ describe('Reply widget', () => {
   it ('callback onLikeReply', () => {
     const like =  TestUtils.findRenderedDOMComponentWithClass(component, 'reply-like');
     TestUtils.Simulate.click(like);
-    expect(foo.likeReply.calls.count()).toEqual(1);
+    expect(foo.onLikeReply.calls.count()).toEqual(1);
   });
 
 })

@@ -2,6 +2,10 @@ import { Component, PropTypes } from 'react';
 import { GridList, RaisedButton } from 'material-ui';
 
 export default class Landing extends Component {
+  static contextTypes = {
+    history: PropTypes.object.isRequired
+  }
+
   constructor(props, context) {
     super(props);
     this.context = context;
@@ -36,6 +40,3 @@ export default class Landing extends Component {
   }
 };
 
-Landing.contextTypes = {
-  history: PropTypes.object.isRequired
-};

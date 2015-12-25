@@ -9,7 +9,18 @@ import Immutable from 'immutable';
 export default class Wrapper extends Component {
 
   static propTypes = {
-    viewThread: PropTypes.func
+    viewThread: PropTypes.func,
+    userBlackList: PropTypes.arrayOf(PropTypes.string),
+    mainThreads: PropTypes.arrayOf(PropTypes.object),
+    thread: PropTypes.object,
+    currentUser: PropTypes.object,
+    category: PropTypes.arrayOf(PropTypes.object),
+    threadList: PropTypes.arrayOf(PropTypes.object),
+    updateThreadList: PropTypes.func
+  }
+
+  static defaultProps = {
+    userBlackList: []
   }
 
   constructor(props, context) {
@@ -22,19 +33,16 @@ export default class Wrapper extends Component {
     this.viewMessage = this.viewMessage.bind(this);
   }
 
-  componentDidMount() {
-    if (this.props.thread) {
-      const found = _.find(this.props.threadList, (thread) => { return thread._id === this.props.thread});
-      if (!found) {
-        this.props.updateThreadList(this.props.thread);
-      }
-    }
-  }
-
   componentWillReceiveProps(nextProps) {
+    var id;
+    if (this.props.currentUser) {
+      id = this.props.currentUser._id;
+    }
     if (nextProps.thread && this.props.thread) {
       if (nextProps.thread._id === this.props.thread._id && nextProps.thread.comments.length > this.props.thread.comments.length) {
-        this.refs.snackbar.show();        
+        if (nextProps.thread.comments[nextProps.thread.comments.length - 1].userId !== id) {
+          this.refs.snackbar.show();                  
+        }
       }
     }
   }
@@ -43,7 +51,7 @@ export default class Wrapper extends Component {
     let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     if (w_w <= 640) {
       let node = window.document.body;
-      this.shouldScrollBottom = (node.scrollTop + node.offsetHeight) >= node.scrollHeight;
+      this.shouldScrollBottom= (node.scrollTop + node.offsetHeight) >= node.scrollHeight;
     } else {
       let node = ReactDOM.findDOMNode(this);
       this.shouldScrollBottom = (node.scrollTop + node.offsetHeight) >= node.scrollHeight;        
@@ -72,7 +80,7 @@ export default class Wrapper extends Component {
     };
     return (
       <div style={wrapper_style} className="thread-wrapper">
-        { this.viewingThread() ? <Thread currentUser={this.props.currentUser} thread={this.props.thread} toggleCarousel={this.toggleCarousel} viewingCarousel={this.state.viewingCarousel} notSeenUser={this.props.usersBlackList}/> : <Featured  viewThread={this.props.viewThread.bind(null)} threads={this.props.mainThreads} /> }
+        { this.viewingThread() ? <Thread updateThreadList={this.props.updateThreadList.bind(null)} threadList={this.props.threadList} currentUser={this.props.currentUser} thread={this.props.thread} toggleCarousel={this.toggleCarousel} viewingCarousel={this.state.viewingCarousel} notSeenUser={this.props.userBlackList}/> : <Featured  viewThread={this.props.viewThread.bind(null)} threads={this.props.mainThreads} /> }
         <Snackbar
             ref="snackbar"
             message="New Messages"

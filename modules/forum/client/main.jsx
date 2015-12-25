@@ -19,6 +19,14 @@ export default class Main extends Component {
     history: PropTypes.object.isRequired    
   }
 
+  static propTypes = {
+    params: PropTypes.object,
+    viewSection: PropTypes.func,
+    openSideNav: PropTypes.func,
+    closeSideNav: PropTypes.func,
+    currentUser: PropTypes.object
+  }
+
   static defaultProps = {
     section: 'browsing'
   }
@@ -34,7 +42,7 @@ export default class Main extends Component {
     this.renderThread = this.renderThread.bind(this);
     this.renderBrowsing = this.renderBrowsing.bind(this);
     this.renderFilterUser = this.renderFilterUser.bind(this);
-    this.setGeneralUser = this.setGeneralUser.bind(this);
+    this.setUser = this.setUser.bind(this);
     this.renderNewThread = this.renderNewThread.bind(this);
     this._openDialog = this._openDialog.bind(this);      
     this._closeDialog = this._closeDialog.bind(this);
@@ -113,7 +121,7 @@ export default class Main extends Component {
       return (
         <section className="s-grid-top main-section">
           {browsing}
-          {thread}
+          {this.renderThread()}
           {filter_user}
           { this.props.currentUser ? this.renderNewThread() : null }
         </section>
@@ -142,7 +150,7 @@ export default class Main extends Component {
   renderThread() {
     return (
       <div className="s-grid-cell s-grid-cell-sm-12 s-grid-cell-md-6 s-grid-cell-lg-7">
-        <Wrapper usersBlackList={this.state.userBlackList} mainThreads={this.data.mainThreads} thread={this.data.viewThread} currentUser={this.props.currentUser} viewThread={this.viewThread} category={this.state.category} threadList={this.state.threadList} updateThreadList={this.updateThreadList}/>
+        <Wrapper userBlackList={this.state.userBlackList} mainThreads={this.data.mainThreads} thread={this.data.viewThread} currentUser={this.props.currentUser} viewThread={this.viewThread} category={this.state.category} threadList={this.state.threadList} updateThreadList={this.updateThreadList}/>
       </div>
     )
   }
@@ -162,7 +170,7 @@ export default class Main extends Component {
     }
     return (
       <div className="s-grid-cell s-grid-cell-sm-12 s-grid-cell-md-3 s-grid-cell-lg-2">
-        <ThreadUsers threadUsers={thread_users} userBlackList={this.state.userBlackList} updateBlackList={this.updateBlackList} onGeneralUser={this.setGeneralUser}/>
+        <ThreadUsers threadUsers={thread_users} userBlackList={this.state.userBlackList} updateBlackList={this.updateBlackList} onUser={this.setUser}/>
       </div>
     )
   }
@@ -215,7 +223,7 @@ export default class Main extends Component {
     this.props.history.pushState(null, `/forum/${id}`);
   }
 
-  setGeneralUser(id) {
+  setUser(id) {
     Session.set('onUser', id);
   }
 

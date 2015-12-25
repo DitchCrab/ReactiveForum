@@ -10,6 +10,14 @@ const { Colors } = Styles;
 
 @ReactMixin.decorate(ReactMeteorData)
 export default class App extends Component {
+  static contextTypes = {
+    history: PropTypes.object.isRequired,
+  }
+
+  static propTypes = {
+    params: PropTypes.object.isRequired,
+  }
+
   constructor(props, context) {
     super(props);
     this.state = {activePopover: false, section: 'browsing'};

@@ -7,20 +7,21 @@ import Threads from 'forum/collections/threads';
 import Categories from 'forum/collections/categories';
 
 describe('Left wrapper', () => {
-  var foo;
+  var foo = {
+    view: () => { return 1;},
+    search: (query) => {return query;},
+    select: () => {return 3;},
+    reset: () => {return 4;}
+  };
+
   describe('when user not log in', () => {
     var component;
     beforeEach(() => {
-      foo = {
-        view: () => { return 1;},
-        search: () => {return 2;},
-        select: () => {return 3;}
-      };
       spyOn(Categories, 'find').and.returnValue({fetch: () => {return [];}});
       jasmineReact.spyOnClass(LeftWrapper, 'clearSearch');
       jasmineReact.spyOnClass(LeftWrapper, 'searchThreadsByEnter');      
       component = TestUtils.renderIntoDocument(
-        <LeftWrapper viewThread={foo.view} onSearch={foo.search} onSelectCategory={foo.select}/>
+        <LeftWrapper viewThread={foo.view} onSearch={foo.search} onSelectCategory={foo.select} resetSearch={foo.reset}/>
       )
     });
 
@@ -60,19 +61,16 @@ describe('Left wrapper', () => {
     var categories;
     var cats = Categories.find();
     beforeEach(() => {
-      foo = {
-        view: () => { return 1;},
-        search: (query) => {return query;},
-        select: () => {return 3;}
-      };
       spyOn(Meteor, 'user').and.returnValue({
         _id: 1,
         username: 'Tom'
       });
+      const categories = [
+        {_id: 1, name: 'Cat1'},
+      ];
       jasmineReact.spyOnClass(LeftWrapper, 'selectCategory');
-      spyOn(Categories, 'find').and.returnValue({fetch: () => {return [{_id: 1, name: 'General'}];}});      
       component = TestUtils.renderIntoDocument(
-        <LeftWrapper viewThread={foo.view} onSearch={foo.search} onSelectCategory={foo.select}/>
+        <LeftWrapper categories={categories} viewThread={foo.view} onSearch={foo.search} onSelectCategory={foo.select} resetSearch={foo.reset}/>
       );
     });
 
@@ -91,18 +89,13 @@ describe('Left wrapper', () => {
   describe('when user log in', () => {
     var component;
     beforeEach(() => {
-      foo = {
-        view: () => { return 1;},
-        search: (query) => {return query;},
-        select: () => {return 3;}
-      };
-      spyOn(Meteor, 'user').and.returnValue({
+      const currentUser = {
         _id: 1,
         username: 'Tom'
-      });
+      };
       jasmineReact.spyOnClass(LeftWrapper, '_openDialog');
       component = TestUtils.renderIntoDocument(
-        <LeftWrapper viewThread={foo.view} onSearch={foo.search} onSelectCategory={foo.select}/>
+        <LeftWrapper currentUser={currentUser} viewThread={foo.view} onSearch={foo.search} onSelectCategory={foo.select} resetSearch={foo.reset}/>
       )
     });
 

@@ -12,12 +12,32 @@ export default class Thread extends Component {
     currentUser: PropTypes.object,
     toggleCarousel: PropTypes.func,
     viewingCarousel: PropTypes.bool,
-    notSeenUser: PropTypes.arrayOf[PropTypes.string]
+    notSeenUser: PropTypes.array,
+    updateThreadList: PropTypes.func,
+    threadList: PropTypes.array
+  }
+
+  componentDidMount() {
+    if (this.props.thread) {
+      const found = _.find(this.props.threadList, (thread) => { return thread._id === this.props.thread});
+      if (!found) {
+        this.props.updateThreadList(this.props.thread);
+      }
+    }
+  }
+  
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.thread._id !== this.props.thread._id) {
+      const found = _.find(nextProps.threadList, (thread) => { return thread._id === nextProps.thread});
+      if (!found) {
+        this.props.updateThreadList(nextProps.thread);
+      }
+    }  
   }
   
   constructor(props, context) {
     super(props);
-    this.state = {showCommentDialog: false};
+    this.state = {showCommentDialog: false, newReplyId: []};
     this.renderReplyDialog = this.renderReplyDialog.bind(this);
     this.openReplyDialog = this.openReplyDialog.bind(this);
     this.closeReplyDialog = this.closeReplyDialog.bind(this);
@@ -26,13 +46,15 @@ export default class Thread extends Component {
     this.likeThread = this.likeThread.bind(this);
     this.addReply = this.addReply.bind(this);
     this.cancelReply = this.cancelReply.bind(this);
+    this.moveToCommentId = this.moveToCommentId.bind(this);
+    this.moveToReplyId = this.moveToReplyId.bind(this);
   }
 
   render() {
     let thread = this.props.thread;
     var comment_field;
     if (this.props.currentUser !== null && this.props.currentUser !== undefined) {
-      comment_field = <BottomToolbar threadId={this.props.thread._id} toggleCarousel={this.props.toggleCarousel.bind(null)} viewingCarousel={this.props.viewingCarousel}/>;
+      comment_field = <BottomToolbar moveToCommentId={this.moveToCommentId} threadId={this.props.thread._id} toggleCarousel={this.props.toggleCarousel.bind(null)} viewingCarousel={this.props.viewingCarousel}/>;
     }
     var avatar = require('../img/avatar.png');
     if (thread.user.avatar) {
@@ -64,7 +86,7 @@ export default class Thread extends Component {
             <span className="thread-main-description">{thread.description}</span>
           </CardText>
           <CardActions style={{margin: 0, padding: 0}}>
-            <CommentList comments={thread.comments} onCommend={this.openReplyDialog} onLike={this.likeComment} onLikeReply={this.likeReply} notSeenUser={this.props.notSeenUser}/>
+            <CommentList moveToReplyId={this.moveToReplyId} newReplyId={this.state.newReplyId} moveToCommentId={this.moveToCommentId} newCommentId={this.state.newCommentId} comments={thread.comments} onCommend={this.openReplyDialog} onLike={this.likeComment} onLikeReply={this.likeReply} notSeenUser={this.props.notSeenUser}/>
           </CardActions>
         </Card>
         { this.renderReplyDialog() }
@@ -77,10 +99,12 @@ export default class Thread extends Component {
     if (this.props.currentUser) {
       var customActions = [
         <FlatButton
+            key="submitReply"
             label="Submit"
             primary={true}
             onTouchTap={this.addReply} />,
         <FlatButton
+            key="cancelReply"
             label="Cancel"
             secondary={true}
             onTouchTap={this.cancelReply} />
@@ -126,15 +150,11 @@ export default class Thread extends Component {
 
   likeComment(commentId) {
     Meteor.call('likeComment', this.props.thread._id, commentId, (err, result) => {
-      console.log(err);
-      console.log(result);
     })
   }
 
   likeReply(c_id, s_id) {
     Meteor.call('likeReply', this.props.thread._id, c_id, s_id, (err, result) => {
-      console.log(err);
-      console.log(result);
     });
   }
 
@@ -149,10 +169,19 @@ export default class Thread extends Component {
       Meteor.call('createReply', this.props.thread._id, this.state.onComment, text, (err, res) => {
         if (!err) {
           this.setState({showCommentDialog: false});
-          Session.set("moveToCommentId", res);
+          this.moveToReplyId(res);
         }
       });
     }
+  }
+
+  moveToReplyId(id) {
+    this.setState({newReplyId: [this.state.onComment, id]});
+  }
+  
+  moveToCommentId(id) {
+    console.log(id);
+    this.setState({newCommentId: id});
   }
 
 };

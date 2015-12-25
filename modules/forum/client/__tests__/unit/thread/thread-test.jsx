@@ -43,7 +43,7 @@ describe('Thread', () => {
 
     it('has avatar of owner of thread in header', () => {
       const header = TestUtils.findRenderedComponentWithType(component, CardHeader);
-      expect(header.props.avatar).toEqual('avatar.png');
+      expect(header.props.avatar).toBeDefined();
     });
 
     it('trigger likeThread function when user click on star button', () => {
@@ -79,7 +79,7 @@ describe('Thread', () => {
 
     it('trigger openReplyDialog on callback', () => {
       const list = TestUtils.findRenderedComponentWithType(component, CommentList);
-      list.props.onComment();
+      list.props.onCommend();
       expect(jasmineReact.classPrototype(Thread).openReplyDialog).toHaveBeenCalled();
     });
 

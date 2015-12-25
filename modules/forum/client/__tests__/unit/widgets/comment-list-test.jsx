@@ -8,16 +8,21 @@ import moment from 'moment';
 
 describe('Comment list widget', () => {
   var foo = {
-    like: (id) => {return id;},
-    commend: (id) => {return id;},
-    likeReply: () => {return 1}
+    onLike: (id) => {return id;},
+    onCommend: (id) => {return id;},
+    onLikeReply: () => {return 1;},
+    moveToCommentId: () => {return 2;},
+    moveToReplyId: () => {return 3;}
   };
   describe('with one comment', () => {
     var component;
     beforeEach(() => {
       jasmineReact.spyOnClass(CommentList, 'getMoreComments');
+      const comments = [
+        {_id: 1, username: 'Tom', createdAt: moment.utc().format(), text: "hello"}
+      ]
       component = TestUtils.renderIntoDocument(
-        <CommentList comments={[{_id: 1, username: 'Tom', createdAt: moment.utc().format(), text: "hello"}]} notSeenUser={[]} onLike={foo.like} onCommend={foo.commend} onLikeReply={foo.likeReply} />
+        <CommentList comments={comments} {...foo} />
       );
     });
 
@@ -44,13 +49,13 @@ describe('Comment list widget', () => {
   describe('with three comment', () => {
     var component;
     beforeEach(() => {
-      let comments = [
+      const comments = [
         {_id: 1, username: 'Tom', createdAt: moment.utc().format(), text: "hello"},
         {_id: 2, username: 'Tom', createdAt: moment.utc().add(1, 'minute').format(), text: "hello"},
         {_id: 3, username: 'Tom', createdAt: moment.utc().add(2, 'minutes').format(), text: "hello"}        
       ]
       component = TestUtils.renderIntoDocument(
-        <CommentList comments={comments} notSeenUser={[]} onLike={foo.like} onCommend={foo.commend} onLikeReply={foo.likeReply} />
+        <CommentList comments={comments} {...foo} />
       );
     });
 

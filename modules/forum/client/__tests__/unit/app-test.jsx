@@ -9,8 +9,11 @@ describe('App forum', () => {
   describe('When not login', () => {
     var root;
     beforeEach(() => {
+      spyOn(Meteor, 'user').and.returnValue(null);
       root = TestUtils.renderIntoDocument(
-        <App />
+        <App params={{}}>
+          <h1>Yo</h1>
+        </App>
       );
     });
 
@@ -20,8 +23,8 @@ describe('App forum', () => {
     });
     
     it ('have app bar', () => {
-      const app_bar = TestUtils.findRenderedComponentWithType(root, AppBar);
-      expect(app_bar).toBeDefined();
+      const app_bar = TestUtils.scryRenderedComponentsWithType(root, AppBar);
+      expect(app_bar.length).toEqual(1);
     });
 
     it ('have popover', () => {
@@ -40,7 +43,9 @@ describe('App forum', () => {
     beforeEach(() => {
       spyOn(Meteor, 'user').and.returnValue({_id: '123', username: 'Tom'});
       root = TestUtils.renderIntoDocument(
-        <App />
+        <App params={{}}>
+          <h1>Hi</h1>
+        </App>
       );
     });
 

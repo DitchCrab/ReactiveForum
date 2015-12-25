@@ -6,17 +6,19 @@ import Reply from 'forum/client/widgets/reply';
 
 describe('Comment widget', () => {
   var foo = {
-    like: (id) => { return id},
-    commend: (id) => { return id},
-    likeReply: () => {return 3}
+    onLike: (id) => { return id},
+    onCommend: (id) => { return id},
+    onLikeReply: () => {return 1},
+    moveToCommentId: () => {return 2;},
+    moveToReplyId: () => {return 3;}
   };
   describe('with no reply', () => {
     var component;
     beforeEach(() => {
-      spyOn(foo, 'commend');
-      spyOn(foo, 'like');
+      spyOn(foo, 'onCommend');
+      spyOn(foo, 'onLike');
       component = TestUtils.renderIntoDocument(
-        <Comment comment={{_id: 1, username: 'Tom', createdAt: new Date(), text: "Hello"}} onCommend={foo.commend} onLike={foo.like}/>
+        <Comment comment={{_id: 1, username: 'Tom', createdAt: new Date(), text: "Hello"}} {...foo}/>
       )
     });
 
@@ -48,26 +50,26 @@ describe('Comment widget', () => {
     it('calback onLike function', () => {
       const like = TestUtils.findRenderedDOMComponentWithClass(component, 'comment-like');
       TestUtils.Simulate.click(like);
-      expect(foo.like.calls.count()).toEqual(1);
-      expect(foo.like.calls.argsFor(0)[0]).toEqual(1);
+      expect(foo.onLike.calls.count()).toEqual(1);
+      expect(foo.onLike.calls.argsFor(0)[0]).toEqual(1);
     });
 
     it('callback onCommend function', () => {
       const insert_comment = TestUtils.findRenderedDOMComponentWithClass(component, 'insert-comment');
       TestUtils.Simulate.click(insert_comment);
-      expect(foo.commend.calls.count()).toEqual(1);
-      expect(foo.commend.calls.argsFor(0)[0]).toEqual(1);
+      expect(foo.onCommend.calls.count()).toEqual(1);
+      expect(foo.onCommend.calls.argsFor(0)[0]).toEqual(1);
     })
   });
 
   describe('with replies', () => {
     var component;
     beforeEach(() => {
-      spyOn(foo, 'commend');
-      spyOn(foo, 'like');
-      spyOn(foo, 'likeReply');
+      spyOn(foo, 'onCommend');
+      spyOn(foo, 'onLike');
+      spyOn(foo, 'onLikeReply');
       component = TestUtils.renderIntoDocument(
-        <Comment comment={{username: 'Tom', createdAt: new Date(), text: 'Hi', likes: 1, replies: [{_id: 1, username: 'Zoe'}]}} onCommend={foo.commend} onLike={foo.like} onLikeReply={foo.likeReply}/>
+        <Comment comment={{username: 'Tom', createdAt: new Date(), text: 'Hi', likes: 1, replies: [{_id: 1, username: 'Zoe'}]}} {...foo}/>
       )
     });
 

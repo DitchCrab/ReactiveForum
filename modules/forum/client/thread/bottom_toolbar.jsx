@@ -74,8 +74,7 @@ export default class BottomToolbar extends Component {
     if (comment && comment.length > 1) {
       Meteor.call('createComment', this.props.threadId, comment, (err, res) => {
         if (!err) {
-          Session.set("moveToCommentId", res);
-          Session.set("iJustComment", true);
+          this.props.moveToCommentId.bind(null, res)();
         }
       })
     }
