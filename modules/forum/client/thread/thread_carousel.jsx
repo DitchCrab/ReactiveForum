@@ -68,7 +68,7 @@ export default class ThreadCarousel extends Component {
   renderLeftArrow() {
     return (
       <IconButton onClick={this.handleLeftSwipe} style={{position: 'absolute', left: -20, top: 50, zIndex: 9999}}>
-        <HardwareKeyboardArrowLeft  color={Colors.red500}/>
+        <HardwareKeyboardArrowLeft  color={Colors.white}/>
       </IconButton>
     )    
   }
@@ -76,7 +76,7 @@ export default class ThreadCarousel extends Component {
   renderRightArrow() {
     return (
       <IconButton onClick={this.handleRightSwipe} style={{position: 'absolute', right: -20, top: 50, zIndex: 9999}}>
-        <HardwareKeyboardArrowRight color={Colors.red500} />
+        <HardwareKeyboardArrowRight color={Colors.white} />
       </IconButton>
     )    
   }

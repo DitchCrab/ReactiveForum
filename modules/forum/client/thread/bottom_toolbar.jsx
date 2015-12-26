@@ -43,15 +43,15 @@ export default class BottomToolbar extends Component {
     let textfield_style = {
       width: width * 0.60
     };
+    let open_button =  <IconButton tooltip="Star" touch={true} onClick={this.props.toggleCarousel.bind(null)}><ActionViewCarousel/></IconButton>;
+    let close_button = <NavigationClose />;
     return(
       <Toolbar style={toolbar_style}>
         <TextField multiLine={true} ref="commentField" defaultValue={this.state.comment} style={textfield_style} hintText="Commend" onChange={this.typeComment} />
         <IconButton tooltip="Star" touch={true} onClick={this.addCommentToThread}>
           {this.state.comment ? <ActionDone/> : <EditorModeEdit/>}
         </IconButton>
-        <IconButton tooltip="Star" touch={true} onClick={this.props.toggleCarousel.bind(null)}>
-          { this.props.viewingCarousel ?<NavigationClose /> :  <ActionViewCarousel/>}
-        </IconButton>
+        { this.props.viewingCarousel ? close_button : open_button }
       </Toolbar>          
     )
   }

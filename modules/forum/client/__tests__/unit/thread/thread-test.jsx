@@ -10,9 +10,9 @@ import { ToggleStar, CommunicationComment, SocialShare } from 'material-ui/lib/s
 describe('Thread', () => {
   var component;
   var foo = {
-    toggle: () => {}
-  }
-
+    toggleCarousel: () => {return 1;},
+    updateThreadList: () => {return 2;}
+  };
   describe('when user sign in', () => {
     beforeEach(() => {
       const thread = {_id: 1, title: 'None', imgUrl: 'None', description: 'None', user: {_id: 1, username: 'Tom'}};
@@ -27,7 +27,7 @@ describe('Thread', () => {
       jasmineReact.spyOnClass(Thread, 'addReply');
       jasmineReact.spyOnClass(Thread, 'cancelReply');
       component = TestUtils.renderIntoDocument(
-        <Thread thread={thread} currentUser={currentUser} toggleCarousel={foo.toggle} viewingCarousel={viewingCarousel} notSeenUser={notSeenUser} />
+        <Thread thread={thread} currentUser={currentUser} viewingCarousel={viewingCarousel} notSeenUser={notSeenUser} {...foo}/>
       );
     });
 
@@ -142,7 +142,7 @@ describe('Thread', () => {
       const viewingCarousel = false;
       const notSeenUser = [1, 2];
       component = TestUtils.renderIntoDocument(
-        <Thread thread={thread} currentUser={undefined} toggleCarousel={foo.toggle} viewingCarousel={viewingCarousel} notSeenUser={notSeenUser} />
+        <Thread thread={thread} currentUser={undefined} viewingCarousel={viewingCarousel} notSeenUser={notSeenUser} {...foo}/>
       );
     });
 

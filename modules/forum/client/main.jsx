@@ -34,7 +34,13 @@ export default class Main extends Component {
   constructor(props, context) {
     super(props);
     this.context = context;
-    this.state = {showDialog: false, newThread: {}, threadList: [], userBlackList: []};
+    this.state = {
+      showDialog: false,
+      newThread: {},
+      threadList: [],
+      userBlackList: [],
+      browsing_limit: 5
+    };
     this.selectCategory = this.selectCategory.bind(this);
     this.searchThreads = this.searchThreads.bind(this);
     this.resetSearch = this.resetSearch.bind(this);
@@ -51,29 +57,39 @@ export default class Main extends Component {
     this.editNewThread = this.editNewThread.bind(this);
     this.updateThreadList = this.updateThreadList.bind(this);
     this.updateBlackList = this.updateBlackList.bind(this);
+    this.increaseBrowsingLimit = this.increaseBrowsingLimit.bind(this);
   }
 
   getMeteorData() {
     //Browsing threads
-    let threads = Threads.find({}, {sort: {createdAt: -1}}).fetch();
+    let browsing_query = {};
+    let limit = 5;
     if (this.state.filterParams) {
-      threads = Threads.find(this.state.filterParams, {sort: {createdAt: -1}}).fetch();
+      browsing_query = this.state.filterParams;
     }
+    if (this.state.browsing_limit) {
+      limit = this.state.browsing_limit;
+    }
+    let browsing_handler = Meteor.subscribe('browsing-threads', browsing_query, limit);
+    let threads = Threads.find(browsing_query, {sort: {createdAt: -1}, limit: limit}).fetch();
+    
     // User's threads or featured threads
-    let mainThreads = [];
-    let onUser = this.state.onUser;          
-    if (onUser) {
-      let threads_1 = Threads.find({"user._id": onUser}).fetch();
-      let threads_2 = Threads.find({comments: {$elemMatch: {userId: onUser}}}).fetch();
-      mainThreads = _.uniq(_.union(threads_1, threads_2), (thread) => { return thread._id; });
+    let user_thread_handler = Meteor.subscribe('user-threads', this.state.onUser);
+    let featured_thread_handler = Meteor.subscribe('featured-threads');
+    if (this.state.onUser) {
+      var mainThreads = Threads.find({"user._id": this.state.onUser}).fetch();
     } else {
-      mainThreads = Threads.find().fetch();                
+      var mainThreads = Threads.find({}, {sort: {likes: -1}}).fetch();                
     }
+    
     //Viewing thread
+    let threadId = this.props.params.thread;
+    let view_thread_handler = Meteor.subscribe('viewing-threads', threadId);
     var viewThread;
-    if (this.props.params.thread) {
-      viewThread = Threads.findOne({_id: this.props.params.thread});          
+    if (threadId) {
+      viewThread = Threads.findOne({_id: threadId});          
     }
+    
     return {
       categories: Categories.find().fetch(),
       threads: threads,
@@ -158,7 +174,7 @@ export default class Main extends Component {
   renderBrowsing(error) {
     return (
       <div className="s-grid-cell s-grid-cell-sm-12 s-grid-cell-md-3 s-grid-cell-lg-3">
-        <LeftWrapper searchError={error} resetSearch={this.resetSearch} threads={this.data.threads} categories={this.data.categories} currentUser={this.props.currentUser} onSelectCategory={this.selectCategory} onSearch={this.searchThreads} viewThread={this.viewThread}/>
+        <LeftWrapper searchError={error} resetSearch={this.resetSearch} threads={this.data.threads} categories={this.data.categories} currentUser={this.props.currentUser} onSelectCategory={this.selectCategory} onSearch={this.searchThreads} viewThread={this.viewThread} increaseBrowsingLimit={this.increaseBrowsingLimit}/>
       </div>
     )
   }
@@ -262,6 +278,10 @@ export default class Main extends Component {
 
   updateBlackList(arr) {
     this.setState({userBlackList: arr});
+  }
+
+  increaseBrowsingLimit() {
+    this.setState({browsing_limit: this.state.browsing_limit + 5});
   }
 };
 

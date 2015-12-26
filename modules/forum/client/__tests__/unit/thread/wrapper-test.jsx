@@ -55,8 +55,14 @@ describe('Thread wrapper', () => {
     beforeEach(() => {
       jasmineReact.spyOnClass(Wrapper, 'viewingThread').and.returnValue(true);
       jasmineReact.spyOnClass(Wrapper, 'toggleCarousel');
+      const wrapper_props = {
+        updateThreadList: () => {},
+        threadList: [],
+        thread: {},
+        userBlackList: []
+      };
       component = TestUtils.renderIntoDocument(
-        <Wrapper viewThread={foo.view}/>
+        <Wrapper {...wrapper_props}/>
       );
     });
     

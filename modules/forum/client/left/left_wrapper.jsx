@@ -1,8 +1,10 @@
 import { Component, PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import { CircularProgress, ListItem, TextField, List, IconButton, Styles } from 'material-ui';
 import { ContentAdd } from 'material-ui/lib/svg-icons';
 import ThreadList from './thread_list';
 import Immutable from 'immutable';
+import InfiniteScroll from 'forum/client/widgets/infinite_scroll';
 const { Colors } = Styles;
 
 export default class LeftWrapper extends Component {
@@ -15,6 +17,7 @@ export default class LeftWrapper extends Component {
     onSearch: PropTypes.func.isRequired,
     onSelectCategory: PropTypes.func.isRequired,
     resetSearch: PropTypes.func.isRequired,
+    increaseBrowsingLimit: PropTypes.func.isRequired
   }
 
   static defaultProps = {
@@ -24,7 +27,7 @@ export default class LeftWrapper extends Component {
   
   constructor(props, context) {
     super(props);
-    this.state = {filterParams: {}};
+    this.state = {filterParams: {}, hasMore: true};
     this.renderEachCategory = this.renderEachCategory.bind(this);
     this.selectCategory = this.selectCategory.bind(this);
     this.clearSearch = this.clearSearch.bind(this);
@@ -37,8 +40,18 @@ export default class LeftWrapper extends Component {
     if (nextProps.searchError) {
       Meteor.setTimeout(() => {nextProps.resetSearch.bind(null)()}, 1000);
     }
+    if (nextProps.threads.length - this.props.threads.length < 5) {
+      this.setState({hasMore: false});
+    }
   }
 
+  componentDidMount() {
+    let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    if (w_w >= 640) {
+      this.setState({parentLarge: ReactDOM.findDOMNode(this.refs.leftWrapper)});
+    }
+  }
+  
   render() {
     let list = this.props.categories.map((category, index) => this.renderEachCategory(category, index));
     let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);    
@@ -58,23 +71,32 @@ export default class LeftWrapper extends Component {
       class_name = "left-nav_fix";
       search_style.width = `${w_w/4 -5}px`
     }
+    const infinite_props = {
+      pageStart: 0,
+      loadMore: this.props.increaseBrowsingLimit,
+      hasMore: this.state.hasMore,
+      loader: <div/>,
+      parentLarge: this.state.parentLarge
+    };
     return (
       <div>
-        <div className={class_name} style={wrapper_style}>
-          <TextField
-              hintText="Search" style={search_style} onBlur={this.clearSearch} onKeyUp={this.searchThreadsByEnter} errorText={this.props.searchError}/>
-          <div>
-            <List>
-              {list}
-            </List>
-          </div>
-          <ThreadList currentUser={this.props.currentUser} threads={this.props.threads} viewThread={this.props.viewThread.bind(null)}/>
+        <div className={class_name} ref="leftWrapper" style={wrapper_style}>
+          <InfiniteScroll {...infinite_props}>
+            <TextField
+                hintText="Search" style={search_style} onBlur={this.clearSearch} onKeyUp={this.searchThreadsByEnter} errorText={this.props.searchError}/>
+            <div>
+              <List>
+                {list}
+              </List>
+            </div>
+            <ThreadList currentUser={this.props.currentUser} threads={this.props.threads} viewThread={this.props.viewThread.bind(null)}/>
+          </InfiniteScroll>
         </div>
         {this.props.currentUser ? this.renderNewThread() : null }
       </div>
     )
   }
-
+  
   renderEachCategory(category, index) {
     let style = {};
     if (category._id === this.state.categorySelected) {
