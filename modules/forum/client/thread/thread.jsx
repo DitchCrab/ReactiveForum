@@ -14,7 +14,8 @@ export default class Thread extends Component {
     viewingCarousel: PropTypes.bool,
     notSeenUser: PropTypes.array,
     updateThreadList: PropTypes.func,
-    threadList: PropTypes.array
+    threadList: PropTypes.array,
+    newMessages: PropTypes.number
   }
 
   componentDidMount() {
@@ -38,6 +39,7 @@ export default class Thread extends Component {
   constructor(props, context) {
     super(props);
     this.state = {showCommentDialog: false, newReplyId: []};
+    this.renderCommentList = this.renderCommentList.bind(this);
     this.renderReplyDialog = this.renderReplyDialog.bind(this);
     this.openReplyDialog = this.openReplyDialog.bind(this);
     this.closeReplyDialog = this.closeReplyDialog.bind(this);
@@ -48,13 +50,15 @@ export default class Thread extends Component {
     this.cancelReply = this.cancelReply.bind(this);
     this.moveToCommentId = this.moveToCommentId.bind(this);
     this.moveToReplyId = this.moveToReplyId.bind(this);
+    this.updateComment = this.updateComment.bind(this);
+    this.updateReply = this.updateReply.bind(this);
   }
 
   render() {
     let thread = this.props.thread;
     var comment_field;
     if (this.props.currentUser !== null && this.props.currentUser !== undefined) {
-      comment_field = <BottomToolbar moveToCommentId={this.moveToCommentId} threadId={this.props.thread._id} toggleCarousel={this.props.toggleCarousel.bind(null)} viewingCarousel={this.props.viewingCarousel}/>;
+      comment_field = <BottomToolbar newMessages={this.props.newMessages} moveToCommentId={this.moveToCommentId} threadId={this.props.thread._id} toggleCarousel={this.props.toggleCarousel.bind(null)} viewingCarousel={this.props.viewingCarousel}/>;
     }
     var avatar = require('../img/avatar.png');
     if (thread.user.avatar) {
@@ -86,12 +90,32 @@ export default class Thread extends Component {
             <span className="thread-main-description">{thread.description}</span>
           </CardText>
           <CardActions style={{margin: 0, padding: 0}}>
-            <CommentList moveToReplyId={this.moveToReplyId} newReplyId={this.state.newReplyId} moveToCommentId={this.moveToCommentId} newCommentId={this.state.newCommentId} comments={thread.comments} onCommend={this.openReplyDialog} onLike={this.likeComment} onLikeReply={this.likeReply} notSeenUser={this.props.notSeenUser}/>
+            {this.renderCommentList()}
           </CardActions>
         </Card>
         { this.renderReplyDialog() }
         { comment_field }
       </div>
+    )
+  }
+
+  renderCommentList() {
+    const comment_list_props = {
+      currentUser: this.props.currentUser,
+      moveToReplyId: this.moveToReplyId,
+      newReplyId: this.state.newReplyId,
+      moveToCommentId: this.moveToCommentId,
+      newCommentId: this.state.newCommentId,
+      comments: this.props.thread.comments,
+      onCommend: this.openReplyDialog,
+      onLike: this.likeComment,
+      onLikeReply: this.likeReply,
+      notSeenUser: this.props.notSeenUser,
+      updateComment: this.updateComment,
+      updateReply: this.updateReply
+    };
+    return (
+      <CommentList {...comment_list_props}/>      
     )
   }
 
@@ -175,12 +199,25 @@ export default class Thread extends Component {
     }
   }
 
+  updateComment(commentId, text) {
+    Meteor.call('updateComment', this.props.thread._id, commentId, text, (err, res) => {
+    });
+  }
+
+  updateReply(commentId, replyIndex, text) {
+    console.log(commentId);
+    console.log(replyIndex);
+    console.log(text);
+    Meteor.call('updateReply', this.props.thread._id, commentId, replyIndex, text, (err, res) => {
+      
+    });
+  }
+
   moveToReplyId(id) {
     this.setState({newReplyId: [this.state.onComment, id]});
   }
   
   moveToCommentId(id) {
-    console.log(id);
     this.setState({newCommentId: id});
   }
 

@@ -49,6 +49,11 @@ Meteor.methods({
     }
   },
 
+  updateComment: function(threadId, commentId, text) {
+    Helper.checkUser();
+    return Threads.update({_id: threadId, comments: {$elemMatch: {_id: commentId}}}, {$set: {"comments.$.text": text}});
+  },
+
   createReply: function(threadId, commentId, reply) {
     Helper.checkUser();
     let user = Meteor.user();
@@ -62,6 +67,13 @@ Meteor.methods({
     } else {
       throw new Meteor.Error(500, "Fail to reply");
     }
+  },
+
+  updateReply: function(threadId, commentId, replyIndex, text) {
+    Helper.checkUser();
+    let params = {};
+    params["comments.$.replies." + replyIndex + ".text"] = text;
+    return Threads.update({_id: threadId, comments: {$elemMatch: {_id: commentId}}}, {$set: params});
   },
 
   likeComment: function(threadId, commentId) {

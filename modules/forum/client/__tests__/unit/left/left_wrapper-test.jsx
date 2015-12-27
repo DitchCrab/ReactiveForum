@@ -8,10 +8,11 @@ import Categories from 'forum/collections/categories';
 
 describe('Left wrapper', () => {
   var foo = {
-    view: () => { return 1;},
-    search: (query) => {return query;},
-    select: () => {return 3;},
-    reset: () => {return 4;}
+    viewThread: () => { return 1;},
+    onSearch: (query) => {return query;},
+    onSelectCategory: () => {return 3;},
+    resetSearch: () => {return 4;},
+    increaseBrowsingLimit: () => {return 5;}
   };
 
   describe('when user not log in', () => {
@@ -21,7 +22,7 @@ describe('Left wrapper', () => {
       jasmineReact.spyOnClass(LeftWrapper, 'clearSearch');
       jasmineReact.spyOnClass(LeftWrapper, 'searchThreadsByEnter');      
       component = TestUtils.renderIntoDocument(
-        <LeftWrapper viewThread={foo.view} onSearch={foo.search} onSelectCategory={foo.select} resetSearch={foo.reset}/>
+        <LeftWrapper {...foo}/>
       )
     });
 
@@ -70,7 +71,7 @@ describe('Left wrapper', () => {
       ];
       jasmineReact.spyOnClass(LeftWrapper, 'selectCategory');
       component = TestUtils.renderIntoDocument(
-        <LeftWrapper categories={categories} viewThread={foo.view} onSearch={foo.search} onSelectCategory={foo.select} resetSearch={foo.reset}/>
+        <LeftWrapper categories={categories} {...foo}/>
       );
     });
 
@@ -95,7 +96,7 @@ describe('Left wrapper', () => {
       };
       jasmineReact.spyOnClass(LeftWrapper, '_openDialog');
       component = TestUtils.renderIntoDocument(
-        <LeftWrapper currentUser={currentUser} viewThread={foo.view} onSearch={foo.search} onSelectCategory={foo.select} resetSearch={foo.reset}/>
+        <LeftWrapper currentUser={currentUser} {...foo}/>
       )
     });
 

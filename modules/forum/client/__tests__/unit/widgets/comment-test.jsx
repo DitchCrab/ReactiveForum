@@ -8,9 +8,11 @@ describe('Comment widget', () => {
   var foo = {
     onLike: (id) => { return id},
     onCommend: (id) => { return id},
-    onLikeReply: () => {return 1},
-    moveToCommentId: () => {return 2;},
-    moveToReplyId: () => {return 3;}
+    onLikeReply: () => {},
+    moveToCommentId: () => {},
+    moveToReplyId: () => {},
+    updateComment: () => {},
+    updateReply: () => {}
   };
   describe('with no reply', () => {
     var component;
@@ -69,7 +71,7 @@ describe('Comment widget', () => {
       spyOn(foo, 'onLike');
       spyOn(foo, 'onLikeReply');
       component = TestUtils.renderIntoDocument(
-        <Comment comment={{username: 'Tom', createdAt: new Date(), text: 'Hi', likes: 1, replies: [{_id: 1, username: 'Zoe'}]}} {...foo}/>
+        <Comment comment={{user_id: 1, username: 'Tom', createdAt: new Date(), text: 'Hi', likes: 1, replies: [{_id: 1, userId: 1, username: 'Zoe', text: 'hi'}]}} {...foo}/>
       )
     });
 

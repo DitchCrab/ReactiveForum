@@ -8,6 +8,7 @@ import { NavigationMoreHoriz } from 'material-ui/lib/svg-icons';
 
 export default class CommentList extends Component {
   static propTypes = {
+    currentUser: PropTypes.object,
     comments: PropTypes.array,
     notSeenUser: PropTypes.array,
     newCommentId: PropTypes.string,
@@ -16,7 +17,9 @@ export default class CommentList extends Component {
     onCommend: PropTypes.func,
     onLikeReply: PropTypes.func,
     moveToCommentId: PropTypes.func,
-    moveToReplyId: PropTypes.func
+    moveToReplyId: PropTypes.func,
+    updateComment: PropTypes.func,
+    updateReply: PropTypes.func
   }
 
   static defaultProps = {
@@ -52,12 +55,15 @@ export default class CommentList extends Component {
         return <div/>
       }
       let comment_props = {
+        currentUser: this.props.currentUser,
         newCommentId: this.props.newCommentId,
         moveToCommentId: this.props.moveToCommentId.bind(null),
         comment: comment,
         onLike: this.props.onLike.bind(null),
         onCommend: this.props.onCommend.bind(null),
-        onLikeReply: this.props.onLikeReply.bind(null, comment._id)        
+        onLikeReply: this.props.onLikeReply.bind(null, comment._id),
+        updateComment: this.props.updateComment.bind(null, comment._id),
+        updateReply: this.props.updateReply.bind(null, comment._id)
       };
       if (comment._id === this.props.newReplyId[0]) {
         comment_props.newReplyId = this.props.newReplyId[1];

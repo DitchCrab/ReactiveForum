@@ -53,9 +53,9 @@ describe('Thread form widget', () => {
     expect(jasmineReact.classPrototype(ThreadForm)._editTags.calls.argsFor(0)[0].target.value).toEqual('Hil');
   });
 
-  it('process image', () => {
-    const file_input = TestUtils.scryRenderedDOMComponentsWithTag(component, 'input');
-    TestUtils.Simulate.change(ReactDOM.findDOMNode(file_input[2]), {target: {files: [{type: 'image/jped'}]}});
-    expect(jasmineReact.classPrototype(ThreadForm)._editImg.calls.count()).toEqual(1);
-  });
+  /* it('process image', () => {
+     const file_input = TestUtils.scryRenderedDOMComponentsWithTag(component, 'input');
+     TestUtils.Simulate.change(ReactDOM.findDOMNode(file_input[2]), {target: {files: [{type: 'image/jped'}]}});
+     expect(jasmineReact.classPrototype(ThreadForm)._editImg.calls.count()).toEqual(1);
+     }); */
 })

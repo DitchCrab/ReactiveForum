@@ -5,21 +5,21 @@ import Wrapper from 'forum/client/thread/wrapper';
 import Featured from 'forum/client/thread/featured';
 import Thread from 'forum/client/thread/thread';
 import ThreadCarousel from 'forum/client/thread/thread_carousel';
-import {Snackbar} from 'material-ui';
 
 describe('Thread wrapper', () => {
   var component;
   var foo = {
-    view: (id) => {
+    viewThread: (id) => {
       return id;
-    }
+    },
+    updateThreadList: () => {}
   };
 
   describe('with featured', () => {
     
     beforeEach(() => {
       component = TestUtils.renderIntoDocument(
-        <Wrapper viewThread={foo.view}/>
+        <Wrapper {...foo}/>
       );
     });
 
@@ -32,11 +32,6 @@ describe('Thread wrapper', () => {
     it('has featured', () => {
       const featured = TestUtils.scryRenderedComponentsWithType(component, Featured);
       expect(featured.length).toEqual(1);
-    });
-
-    it('has snackbar', () => {
-      const snackbar = TestUtils.scryRenderedComponentsWithType(component, Snackbar);
-      expect(snackbar.length).toEqual(1);
     });
 
     it('has no thread carousel if not open', () => {
@@ -59,7 +54,8 @@ describe('Thread wrapper', () => {
         updateThreadList: () => {},
         threadList: [],
         thread: {},
-        userBlackList: []
+        userBlackList: [],
+        viewThread: () => {}
       };
       component = TestUtils.renderIntoDocument(
         <Wrapper {...wrapper_props}/>

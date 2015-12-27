@@ -106,33 +106,33 @@ describe('Thread', () => {
       expect(comps.length).toEqual(1);
     });
 
-    it('has two flatbuttons in dialog', () => {
-      component.setState({showCommentDialog: true});
-      const buttons = TestUtils.scryRenderedComponentsWithType(component, FlatButton);
-      expect(buttons.length).toEqual(2);
-    });
-    
-    it('trigger addReply func on click on submit button in dialog', () => {
-      component.setState({showCommentDialog: true});
-      const button = TestUtils.scryRenderedComponentsWithType(component, FlatButton)[0];
-      expect(button.props.label).toEqual('Submit');
-      button.props.onTouchTap();
-      expect(jasmineReact.classPrototype(Thread).addReply).toHaveBeenCalled();
-    });
+    /* it('has two flatbuttons in dialog', () => {
+       component.setState({showCommentDialog: true});
+       const buttons = TestUtils.scryRenderedComponentsWithType(component, FlatButton);
+       expect(buttons.length).toEqual(2);
+       });
+       
+       it('trigger addReply func on click on submit button in dialog', () => {
+       component.setState({showCommentDialog: true});
+       const button = TestUtils.scryRenderedComponentsWithType(component, FlatButton)[0];
+       expect(button.props.label).toEqual('Submit');
+       button.props.onTouchTap();
+       expect(jasmineReact.classPrototype(Thread).addReply).toHaveBeenCalled();
+       });
 
-    it('trigger cancelReply func on click on cancel button in dialog', () => {
-      component.setState({showCommentDialog: true});
-      const button = TestUtils.scryRenderedComponentsWithType(component, FlatButton)[1];
-      expect(button.props.label).toEqual('Cancel');
-      button.props.onTouchTap();
-      expect(jasmineReact.classPrototype(Thread).cancelReply).toHaveBeenCalled();
-    });
+       it('trigger cancelReply func on click on cancel button in dialog', () => {
+       component.setState({showCommentDialog: true});
+       const button = TestUtils.scryRenderedComponentsWithType(component, FlatButton)[1];
+       expect(button.props.label).toEqual('Cancel');
+       button.props.onTouchTap();
+       expect(jasmineReact.classPrototype(Thread).cancelReply).toHaveBeenCalled();
+       });
 
-    it('has dialog with title of Comment', () => {
-      component.setState({showCommentDialog: true});
-      const dialog = TestUtils.findRenderedComponentWithType(component, Dialog);
-      expect(dialog.props.title).toEqual('Reply');
-    })
+       it('has dialog with title of Comment', () => {
+       component.setState({showCommentDialog: true});
+       const dialog = TestUtils.findRenderedComponentWithType(component, Dialog);
+       expect(dialog.props.title).toEqual('Reply');
+       }) */
     
   });
 
@@ -151,11 +151,11 @@ describe('Thread', () => {
       expect(comps.length).toEqual(0);
     });
 
-    it('has on flatbutton of Cancel dialog', () => {
-      component.setState({showCommentDialog: true});
-      const buttons = TestUtils.scryRenderedComponentsWithType(component, FlatButton);
-      expect(buttons.length).toEqual(1);
-    });
+    /* it('has on flatbutton of Cancel dialog', () => {
+       component.setState({showCommentDialog: true});
+       const buttons = TestUtils.scryRenderedComponentsWithType(component, FlatButton);
+       expect(buttons.length).toEqual(1);
+       }); */
 
     it('has dialog with title of Comment', () => {
       component.setState({showCommentDialog: true});

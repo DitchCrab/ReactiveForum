@@ -1,17 +1,19 @@
 import { Component, PropTypes } from 'react';
-import { Toolbar, TextField, IconButton } from 'material-ui';
-import { ActionDone, EditorModeEdit, NavigationClose, ActionViewCarousel } from 'material-ui/lib/svg-icons';
+import { Toolbar, TextField, IconButton, Badge } from 'material-ui';
+import { ActionDone, EditorModeEdit, NavigationClose, ActionViewCarousel, CommunicationChatBubbleOutline } from 'material-ui/lib/svg-icons';
 import moment from 'moment';
 
 export default class BottomToolbar extends Component {
   static propTypes = {
     toggleCarousel: PropTypes.func,
     viewingCarousel: PropTypes.bool,
-    threadId: PropTypes.string
+    threadId: PropTypes.string,
+    newMessages: PropTypes.number
   }
 
   static defaultProps = {
-    viewingCarousel: false
+    viewingCarousel: false,
+    newMessages: 0
   }
   
   constructor(props) {
@@ -41,7 +43,8 @@ export default class BottomToolbar extends Component {
       textAlign: "center"
     };
     let textfield_style = {
-      width: width * 0.60
+      width: width - 170,
+      top: -15
     };
     let open_button =  <IconButton tooltip="Star" touch={true} onClick={this.props.toggleCarousel.bind(null)}><ActionViewCarousel/></IconButton>;
     let close_button = <NavigationClose />;
@@ -52,6 +55,12 @@ export default class BottomToolbar extends Component {
           {this.state.comment ? <ActionDone/> : <EditorModeEdit/>}
         </IconButton>
         { this.props.viewingCarousel ? close_button : open_button }
+        <Badge
+            badgeContent={this.props.newMessages}
+            primary={true}
+            badgeStyle={{top: 12, right: 12}}>
+          <CommunicationChatBubbleOutline />
+        </Badge>
       </Toolbar>          
     )
   }

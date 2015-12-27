@@ -10,9 +10,11 @@ describe('Comment list widget', () => {
   var foo = {
     onLike: (id) => {return id;},
     onCommend: (id) => {return id;},
-    onLikeReply: () => {return 1;},
-    moveToCommentId: () => {return 2;},
-    moveToReplyId: () => {return 3;}
+    onLikeReply: () => {},
+    moveToCommentId: () => {},
+    moveToReplyId: () => {},
+    updateComment: () => {},
+    updateReply: () => {}
   };
   describe('with one comment', () => {
     var component;

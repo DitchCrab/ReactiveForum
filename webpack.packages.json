@@ -22,7 +22,7 @@
   "redbox-react": "^1.2.0",
   
   "immutable": "^3.7.5",
-  "material-ui": "^0.13.4",
+  "material-ui": "^0.14.0",
   "react-swipeable": "^3.0.2",
   "jasmine-react-helpers-hotfix-0.14": "^0.2.2",
   "react-onclickoutside": "^4.5.0",

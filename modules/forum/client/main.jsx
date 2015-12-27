@@ -22,7 +22,7 @@ export default class Main extends Component {
   static propTypes = {
     params: PropTypes.object,
     viewSection: PropTypes.func,
-    openSideNav: PropTypes.func,
+    openSideNav: PropTypes.bool,
     closeSideNav: PropTypes.func,
     currentUser: PropTypes.object
   }
@@ -145,10 +145,9 @@ export default class Main extends Component {
     } else {
       const right_nav_props = {
         docked: false,
-        onNavClose: this.props.closeSideNav,
+        onRequestChange: this.props.closeSideNav,
         disableSwipeToOpen: true,
         openRight: true,
-        onNavClose: this.props.closeSideNav.bind(null)
       }
       return (
         <section className="s-grid-top main-section">        
@@ -210,7 +209,6 @@ export default class Main extends Component {
       <Dialog
           title="Create new thread"
           actions={customActions}
-          actionFocus="submit"
           open={this.state.showDialog}
           autoDetectWindowHeight={true}
           autoScrollBodyContent={true}

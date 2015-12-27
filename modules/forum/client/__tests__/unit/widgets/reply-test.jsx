@@ -7,7 +7,8 @@ describe('Reply widget', () => {
   var component;
   const foo = {
     onLikeReply: () => { return 1;},
-    moveToReplyId: () => {return 2;}
+    moveToReplyId: () => {return 2;},
+    updateReply: () => {}
   };
   beforeEach(() => {
     spyOn(foo, 'onLikeReply');

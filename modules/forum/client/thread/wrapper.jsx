@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import Featured from './featured';
 import Thread from './thread';
 import ThreadCarousel from './thread_carousel';
-import { Snackbar } from 'material-ui';
 import Immutable from 'immutable';
 
 export default class Wrapper extends Component {
@@ -25,12 +24,13 @@ export default class Wrapper extends Component {
 
   constructor(props, context) {
     super(props);
-    this.state = {showSnack: false, viewingCarousel: false};
-    this.radian = this.radian.bind(this);
+    this.state = {
+      viewingCarousel: false,
+      newMessages: 0
+    };
     this.viewingThread = this.viewingThread.bind(this);
     this.toggleCarousel = this.toggleCarousel.bind(this);
     this.closeCarousel = this.closeCarousel.bind(this);
-    this.viewMessage = this.viewMessage.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -41,7 +41,7 @@ export default class Wrapper extends Component {
     if (nextProps.thread && this.props.thread) {
       if (nextProps.thread._id === this.props.thread._id && nextProps.thread.comments.length > this.props.thread.comments.length) {
         if (nextProps.thread.comments[nextProps.thread.comments.length - 1].userId !== id) {
-          this.refs.snackbar.show();                  
+          this.setState({newMessages: this.state.newMessages + 1});
         }
       }
     }
@@ -78,15 +78,19 @@ export default class Wrapper extends Component {
       overflowY: w_w > 640 ? "auto" : "none",
       margin: 0
     };
+    const thread_props = {
+      updateThreadList: this.props.updateThreadList.bind(null),
+      threadList: this.props.threadList,
+      currentUser: this.props.currentUser,
+      thread: this.props.thread,
+      toggleCarousel: this.toggleCarousel,
+      viewingCarousel: this.state.viewingCarousel,
+      notSeenUser: this.props.userBlackList,
+      newMessages: this.state.newMessages
+    };
     return (
       <div style={wrapper_style} className="thread-wrapper">
-        { this.viewingThread() ? <Thread updateThreadList={this.props.updateThreadList.bind(null)} threadList={this.props.threadList} currentUser={this.props.currentUser} thread={this.props.thread} toggleCarousel={this.toggleCarousel} viewingCarousel={this.state.viewingCarousel} notSeenUser={this.props.userBlackList}/> : <Featured  viewThread={this.props.viewThread.bind(null)} threads={this.props.mainThreads} /> }
-        <Snackbar
-            ref="snackbar"
-            message="New Messages"
-            action="view"
-            autoHideDuration={3000}
-            onActionTouchTap={this.viewMessage}/>
+        { this.viewingThread() ? <Thread {...thread_props}/> : <Featured  viewThread={this.props.viewThread.bind(null)} threads={this.props.mainThreads} /> }
         {this.state.viewingCarousel ? <ThreadCarousel onClickOutside={this.closeCarousel} threadList={this.props.threadList} viewThread={this.props.viewThread.bind(null)}/> : null }
       </div>
     );
@@ -108,26 +112,4 @@ export default class Wrapper extends Component {
     this.setState({viewingCarousel: false});
   }
 
-  viewMessage() {
-    
-  }
-  
-  radian(arg1, arg2) {
-    var isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
-    // Opera 8.0+ (UA detection to detect Blink/v8-powered Opera)
-    var isFirefox = typeof InstallTrigger !== 'undefined';   // Firefox 1.0+
-    var isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
-    // At least Safari 3+: "[object HTMLElementConstructor]"
-    var isChrome = !!window.chrome && !isOpera;              // Chrome 1+
-    var isIE = /*@cc_on!@*/false || !!document.documentMode; // At least IE6
-    if (isOpera) {
-      return `-o-linear-gradient(${arg1}, ${arg2})`;
-    } else if (isFirefox) {
-      return `-moz-linear-gradient($(arg1), ${arg2})`;
-    } else if (isSafari) {
-      return `-webkit-linear-gradient(${arg1}, ${arg2})`;
-    } else {
-      return `linear-gradient(${arg1}, ${arg2})`;
-    }
-  }
 };
