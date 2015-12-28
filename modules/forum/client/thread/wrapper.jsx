@@ -15,7 +15,8 @@ export default class Wrapper extends Component {
     currentUser: PropTypes.object,
     category: PropTypes.arrayOf(PropTypes.object),
     threadList: PropTypes.arrayOf(PropTypes.object),
-    updateThreadList: PropTypes.func
+    updateThreadList: PropTypes.func,
+    onUser: PropTypes.string
   }
 
   static defaultProps = {
@@ -90,7 +91,7 @@ export default class Wrapper extends Component {
     };
     return (
       <div style={wrapper_style} className="thread-wrapper">
-        { this.viewingThread() ? <Thread {...thread_props}/> : <Featured  viewThread={this.props.viewThread.bind(null)} threads={this.props.mainThreads} /> }
+        { this.viewingThread() ? <Thread {...thread_props}/> : <Featured  viewThread={this.props.viewThread.bind(null)} threads={this.props.mainThreads} onUser={this.props.onUser}/> }
         {this.state.viewingCarousel ? <ThreadCarousel onClickOutside={this.closeCarousel} threadList={this.props.threadList} viewThread={this.props.viewThread.bind(null)}/> : null }
       </div>
     );

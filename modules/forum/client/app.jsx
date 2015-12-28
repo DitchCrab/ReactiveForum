@@ -20,7 +20,7 @@ export default class App extends Component {
 
   constructor(props, context) {
     super(props);
-    this.state = {activePopover: false, section: 'browsing'};
+    this.state = {activePopover: false, section: 'thread'};
     this.context = context;
     this.renderRightIcon = this.renderRightIcon.bind(this);
     this.renderLeftIcon = this.renderLeftIcon.bind(this);
@@ -63,6 +63,7 @@ export default class App extends Component {
     // Props for AppBar element
     let app_bar_props = {
       title: "Modrn",
+      onTitleTouchTap: this.viewSection.bind(null, 'thread'),
       iconElementRight: this.renderRightIcon(),
       style: {position: 'fixed', top: 0, left: 0}
     };
@@ -86,7 +87,7 @@ export default class App extends Component {
         <Popover className="right-popover" {...pop_over_props} >
           {user ? <MiniProfile currentUser={user} /> : <Login /> }
         </Popover>
-        {React.cloneElement(this.props.children, {section: this.state.section, viewSection: this.viewSection, openSideNav: this.state.sideNavOpen, closeSideNav: this.closeSideNav, currentUser: this.data.user})}
+        {React.cloneElement(this.props.children, {section: this.state.section, viewSection: this.viewSection, openSideNav: this.state.sideNavOpen, closeSideNav: this.closeSideNav, currentUser: this.data.user, updateSection: this.viewSection})}
       </div>
     )
   }

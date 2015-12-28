@@ -6,7 +6,8 @@ const { Colors } = Styles;
 export default class Featured extends Component {
   static propTypes = {
     threads: PropTypes.arrayOf(PropTypes.object),
-    viewThread: PropTypes.func
+    viewThread: PropTypes.func,
+    onUser: PropTypes.string
   }
 
   static defaultProps = {
@@ -53,7 +54,7 @@ export default class Featured extends Component {
       )
     });
     return (
-      <List subheader="Featured">
+      <List subheader={this.props.onUser ? "Contributed to threads" : "Featured"}>
         {threads}
       </List>
     )

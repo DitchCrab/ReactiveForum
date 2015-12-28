@@ -6,6 +6,7 @@ import Wrapper from './thread/wrapper';
 import LeftWrapper from './left/left_wrapper';
 import ThreadUsers from './right/thread_users';
 import ThreadForm from './widgets/thread_form';
+import FeaturedUsers from './right/featured_users';
 import ThreadImgs from 'forum/collections/thread_imgs';
 import moment from 'moment';
 import Categories from 'forum/collections/categories';
@@ -24,7 +25,8 @@ export default class Main extends Component {
     viewSection: PropTypes.func,
     openSideNav: PropTypes.bool,
     closeSideNav: PropTypes.func,
-    currentUser: PropTypes.object
+    currentUser: PropTypes.object,
+    updateSection: PropTypes.func
   }
 
   static defaultProps = {
@@ -77,10 +79,16 @@ export default class Main extends Component {
     let user_thread_handler = Meteor.subscribe('user-threads', this.state.onUser);
     let featured_thread_handler = Meteor.subscribe('featured-threads');
     if (this.state.onUser) {
-      var mainThreads = Threads.find({"user._id": this.state.onUser}).fetch();
+      let threads_1 = Threads.find({"user._id": this.state.onUser}).fetch();
+      let threads_2 = Threads.find({comments: {$elemMatch: {userId: this.state.onUser}}}).fetch();
+      var mainThreads = _.uniq(_.union(threads_1, threads_2), (thread) => { return thread._id; });      
     } else {
       var mainThreads = Threads.find({}, {sort: {likes: -1}}).fetch();                
     }
+
+    //Users with most contributions
+    let featured_users_handler = Meteor.subscribe('featured-users');
+    let featured_users = Meteor.users.find({}).fetch();
     
     //Viewing thread
     let threadId = this.props.params.thread;
@@ -94,7 +102,8 @@ export default class Main extends Component {
       categories: Categories.find().fetch(),
       threads: threads,
       mainThreads: mainThreads,
-      viewThread: viewThread
+      viewThread: viewThread,
+      featuredUsers: featured_users,
     }
   }
   
@@ -132,7 +141,6 @@ export default class Main extends Component {
     let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     let browsing = this.renderBrowsing(search_error);
     let filter_user = this.renderFilterUser();
-    let thread = this.data.viewThread ? this.renderThread() : null;
     if (w_w >= 640) {
       return (
         <section className="s-grid-top main-section">
@@ -152,7 +160,7 @@ export default class Main extends Component {
       return (
         <section className="s-grid-top main-section">        
           { this.props.section === 'browsing' ? browsing : null }
-          { this.props.section === 'thread' ? thread : null }
+          { this.props.section === 'thread' ? this.renderThread() : null }
           <LeftNav ref="rightNav" {...right_nav_props}>
             {filter_user}
           </LeftNav>
@@ -163,9 +171,20 @@ export default class Main extends Component {
   }
 
   renderThread() {
+    const main_props = {
+      userBlackList: this.state.userBlackList,
+      mainThreads: this.data.mainThreads,
+      thread: this.data.viewThread,
+      currentUser: this.props.currentUser,
+      viewThread: this.viewThread,
+      category: this.state.category,
+      threadList: this.state.threadList,
+      updateThreadList: this.updateThreadList,
+      onUser: this.state.onUser
+    };
     return (
       <div className="s-grid-cell s-grid-cell-sm-12 s-grid-cell-md-6 s-grid-cell-lg-7">
-        <Wrapper userBlackList={this.state.userBlackList} mainThreads={this.data.mainThreads} thread={this.data.viewThread} currentUser={this.props.currentUser} viewThread={this.viewThread} category={this.state.category} threadList={this.state.threadList} updateThreadList={this.updateThreadList}/>
+        <Wrapper {...main_props}/>
       </div>
     )
   }
@@ -183,11 +202,19 @@ export default class Main extends Component {
     if (this.data.viewThread) {
       thread_users = _.map(this.data.viewThread.comments, (comment) => { return comment.userId});      
     }
-    return (
-      <div className="s-grid-cell s-grid-cell-sm-12 s-grid-cell-md-3 s-grid-cell-lg-2">
-        <ThreadUsers threadUsers={thread_users} userBlackList={this.state.userBlackList} updateBlackList={this.updateBlackList} onUser={this.setUser}/>
-      </div>
-    )
+    if (this.data.viewThread) {
+      return (
+        <div className="s-grid-cell s-grid-cell-sm-12 s-grid-cell-md-3 s-grid-cell-lg-2">
+          <ThreadUsers threadUsers={thread_users} userBlackList={this.state.userBlackList} updateBlackList={this.updateBlackList} onUser={this.setUser}/>
+        </div>
+      )
+    } else {
+      return (
+        <div className="s-grid-cell s-grid-cell-sm-12 s-grid-cell-md-3 s-grid-cell-lg-2">
+          <FeaturedUsers featuredUsers={this.data.featuredUsers} onUser={this.setUser} />
+        </div>
+      )
+    }
   }
 
   renderNewThread() {
@@ -247,7 +274,9 @@ export default class Main extends Component {
   }
 
   setUser(id) {
-    Session.set('onUser', id);
+    this.setState({onUser: id});
+    this.props.history.pushState(null, `/forum`);        
+    this.props.updateSection.bind(null, 'thread')();
   }
 
   _openDialog() {
@@ -290,5 +319,6 @@ export default class Main extends Component {
   increaseBrowsingLimit() {
     this.setState({browsing_limit: this.state.browsing_limit + 5});
   }
+
 };
 

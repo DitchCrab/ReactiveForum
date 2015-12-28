@@ -20,6 +20,7 @@ Meteor.methods({
     params['comments'] = [];
     params['createdAt'] = moment.utc().format();
     params['updatedAt'] = moment.utc().format();
+    Meteor.users.update({_id: current_user._id}, {$inc: {'threads': 1, 'contribution': 1}});
     return Threads.insert(params);
   },
 
@@ -42,6 +43,7 @@ Meteor.methods({
       avatar = user.profile.avatar;
     };
     let params = {_id: Random.id(), userId: user._id, username: user.username, avatar: avatar, text: comment, createdAt: moment.utc().format(), likes: 0, likeIds: [], replies: []};
+    Meteor.users.update({_id: user._id}, {$inc: {'comments': 1, 'contribution': 1}});
     if (Threads.update({_id: threadId}, {$push: {comments: params}}) ) {
       return params._id; 
     } else {
@@ -61,7 +63,8 @@ Meteor.methods({
     if (user.profile) {
       avatar = user.profile.avatar;
     };
-    let params = {_id: Random.id(12), userId: user._id, username: user.username, avatar: avatar, text: reply, createdAt: moment.utc().format(), like: 0, likeIds: []};    
+    let params = {_id: Random.id(12), userId: user._id, username: user.username, avatar: avatar, text: reply, createdAt: moment.utc().format(), like: 0, likeIds: []};
+    Meteor.users.update({_id: user._id}, {$inc: {'replies': 1, 'contribution': 1}});
     if (Threads.update({_id: threadId, comments: {$elemMatch: {_id: commentId}}}, {$addToSet: {"comments.$.replies": params}}) ) {
       return params._id;
     } else {

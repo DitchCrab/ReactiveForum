@@ -15,4 +15,8 @@ Meteor.publish('user-threads', function(userId) {
 
 Meteor.publish('viewing-threads', function(threadId) {
   return Threads.find({_id: threadId});
+});
+  
+Meteor.publish('featured-users', function() {
+  return Meteor.users.find({}, {sort: {'profile.contribution': -1}, limit: 20});
 })
