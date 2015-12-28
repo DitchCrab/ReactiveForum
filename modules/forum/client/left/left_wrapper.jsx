@@ -1,6 +1,6 @@
 import { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import { CircularProgress, ListItem, TextField, List, IconButton, Styles } from 'material-ui';
+import { CircularProgress, ListItem, TextField, List, IconButton, Styles, DropDownMenu, MenuItem } from 'material-ui';
 import { ContentAdd } from 'material-ui/lib/svg-icons';
 import ThreadList from './thread_list';
 import Immutable from 'immutable';
@@ -27,12 +27,12 @@ export default class LeftWrapper extends Component {
   
   constructor(props, context) {
     super(props);
-    this.state = {filterParams: {}, hasMore: true};
-    this.renderEachCategory = this.renderEachCategory.bind(this);
-    this.selectCategory = this.selectCategory.bind(this);
+    this.state = {filterParams: {}, hasMore: true, categoryValue: 1};
+    this.renderCategory = this.renderCategory.bind(this);
     this.clearSearch = this.clearSearch.bind(this);
     this.searchThreadsByEnter = this.searchThreadsByEnter.bind(this);
     this.renderNewThread = this.renderNewThread.bind(this);
+    this.handleSelectCategory = this.handleSelectCategory.bind(this);
     this._openDialog = this._openDialog.bind(this);
   }
 
@@ -53,7 +53,6 @@ export default class LeftWrapper extends Component {
   }
   
   render() {
-    let list = this.props.categories.map((category, index) => this.renderEachCategory(category, index));
     let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);    
     let w_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 100;
     let wrapper_style= {};
@@ -85,9 +84,7 @@ export default class LeftWrapper extends Component {
             <TextField
                 hintText="Search" style={search_style} onBlur={this.clearSearch} onKeyUp={this.searchThreadsByEnter} errorText={this.props.searchError}/>
             <div>
-              <List>
-                {list}
-              </List>
+              { this.renderCategory() }
             </div>
             <ThreadList currentUser={this.props.currentUser} threads={this.props.threads} viewThread={this.props.viewThread.bind(null)}/>
           </InfiniteScroll>
@@ -97,14 +94,28 @@ export default class LeftWrapper extends Component {
     )
   }
   
-  renderEachCategory(category, index) {
-    let style = {};
-    if (category._id === this.state.categorySelected) {
-      style['color'] = 'red';
+  renderCategory(category, index) {
+    const categories = this.props.categories.map((category) => {
+      return (
+        <MenuItem key={category._id} value={category._id} primaryText={category.name} />
+      )
+    });
+    if (this.props.currentUser) {
+      return (
+        <DropDownMenu value={this.state.categoryValue} onChange={this.handleSelectCategory} style={{width: '100%'}}>
+          <MenuItem key={1} value={1} primaryText="All" />
+          <MenuItem key={2} value={2} primaryText="Flagged" />
+          {categories}
+        </DropDownMenu>
+      )
+    } else {
+      return (
+        <DropDownMenu value={this.state.categoryValue} onChange={this.handleSelectCategory} style={{width: '100%'}}>
+          <MenuItem key={1} value={1} primaryText="All" />
+          {categories}
+        </DropDownMenu>
+      )
     }
-    return (
-      <ListItem key={index} style={style} primaryText={category.name} onClick={this.selectCategory.bind(null, category._id)}/>
-    )
   }
   
   renderNewThread() {
@@ -133,9 +144,9 @@ export default class LeftWrapper extends Component {
     }
   }
 
-  selectCategory(id) {
-    this.props.onSelectCategory.bind(null, id)();
-    this.setState({categorySelected: id});
+  handleSelectCategory(e, index, value) {
+    this.setState({categoryValue: value});
+    this.props.onSelectCategory.bind(null, value)();
   }
 
 };

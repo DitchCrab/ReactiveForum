@@ -219,7 +219,16 @@ export default class Main extends Component {
   }    
 
   selectCategory(id) {
-    this.setState({filterParams: {category: id}});
+    switch (id) {
+      case 1:
+        this.setState({filterParams: {}});
+        break;
+      case 2:
+        this.setState({filterParams: {_id: {$in: this.props.currentUser.profile ? this.props.currentUser.profile.flags : []}}});
+        break;
+      default:
+        this.setState({filterParams: {category: id}});
+    }
   }
 
   searchThreads(params) {
