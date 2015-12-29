@@ -98,7 +98,7 @@ export default class ThreadForm extends Component {
       canvas.width = 600;
       canvas.height = canvas.width * (image.height / image.width);
       ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-      let new_img = canvas.toDataURL("image/png");
+      let new_img = canvas.toDataURL("image/jpeg", 0.8);
       this.props.onEdit.bind(null, 'img', new_img)();
     };
     image.src = src;

@@ -1,16 +1,29 @@
 import ThreadImgs from 'forum/collections/thread_imgs';
+import UserAvatars from 'forum/collections/user_avatars';
 import Threads from 'forum/collections/threads';
 import Categories from 'forum/collections/categories';
 import moment from 'moment';
 import * as Helper from 'forum/server/helpers';
 
 Meteor.methods({
+  updateAvatar: function(imgId) {
+    Helper.checkUser();
+    let currentUser = Meteor.user();
+    let avatar = UserAvatars.find({_id: imgId});
+    let observe = avatar.observe({
+      changed: function(newImg, oldImg) {
+        if (newImg.url()) {
+          observe.stop();
+          let imgUrl = newImg.url();
+          Meteor.users.update({_id: currentUser._id}, {$set: {'profile.avatarId': imgId, 'profile.avatar': imgUrl}});
+        }
+      }
+    });
+    return imgId;
+  },
+  
   createThread: function(params) {
     Helper.checkUser();
-    if(params.imgId) {
-      let img = ThreadImgs.findOne({_id: params.imgId});
-      params['imgUrl'] = img.url();
-    };
     let current_user = Meteor.user();
     var avatar;
     if (current_user.profile) {
@@ -21,7 +34,21 @@ Meteor.methods({
     params['createdAt'] = moment.utc().format();
     params['updatedAt'] = moment.utc().format();
     Meteor.users.update({_id: current_user._id}, {$inc: {'threads': 1, 'contribution': 1}});
-    return Threads.insert(params);
+    if(params.imgId) {
+      let img = ThreadImgs.find({_id: params.imgId});
+      let observe = img.observe({
+        changed: function(newImg, oldImg) {
+          if (newImg.url()) {
+            observe.stop();
+            params['imgUrl'] = newImg.url();
+            Threads.insert(params);
+          }
+        }
+      });
+      return 1;
+    } else {
+      return Threads.insert(params);      
+    }
   },
 
   likeThread: function(threadId) {
