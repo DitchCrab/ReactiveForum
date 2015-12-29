@@ -7,3 +7,31 @@ export function checkMobileDevice() {
     return false;
   }
 }
+
+export function windowSize() {
+  let width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+  if (width <= 640) {
+    return 'small';
+  } else if (width <= 1024 && width > 640) {
+    return 'medium';
+  } else if (width > 1024) {
+    return 'large';
+  }
+}
+
+export function toolbarWidth(windowSize) {
+  let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+  var width;
+  switch (windowSize) {
+    case 'large':
+      width = w_w * 0.60;
+      break;
+    case 'medium':
+      width = w_w * 0.6666;
+      break;
+    case 'small':
+      width = w_w * 0.9466;
+      break;
+  }
+  return width;  
+}

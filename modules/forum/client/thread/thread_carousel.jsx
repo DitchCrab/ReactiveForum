@@ -1,11 +1,11 @@
 import { Component, PropTypes } from 'react';
 import ReactMixin from 'react-mixin';
+import { toolbarWidth, checkMobileDevice } from 'forum/client/helpers';
 import { GridTile, IconButton, GridList, Styles } from 'material-ui';
 import { ToggleStarBorder, HardwareKeyboardArrowLeft, HardwareKeyboardArrowRight } from 'material-ui/lib/svg-icons';
 import Swipeable from 'react-swipeable';
 import Immutable from 'immutable';
 import OnClickOutside from 'react-onclickoutside';
-import * as ClientHelpers from 'forum/client/helpers';
 const { Colors } = Styles;
 
 @ReactMixin.decorate(OnClickOutside)
@@ -14,7 +14,8 @@ export default class ThreadCarousel extends Component {
   static propTypes = {
     threadList: PropTypes.arrayOf(PropTypes.object),
     viewThread: PropTypes.func,
-    onClickOutside: PropTypes.func
+    onClickOutside: PropTypes.func,
+    windowSize: PropTypes.string
   }
 
   static defaultProps = {
@@ -33,15 +34,7 @@ export default class ThreadCarousel extends Component {
   }
 
   render() {
-    let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    var width;
-    if (w_w >= 1200) {
-      width = w_w * 7 / 12 - 40
-    } else if (w_w >= 640 && w_w < 1200) {
-      width = w_w / 2 - 40
-    } else {
-      width = w_w - 20
-    }
+    const width = toolbarWidth(this.props.windowSize);    
     let carousel_style = {
       position: 'fixed',
       bottom: '56',
@@ -52,7 +45,7 @@ export default class ThreadCarousel extends Component {
     let threads = this.state.threads.map(thread => this.renderEachCarouselThread(thread));
     return (
       <Swipeable style={carousel_style} onSwipedRight={this.handleRightSwipe} onSwipedLeft={this.handleLeftSwipe}>
-        { ClientHelpers.checkMobileDevice() ? null : this.renderLeftArrow() }
+        { checkMobileDevice() ? null : this.renderLeftArrow() }
         <GridList
             cols={3}
             cellHeight={150}
@@ -60,7 +53,7 @@ export default class ThreadCarousel extends Component {
         >
           {threads}
         </GridList>
-        { ClientHelpers.checkMobileDevice() ? null : this.renderRightArrow() }
+        { checkMobileDevice() ? null : this.renderRightArrow() }
       </Swipeable>
     )
   }

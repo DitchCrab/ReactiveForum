@@ -19,7 +19,8 @@ export default class Thread extends Component {
     notSeenUser: PropTypes.array,
     updateThreadList: PropTypes.func,
     threadList: PropTypes.array,
-    newMessages: PropTypes.number
+    newMessages: PropTypes.number,
+    windowSize: PropTypes.string
   }
 
   componentDidMount() {
@@ -63,7 +64,7 @@ export default class Thread extends Component {
     let thread = this.props.thread;
     var comment_field;
     if (this.props.currentUser !== null && this.props.currentUser !== undefined) {
-      comment_field = <BottomToolbar newMessages={this.props.newMessages} moveToCommentId={this.moveToCommentId} threadId={this.props.thread._id} toggleCarousel={this.props.toggleCarousel.bind(null)} viewingCarousel={this.props.viewingCarousel}/>;
+      comment_field = <BottomToolbar newMessages={this.props.newMessages} moveToCommentId={this.moveToCommentId} threadId={this.props.thread._id} toggleCarousel={this.props.toggleCarousel.bind(null)} viewingCarousel={this.props.viewingCarousel} windowSize={this.props.windowSize}/>;
     }
     var avatar = require('../img/avatar.png');
     if (thread.user.avatar) {
@@ -163,8 +164,6 @@ export default class Thread extends Component {
             onTouchTap={this.cancelReply} />
       ]
     }
-    let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    let width = w_w * 7 / 12;
     return (
       <Dialog
           title={this.props.currentUser ? "Reply" : null }
@@ -173,7 +172,7 @@ export default class Thread extends Component {
           actions={customActions}
           open={this.state.showCommentDialog}
           onRequestClose={this.closeReplyDialog}>
-        {this.props.currentUser ? <TextField multiLine={true} ref="Reply" style={{width: width}}/> : <h4>Please signup to reply</h4>}
+        {this.props.currentUser ? <TextField multiLine={true} ref="Reply" style={{width: '100%'}}/> : <h4>Please signup to reply</h4>}
       </Dialog>
     )    
   }

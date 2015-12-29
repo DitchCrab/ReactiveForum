@@ -2,6 +2,9 @@
 @import 's-grid-functions'
 @import 's-grid-classes'
 
+*, *:before, *:after
+   box-sizing border-box
+
 .modal-form
   grid(direction: 'top')
   div
@@ -9,13 +12,3 @@
     margin 0
     &.image-select
       padding-top rem-calc(50)
-
-.left-nav-fix
-  grid(direction: 'top')
-  div
-    cell(1, 1, direction: 'top')
-    margin 0
-
-.main-section
-  margin-top 64px
-

@@ -1,6 +1,7 @@
 import { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import ReactMixin from 'react-mixin';
+import { windowSize } from './helpers';
 import { LeftNav, IconButton, Avatar, FlatButton, AppBar, Popover, Styles } from 'material-ui';
 import LeftWrapper from './left/left_wrapper';
 import MiniProfile from './right/mini_profile';
@@ -20,8 +21,9 @@ export default class App extends Component {
 
   constructor(props, context) {
     super(props);
-    this.state = {activePopover: false, section: 'thread'};
+    this.state = {activePopover: false, section: 'thread', windowSize: windowSize()};
     this.context = context;
+    this.handleResize = this.handleResize.bind(this);
     this.renderRightIcon = this.renderRightIcon.bind(this);
     this.renderLeftIcon = this.renderLeftIcon.bind(this);
     this.renderUserAvatar = this.renderUserAvatar.bind(this);
@@ -55,10 +57,18 @@ export default class App extends Component {
 
   componentDidMount() {
     this.setState({signinButton: ReactDOM.findDOMNode(this.refs.signInButton)});
+    window.addEventListener('resize', this.handleResize);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize);
+  }
+
+  handleResize() {
+    this.setState({windowSize: windowSize()});
   }
 
   render() {
-    let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     let user = this.data.user;
     // Props for AppBar element
     let app_bar_props = {
@@ -67,7 +77,7 @@ export default class App extends Component {
       iconElementRight: this.renderRightIcon(),
       style: {position: 'fixed', top: 0, left: 0}
     };
-    if ( w_w < 640)  {
+    if ( this.state.windowSize === 'small')  {
       app_bar_props.iconElementLeft = this.renderLeftIcon();
     } else {
       app_bar_props.showMenuIconButton = false;
@@ -80,20 +90,27 @@ export default class App extends Component {
       targetOrigin: {horizontal: "right", vertical: "top"},
       onRequestClose: this.closePopover
     };
-    
+    let child_props = {
+      section: this.state.section,
+      viewSection: this.viewSection,
+      openSideNav: this.state.sideNavOpen,
+      closeSideNav: this.closeSideNav,
+      currentUser: this.data.user,
+      updateSection: this.viewSection,
+      windowSize: this.state.windowSize
+    };
     return (
       <div>
         <AppBar {...app_bar_props}/>
         <Popover className="right-popover" {...pop_over_props} >
           {user ? <MiniProfile currentUser={user} /> : <Login /> }
         </Popover>
-        {React.cloneElement(this.props.children, {section: this.state.section, viewSection: this.viewSection, openSideNav: this.state.sideNavOpen, closeSideNav: this.closeSideNav, currentUser: this.data.user, updateSection: this.viewSection})}
+        {React.cloneElement(this.props.children, child_props)}
       </div>
     )
   }
 
   renderRightIcon() {
-    let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);    
     let user = this.data.user;
     var button;
     if (user) {
@@ -103,8 +120,8 @@ export default class App extends Component {
     }
     return (
       <div>
-        { this.props.params.thread && this.state.section === 'browsing' && w_w < 640 ? <IconButton onClick={this.viewSection.bind(null, 'thread')}><ActionHistory color={Colors.white}/></IconButton> : null }
-        { w_w < 640 ? <IconButton onClick={this.openSideNav}> <SocialPerson color={Colors.white}/> </IconButton> : null }
+        { this.props.params.thread && this.state.section === 'browsing' && this.state.windowSize === 'small' ? <IconButton onClick={this.viewSection.bind(null, 'thread')}><ActionHistory color={Colors.white}/></IconButton> : null }
+        { this.state.windowSize !== 'large' ? <IconButton onClick={this.openSideNav}> <SocialPerson color={Colors.white}/> </IconButton> : null }
         <span style={{marginLeft: 10}}>
           {button}
         </span>

@@ -19,13 +19,6 @@ export default class Featured extends Component {
   }
 
   render() {
-    let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    var cell_height;
-    if (w_w >= 640 && w_w < 1200) {
-      cell_height = 250
-    } else if (w_w >= 1200) {
-      cell_height = 300
-    }
     if (!this.props.threads) {
       return <div/>
     }

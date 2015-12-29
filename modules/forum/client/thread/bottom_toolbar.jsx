@@ -1,5 +1,6 @@
 import { Component, PropTypes } from 'react';
 import { Toolbar, TextField, IconButton, Badge } from 'material-ui';
+import { toolbarWidth } from 'forum/client/helpers';
 import { ActionDone, EditorModeEdit, NavigationClose, ActionViewCarousel, CommunicationChatBubbleOutline } from 'material-ui/lib/svg-icons';
 import moment from 'moment';
 
@@ -24,15 +25,7 @@ export default class BottomToolbar extends Component {
   }
 
   render() {
-    let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    var width;
-    if (w_w >= 1200) {
-      width = w_w * 7 / 12 - 40
-    } else if (w_w >= 640 && w_w < 1200) {
-      width = w_w / 2 - 40
-    } else {
-      width = w_w - 20
-    }
+    const width = toolbarWidth(this.props.windowSize);
     let toolbar_style = {
       position: 'fixed',
       bottom: 0,

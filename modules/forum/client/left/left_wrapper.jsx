@@ -17,7 +17,8 @@ export default class LeftWrapper extends Component {
     onSearch: PropTypes.func.isRequired,
     onSelectCategory: PropTypes.func.isRequired,
     resetSearch: PropTypes.func.isRequired,
-    increaseBrowsingLimit: PropTypes.func.isRequired
+    increaseBrowsingLimit: PropTypes.func.isRequired,
+    windowSize: PropTypes.string
   }
 
   static defaultProps = {
@@ -46,30 +47,23 @@ export default class LeftWrapper extends Component {
   }
 
   componentDidMount() {
-    let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    if (w_w >= 640) {
+    if (this.props.windowSize !== 'small') {
       this.setState({parentLarge: ReactDOM.findDOMNode(this.refs.leftWrapper)});
     }
   }
   
   render() {
-    let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);    
     let w_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 100;
     let wrapper_style= {};
-    if (w_w >= 640) {
+    if (this.props.windowSize !== 'small') {
       wrapper_style = {
         height: `${w_h}px`,
         overflowY: "auto"
       };
     };
-    var class_name;
     let search_style = {
-      width: `${w_w - 20}px`
+      width: '90%',
     };
-    if (w_w >= 640) {
-      class_name = "left-nav_fix";
-      search_style.width = `${w_w/4 -5}px`
-    }
     const infinite_props = {
       pageStart: 0,
       loadMore: this.props.increaseBrowsingLimit,
@@ -79,7 +73,7 @@ export default class LeftWrapper extends Component {
     };
     return (
       <div>
-        <div className={class_name} ref="leftWrapper" style={wrapper_style}>
+        <div ref="leftWrapper" style={wrapper_style}>
           <InfiniteScroll {...infinite_props}>
             <TextField
                 hintText="Search" style={search_style} onBlur={this.clearSearch} onKeyUp={this.searchThreadsByEnter} errorText={this.props.searchError}/>

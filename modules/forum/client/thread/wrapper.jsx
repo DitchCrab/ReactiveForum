@@ -16,7 +16,8 @@ export default class Wrapper extends Component {
     category: PropTypes.arrayOf(PropTypes.object),
     threadList: PropTypes.arrayOf(PropTypes.object),
     updateThreadList: PropTypes.func,
-    onUser: PropTypes.string
+    onUser: PropTypes.string,
+    windowSize: PropTypes.string
   }
 
   static defaultProps = {
@@ -49,8 +50,7 @@ export default class Wrapper extends Component {
   }
 
   componentWillUpdate() {
-    let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    if (w_w <= 640) {
+    if (this.props.windowSize === 'small') {
       let node = window.document.body;
       this.shouldScrollBottom= (node.scrollTop + node.offsetHeight) >= node.scrollHeight;
     } else {
@@ -60,8 +60,7 @@ export default class Wrapper extends Component {
   }
 
   componentDidUpdate() {
-    let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    if (w_w <= 640) {
+    if (this.props.windowSize === 'small') {
       var node = window.document.body;
     } else {
       var node = ReactDOM.findDOMNode(this);
@@ -73,11 +72,10 @@ export default class Wrapper extends Component {
 
   render() {
     let w_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 60;
-    let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     const wrapper_style = {
       height: `${w_h}px`,
-      overflowY: w_w > 640 ? "auto" : "none",
-      margin: 0
+      overflowY: this.props.windowSize === 'small' ? 'none' : 'auto',
+      margin: 0,
     };
     const thread_props = {
       updateThreadList: this.props.updateThreadList.bind(null),
@@ -87,12 +85,24 @@ export default class Wrapper extends Component {
       toggleCarousel: this.toggleCarousel,
       viewingCarousel: this.state.viewingCarousel,
       notSeenUser: this.props.userBlackList,
-      newMessages: this.state.newMessages
+      newMessages: this.state.newMessages,
+      windowSize: this.props.windowSize
+    };
+    const featured_props = {
+      viewThread: this.props.viewThread.bind(null),
+      threads: this.props.mainThreads,
+      onUser: this.props.onUser,
+    };
+    const thread_carousel_props = {
+      onClickOutside: this.closeCarousel,
+      threadList: this.props.threadList,
+      viewThread: this.props.viewThread.bind(null),
+      windowSize: this.props.windowSize
     };
     return (
       <div style={wrapper_style} className="thread-wrapper">
-        { this.viewingThread() ? <Thread {...thread_props}/> : <Featured  viewThread={this.props.viewThread.bind(null)} threads={this.props.mainThreads} onUser={this.props.onUser}/> }
-        {this.state.viewingCarousel ? <ThreadCarousel onClickOutside={this.closeCarousel} threadList={this.props.threadList} viewThread={this.props.viewThread.bind(null)}/> : null }
+        { this.viewingThread() ? <Thread {...thread_props}/> : <Featured {...featured_props} /> }
+        {this.state.viewingCarousel ? <ThreadCarousel {...thread_carousel_props}/> : null }
       </div>
     );
   }

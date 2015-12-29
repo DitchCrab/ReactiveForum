@@ -1,6 +1,7 @@
 import { Component, PropTypes} from 'react';
 import ReactMixin from 'react-mixin';
 import { FlatButton, LeftNav } from 'material-ui';
+import Layout from 'forum/client/styles/layout';
 import Dialog from 'material-ui/lib/dialog';
 import Wrapper from './thread/wrapper';
 import LeftWrapper from './left/left_wrapper';
@@ -26,7 +27,8 @@ export default class Main extends Component {
     openSideNav: PropTypes.bool,
     closeSideNav: PropTypes.func,
     currentUser: PropTypes.object,
-    updateSection: PropTypes.func
+    updateSection: PropTypes.func,
+    windowSize: PropTypes.string
   }
 
   static defaultProps = {
@@ -137,36 +139,49 @@ export default class Main extends Component {
         search_error = 'Sorry, no post found';
       }
     }
-
-    let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     let browsing = this.renderBrowsing(search_error);
     let filter_user = this.renderFilterUser();
-    if (w_w >= 640) {
-      return (
-        <section className="s-grid-top main-section">
-          {browsing}
-          {this.renderThread()}
-          {filter_user}
-          { this.props.currentUser ? this.renderNewThread() : null }
-        </section>
-      )
-    } else {
-      const right_nav_props = {
-        docked: false,
-        onRequestChange: this.props.closeSideNav,
-        disableSwipeToOpen: true,
-        openRight: true,
-      }
-      return (
-        <section className="s-grid-top main-section">        
-          { this.props.section === 'browsing' ? browsing : null }
-          { this.props.section === 'thread' ? this.renderThread() : null }
-          <LeftNav ref="rightNav" {...right_nav_props}>
+    const right_nav_props = {
+      docked: false,
+      onRequestChange: this.props.closeSideNav,
+      disableSwipeToOpen: true,
+      openRight: true,
+    };
+    switch (this.props.windowSize) {
+      case 'small':
+        return (
+          <section style={Layout.section}>        
+            { this.props.section === 'browsing' ? browsing : null }
+            { this.props.section === 'thread' ? this.renderThread() : null }
+            <LeftNav ref="rightNav" {...right_nav_props}>
+              {filter_user}
+            </LeftNav>
+            { this.props.currentUser ? this.renderNewThread() : null }
+          </section>
+        );
+        break;
+      case 'medium':
+        return (
+          <section style={Layout.section}>        
+            {browsing}
+            {this.renderThread()}
+            <LeftNav ref="rightNav" {...right_nav_props}>
+              {filter_user}
+            </LeftNav>
+            { this.props.currentUser ? this.renderNewThread() : null }
+          </section>
+        );
+        break;
+      case 'large':
+        return (
+          <section style={Layout.section}>
+            {browsing}
+            {this.renderThread()}
             {filter_user}
-          </LeftNav>
-          { this.props.currentUser ? this.renderNewThread() : null }
-        </section>
-      )      
+            { this.props.currentUser ? this.renderNewThread() : null }
+          </section>
+        );
+        break;
     }
   }
 
@@ -180,19 +195,32 @@ export default class Main extends Component {
       category: this.state.category,
       threadList: this.state.threadList,
       updateThreadList: this.updateThreadList,
-      onUser: this.state.onUser
+      onUser: this.state.onUser,
+      windowSize: this.props.windowSize
     };
     return (
-      <div className="s-grid-cell s-grid-cell-sm-12 s-grid-cell-md-6 s-grid-cell-lg-7">
+      <div style={Layout.mainThread(this.props.windowSize)}>
         <Wrapper {...main_props}/>
       </div>
     )
   }
 
   renderBrowsing(error) {
+    const left_wrapper_props = {
+      searchError: error,
+      resetSearch: this.resetSearch,
+      threads: this.data.threads,
+      categories: this.data.categories,
+      currentUser: this.props.currentUser,
+      onSelectCategory: this.selectCategory,
+      onSearch: this.searchThreads,
+      viewThread: this.viewThread,
+      increaseBrowsingLimit: this.increaseBrowsingLimit,
+      windowSize: this.props.windowSize
+    }
     return (
-      <div className="s-grid-cell s-grid-cell-sm-12 s-grid-cell-md-3 s-grid-cell-lg-3">
-        <LeftWrapper searchError={error} resetSearch={this.resetSearch} threads={this.data.threads} categories={this.data.categories} currentUser={this.props.currentUser} onSelectCategory={this.selectCategory} onSearch={this.searchThreads} viewThread={this.viewThread} increaseBrowsingLimit={this.increaseBrowsingLimit}/>
+      <div style={Layout.leftNav(this.props.windowSize)}>
+        <LeftWrapper {...left_wrapper_props}/>
       </div>
     )
   }
@@ -204,7 +232,7 @@ export default class Main extends Component {
     }
     if (this.data.viewThread) {
       return (
-        <div className="s-grid-cell s-grid-cell-sm-12 s-grid-cell-md-3 s-grid-cell-lg-2">
+        <div style={Layout.rightNav(this.props.windowSize)}>
           <ThreadUsers threadUsers={thread_users} userBlackList={this.state.userBlackList} updateBlackList={this.updateBlackList} onUser={this.setUser}/>
         </div>
       )
