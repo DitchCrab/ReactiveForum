@@ -1,8 +1,12 @@
 import { Component, PropTypes } from 'react';
 import BottomToolbar from './bottom_toolbar';
 import CommentList from 'forum/client/widgets/comment_list';
-import { FlatButton, Card, CardHeader, CardMedia, CardTitle, CardActions, IconButton, CardText, Dialog, TextField, Styles } from 'material-ui';
+import { FlatButton, MenuItem, Card, CardHeader, CardMedia, CardTitle, CardActions, IconButton, CardText, Dialog, TextField, Styles } from 'material-ui';
+import IconMenu from 'material-ui/lib/menus/icon-menu';
 import { ToggleStar, CommunicationComment, SocialShare } from 'material-ui/lib/svg-icons';
+import FacebookShare from 'forum/client/icons/facebook_share';
+import TwitterShare from 'forum/client/icons/twitter_share';
+import RedditShare from 'forum/client/icons/reddit_share';
 const { Colors } = Styles;
 import moment from 'moment';
 
@@ -52,6 +56,7 @@ export default class Thread extends Component {
     this.moveToReplyId = this.moveToReplyId.bind(this);
     this.updateComment = this.updateComment.bind(this);
     this.updateReply = this.updateReply.bind(this);
+    this.share = this.share.bind(this);
   }
 
   render() {
@@ -63,7 +68,10 @@ export default class Thread extends Component {
     var avatar = require('../img/avatar.png');
     if (thread.user.avatar) {
       avatar = thread.user.avatar;
-    }
+    };
+    const social_share_container_styles = {
+      textAlign: 'center',
+    };
     return (
       <div>
         <Card style={{paddingBottom: 60}}>
@@ -82,9 +90,23 @@ export default class Thread extends Component {
               <CommunicationComment color={Colors.grey700}/>
             </IconButton>
             <div style={{display: 'inline-block',fontSize: '60%'}}>{thread.comments ? thread.comments.length : null}</div>
-            <IconButton touch={true}>
-              <SocialShare color={Colors.grey700}/>
-            </IconButton>
+            <IconMenu iconButtonElement={<SocialShare color={Colors.grey700} />}>
+              <div style={social_share_container_styles}>
+                <IconButton onTouchTap={this.share.bind(null, 'facebook')}>
+                  <FacebookShare color={Colors.indigo500}/>
+                </IconButton>
+              </div>
+              <div style={social_share_container_styles}>
+                <IconButton onTouchTap={this.share.bind(null, 'twitter')}>
+                  <TwitterShare color={Colors.blue500}/>
+                </IconButton>
+              </div>
+              <div style={social_share_container_styles}>
+                <IconButton onTouchTap={this.share.bind(null, 'reddit')}>
+                  <RedditShare color={Colors.orange700}/>
+                </IconButton>
+              </div>
+            </IconMenu>
           </div>
           <CardText>
             <span className="thread-main-description">{thread.description}</span>
@@ -221,5 +243,23 @@ export default class Thread extends Component {
     this.setState({newCommentId: id});
   }
 
+  share(vendor) {
+    const my_url = window.location.href;
+    var url;
+    switch (vendor) {
+      case 'facebook':
+        url = `http://www.facebook.com/sharer/sharer.php?u=${my_url}&title=${this.props.thread.title}`;
+        window.open(url, '_blank');
+        break;
+      case 'twitter':
+        url = `http://twitter.com/intent/tweet?status=${this.props.thread.title}+${my_url}`;
+        window.open(url, '_blank');
+        break;
+      case 'reddit':
+        url = `http://www.reddit.com/submit?url=${my_url}&title=${this.props.thread.title}`;
+        window.open(url, '_blank');
+        break;
+    }
+  }
 };
 
