@@ -2,7 +2,7 @@ import TestUtils from 'react-addons-test-utils';
 import ReactDOM from 'react-dom';
 import jasmineReact from 'jasmine-react-helpers-hotfix-0.14';
 import LeftWrapper from 'forum/client/left/left_wrapper';
-import { IconButton, ListItem, TextField } from 'material-ui';
+import { IconButton, ListItem, TextField, DropDownMenu, MenuItem } from 'material-ui';
 import Threads from 'forum/collections/threads';
 import Categories from 'forum/collections/categories';
 
@@ -12,7 +12,8 @@ describe('Left wrapper', () => {
     onSearch: (query) => {return query;},
     onSelectCategory: () => {return 3;},
     resetSearch: () => {return 4;},
-    increaseBrowsingLimit: () => {return 5;}
+    increaseBrowsingLimit: () => {return 5;},
+    windowSize: 'small'
   };
 
   describe('when user not log in', () => {
@@ -46,9 +47,12 @@ describe('Left wrapper', () => {
       expect(jasmineReact.classPrototype(LeftWrapper).searchThreadsByEnter.calls.argsFor(0)[0].keyCode).toEqual(13);
     });
 
-    it('has zero category', () => {
-      const categories = TestUtils.scryRenderedComponentsWithType(component, ListItem);
-      expect(categories.length).toEqual(0);
+    //Default has one category of 'All' + [] children
+    it('has category of "All" and other emply array of categories', () => {
+      const menu = TestUtils.findRenderedComponentWithType(component, DropDownMenu);
+      expect(menu.props.children.length).toEqual(2);
+      expect(menu.props.children[0].props.primaryText).toEqual('All');
+      expect(menu.props.children[1].length).toEqual(0);
     });
 
     it('has no button to create new thread if user is not logged in', () => {
@@ -62,28 +66,27 @@ describe('Left wrapper', () => {
     var categories;
     var cats = Categories.find();
     beforeEach(() => {
-      spyOn(Meteor, 'user').and.returnValue({
-        _id: 1,
-        username: 'Tom'
-      });
       const categories = [
         {_id: 1, name: 'Cat1'},
       ];
-      jasmineReact.spyOnClass(LeftWrapper, 'selectCategory');
+      jasmineReact.spyOnClass(LeftWrapper, 'handleSelectCategory');
       component = TestUtils.renderIntoDocument(
         <LeftWrapper categories={categories} {...foo}/>
       );
     });
 
-    it('has one category', () => {
-      const categories = TestUtils.scryRenderedComponentsWithType(component, ListItem);
-      expect(categories.length).toEqual(1);
+    //DropDownMenu by default has "All" + 1 category in array
+    it('has two categories', () => {
+      const menu = TestUtils.findRenderedComponentWithType(component, DropDownMenu);
+      expect(menu.props.children.length).toEqual(2);
+      expect(menu.props.children[1].length).toEqual(1);
+      expect(menu.props.children[1][0].props.primaryText).toEqual('Cat1');
     });
 
     it('trigger select category function', () => {
-      const category = TestUtils.findRenderedComponentWithType(component, ListItem);
-      category.props.onClick();
-      expect(jasmineReact.classPrototype(LeftWrapper).selectCategory.calls.count()).toEqual(1);
+      const category = TestUtils.findRenderedComponentWithType(component, DropDownMenu);
+      category.props.onChange();
+      expect(jasmineReact.classPrototype(LeftWrapper).handleSelectCategory.calls.count()).toEqual(1);
     });
   });
 

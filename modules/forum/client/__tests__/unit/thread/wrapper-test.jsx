@@ -8,15 +8,15 @@ import ThreadCarousel from 'forum/client/thread/thread_carousel';
 
 describe('Thread wrapper', () => {
   var component;
-  var foo = {
-    viewThread: (id) => {
-      return id;
-    },
-    updateThreadList: () => {}
-  };
-
   describe('with featured', () => {
-    
+    var foo = {
+      viewThread: (id) => {
+        return id;
+      },
+      updateThreadList: () => {},
+      windowSize: 'large'
+    };
+
     beforeEach(() => {
       component = TestUtils.renderIntoDocument(
         <Wrapper {...foo}/>
@@ -48,14 +48,14 @@ describe('Thread wrapper', () => {
 
   describe('with thread', () => {
     beforeEach(() => {
-      jasmineReact.spyOnClass(Wrapper, 'viewingThread').and.returnValue(true);
       jasmineReact.spyOnClass(Wrapper, 'toggleCarousel');
       const wrapper_props = {
         updateThreadList: () => {},
         threadList: [],
-        thread: {},
+        thread: {_id: 1, title: 'None', imgUrl: 'None', description: 'None', user: {_id: 1, username: 'Tom'}},
         userBlackList: [],
-        viewThread: () => {}
+        viewThread: () => {},
+        windowSize: 'large'        
       };
       component = TestUtils.renderIntoDocument(
         <Wrapper {...wrapper_props}/>

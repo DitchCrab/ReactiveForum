@@ -34,9 +34,11 @@ describe('thread users', () => {
     expect(users.length).toEqual(2);
   });
 
-  it('has buttons', () => {
+  it('has two buttons', () => {
     const buttons = TestUtils.scryRenderedComponentsWithType(component, FlatButton);
-    expect(buttons.length).toEqual(4);
+    expect(buttons.length).toEqual(2);
+    expect(buttons[0].props.label).toEqual('All');
+    expect(buttons[1].props.label).toEqual('None');
   });
 
   it('trigger lnkToUserPost function when clicked on avatar of user', () => {

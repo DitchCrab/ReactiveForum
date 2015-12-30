@@ -254,13 +254,11 @@ export default class Main extends Component {
   renderNewThread() {
     let customActions = [
       <FlatButton
-          className="thread-form-cancel"
           key="1"
           label="Cancel"
           secondary={true}
           onTouchTap={this._cancelForm} />,
       <FlatButton
-          className="thread-form-submit"
           key="2"
           label="Submit"
           primary={true}

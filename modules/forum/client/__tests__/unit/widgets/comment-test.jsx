@@ -20,7 +20,7 @@ describe('Comment widget', () => {
       spyOn(foo, 'onCommend');
       spyOn(foo, 'onLike');
       component = TestUtils.renderIntoDocument(
-        <Comment comment={{_id: 1, username: 'Tom', createdAt: new Date(), text: "Hello"}} {...foo}/>
+        <Comment comment={{_id: 1, userId: 1, username: 'Tom', createdAt: new Date(), text: "Hello"}} {...foo}/>
       )
     });
 

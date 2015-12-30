@@ -13,7 +13,7 @@ describe('Reply widget', () => {
   beforeEach(() => {
     spyOn(foo, 'onLikeReply');
     component = TestUtils.renderIntoDocument(
-      <Reply reply={{username: 'Tom', createdAt: new Date(), text: "Hello"}} {...foo}/>
+      <Reply reply={{_id: 1, userId: 1, username: 'Tom', createdAt: new Date(), text: "Hello"}} {...foo}/>
     );
   });
 

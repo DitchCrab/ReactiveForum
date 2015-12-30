@@ -11,14 +11,18 @@ describe('Thread', () => {
   var component;
   var foo = {
     toggleCarousel: () => {return 1;},
-    updateThreadList: () => {return 2;}
+    updateThreadList: () => {return 2;},
+    newMessages: 0,
+    threadList: [],
+    windowSize: 'large',
+    thread: {_id: 1, title: 'None', imgUrl: 'None', description: 'None', user: {_id: 1, username: 'Tom', avatar: null}, comments: []}
   };
   describe('when user sign in', () => {
     beforeEach(() => {
-      const thread = {_id: 1, title: 'None', imgUrl: 'None', description: 'None', user: {_id: 1, username: 'Tom'}};
       const currentUser = {_id: 1, username: 'Tom'};
       const viewingCarousel = false;
       const notSeenUser = [1, 2];
+      spyOn(Meteor, 'call').and.callFake(() => {return true;});
       jasmineReact.spyOnClass(Thread, 'likeReply');
       jasmineReact.spyOnClass(Thread, 'likeComment');
       jasmineReact.spyOnClass(Thread, 'likeThread');
@@ -27,7 +31,7 @@ describe('Thread', () => {
       jasmineReact.spyOnClass(Thread, 'addReply');
       jasmineReact.spyOnClass(Thread, 'cancelReply');
       component = TestUtils.renderIntoDocument(
-        <Thread thread={thread} currentUser={currentUser} viewingCarousel={viewingCarousel} notSeenUser={notSeenUser} {...foo}/>
+        <Thread currentUser={currentUser} viewingCarousel={viewingCarousel} notSeenUser={notSeenUser} {...foo}/>
       );
     });
 
@@ -138,11 +142,10 @@ describe('Thread', () => {
 
   describe('when user not sign in', () => {
     beforeEach(() => {
-      const thread = {_id: 1, title: 'None', imgUrl: 'None', description: 'None', user: {_id: 1, username: 'Tom'}};
       const viewingCarousel = false;
       const notSeenUser = [1, 2];
       component = TestUtils.renderIntoDocument(
-        <Thread thread={thread} currentUser={undefined} viewingCarousel={viewingCarousel} notSeenUser={notSeenUser} {...foo}/>
+        <Thread viewingCarousel={viewingCarousel} notSeenUser={notSeenUser} {...foo}/>
       );
     });
 
@@ -163,5 +166,5 @@ describe('Thread', () => {
       expect(dialog.props.title).toEqual(null);
     })
   })
-  
+    
 })

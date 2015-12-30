@@ -53,7 +53,7 @@ export default class CommentList extends Component {
     }
     let comment_list = comments.map((comment) => {
       if (Immutable.fromJS(this.props.notSeenUser).find(x => x === comment.userId)) {
-        return <div/>
+        return <div/>;
       }
       let comment_props = {
         currentUser: this.props.currentUser,

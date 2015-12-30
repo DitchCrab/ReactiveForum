@@ -7,17 +7,17 @@ import { NavigationMoreHoriz } from 'material-ui/lib/svg-icons';
 import moment from 'moment';
 
 describe('Comment list widget', () => {
-  var foo = {
-    onLike: (id) => {return id;},
-    onCommend: (id) => {return id;},
-    onLikeReply: () => {},
-    moveToCommentId: () => {},
-    moveToReplyId: () => {},
-    updateComment: () => {},
-    updateReply: () => {}
-  };
   describe('with one comment', () => {
     var component;
+    var foo = {
+      onLike: (id) => {return id;},
+      onCommend: (id) => {return id;},
+      onLikeReply: () => {},
+      moveToCommentId: () => {},
+      moveToReplyId: () => {},
+      updateComment: () => {},
+      updateReply: () => {}
+    };
     beforeEach(() => {
       jasmineReact.spyOnClass(CommentList, 'getMoreComments');
       const comments = [
@@ -50,6 +50,15 @@ describe('Comment list widget', () => {
   
   describe('with three comment', () => {
     var component;
+    var foo = {
+      onLike: (id) => {return id;},
+      onCommend: (id) => {return id;},
+      onLikeReply: () => {},
+      moveToCommentId: () => {},
+      moveToReplyId: () => {},
+      updateComment: () => {},
+      updateReply: () => {}
+    };
     beforeEach(() => {
       const comments = [
         {_id: 1, username: 'Tom', createdAt: moment.utc().format(), text: "hello"},

@@ -10,7 +10,9 @@ export default class BottomToolbar extends Component {
     toggleCarousel: PropTypes.func,
     viewingCarousel: PropTypes.bool,
     threadId: PropTypes.string,
-    newMessages: PropTypes.number
+    newMessages: PropTypes.number,
+    moveToCommentId: PropTypes.func,
+    windowSize: PropTypes.string
   }
 
   static defaultProps = {

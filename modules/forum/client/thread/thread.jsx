@@ -44,7 +44,7 @@ export default class Thread extends Component {
   
   constructor(props, context) {
     super(props);
-    this.state = {showCommentDialog: false, newReplyId: []};
+    this.state = {showReplyDialog: false, newReplyId: []};
     this.renderCommentList = this.renderCommentList.bind(this);
     this.renderReplyDialog = this.renderReplyDialog.bind(this);
     this.openReplyDialog = this.openReplyDialog.bind(this);
@@ -69,7 +69,7 @@ export default class Thread extends Component {
         newMessages: this.props.newMessages,
         moveToCommentId: this.moveToCommentId,
         threadId: this.props.thread._id,
-        toggleCarousel: this.props.toggleCarousel.bind(null),
+        toggleCarousel: this.props.toggleCarousel,
         viewingCarousel: this.props.viewingCarousel,
         windowSize: this.props.windowSize
       };
@@ -119,7 +119,7 @@ export default class Thread extends Component {
             <span className="thread-main-description">{thread.description}</span>
           </CardText>
           <CardActions style={ComponentStyle.cardAction}>
-            {this.renderCommentList()}
+            { this.props.thread.comments ? this.renderCommentList() : null }
           </CardActions>
         </Card>
         { this.renderReplyDialog() }
@@ -131,15 +131,15 @@ export default class Thread extends Component {
   renderCommentList() {
     const comment_list_props = {
       currentUser: this.props.currentUser,
-      moveToReplyId: this.moveToReplyId,
-      newReplyId: this.state.newReplyId,
-      moveToCommentId: this.moveToCommentId,
-      newCommentId: this.state.newCommentId,
       comments: this.props.thread.comments,
+      notSeenUser: this.props.notSeenUser,
+      newReplyId: this.state.newReplyId,
+      newCommentId: this.state.newCommentId,
+      moveToCommentId: this.moveToCommentId,
+      moveToReplyId: this.moveToReplyId,
       onCommend: this.openReplyDialog,
       onLike: this.likeComment,
       onLikeReply: this.likeReply,
-      notSeenUser: this.props.notSeenUser,
       updateComment: this.updateComment,
       updateReply: this.updateReply
     };
@@ -176,7 +176,7 @@ export default class Thread extends Component {
           autoDetectWindowHeight={true}
           autoScrollBodyContent={true}
           actions={customActions}
-          open={this.state.showCommentDialog}
+          open={this.state.showReplyDialog}
           onRequestClose={this.closeReplyDialog}>
         {this.props.currentUser ? <TextField multiLine={true} ref="Reply" style={ComponentStyle.replyField}/> : <h4>Please signup to reply</h4>}
       </Dialog>
@@ -185,17 +185,15 @@ export default class Thread extends Component {
 
   openReplyDialog(commentId) {
     this.setState({onComment: commentId});
-    this.setState({showCommentDialog: true});
+    this.setState({showReplyDialog: true});
   }
 
   closeReplyDialog() {
-    this.setState({showCommentDialog: false});
+    this.setState({showReplyDialog: false});
   }
 
   likeThread() {
     Meteor.call('likeThread', this.props.thread._id, (err, result) => {
-      console.log(err);
-      console.log(result);
     });
   }
 
@@ -210,7 +208,7 @@ export default class Thread extends Component {
   }
 
   cancelReply() {
-    this.setState({showCommentDialog: false});
+    this.setState({showReplyDialog: false});
   }
 
   addReply(commentId) {
@@ -219,7 +217,7 @@ export default class Thread extends Component {
     if (text && text.length > 1) {
       Meteor.call('createReply', this.props.thread._id, this.state.onComment, text, (err, res) => {
         if (!err) {
-          this.setState({showCommentDialog: false});
+          this.setState({showReplyDialog: false});
           this.moveToReplyId(res);
         }
       });
@@ -232,9 +230,6 @@ export default class Thread extends Component {
   }
 
   updateReply(commentId, replyIndex, text) {
-    console.log(commentId);
-    console.log(replyIndex);
-    console.log(text);
     Meteor.call('updateReply', this.props.thread._id, commentId, replyIndex, text, (err, res) => {
       
     });

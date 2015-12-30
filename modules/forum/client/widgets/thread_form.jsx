@@ -4,6 +4,17 @@ import ComponentStyle from 'forum/client/styles/widgets/thread_form';
 import Immutable from 'immutable';
 
 export default class ThreadForm extends Component {
+  static propTypes = {
+    categories: PropTypes.arrayOf(PropTypes.object),
+    threadParams: PropTypes.object,
+    onEdit: PropTypes.func
+  };
+
+  static defaultProps = {
+    categories: [],
+    threadParams: {}
+  }
+
   constructor(props, context) {
     super(props);
     this.state = {selectValue: null};
@@ -102,13 +113,3 @@ export default class ThreadForm extends Component {
   }
 };
 
-ThreadForm.propTypes = {
-  categories: PropTypes.arrayOf(PropTypes.object),
-  threadParams: PropTypes.object,
-  onEdit: PropTypes.func
-};
-
-ThreadForm.defaultProps = {
-  categories: [],
-  threadParams: {}
-}
