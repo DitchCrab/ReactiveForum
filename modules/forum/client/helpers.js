@@ -24,13 +24,13 @@ export function toolbarWidth(windowSize) {
   var width;
   switch (windowSize) {
     case 'large':
-      width = w_w * 0.60;
+      width = w_w * 0.5833 - 30;
       break;
     case 'medium':
-      width = w_w * 0.6666;
+      width = w_w * 0.6666 - 30;
       break;
     case 'small':
-      width = w_w * 0.9466;
+      width = w_w - 20;
       break;
   }
   return width;  

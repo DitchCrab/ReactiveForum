@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import Featured from './featured';
 import Thread from './thread';
 import ThreadCarousel from './thread_carousel';
+import ComponentStyle from 'forum/client/styles/thread/wrapper';
 import Immutable from 'immutable';
 
 export default class Wrapper extends Component {
@@ -71,12 +72,6 @@ export default class Wrapper extends Component {
   }
 
   render() {
-    let w_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 60;
-    const wrapper_style = {
-      height: `${w_h}px`,
-      overflowY: this.props.windowSize === 'small' ? 'none' : 'auto',
-      margin: 0,
-    };
     const thread_props = {
       updateThreadList: this.props.updateThreadList.bind(null),
       threadList: this.props.threadList,
@@ -100,7 +95,7 @@ export default class Wrapper extends Component {
       windowSize: this.props.windowSize
     };
     return (
-      <div style={wrapper_style} className="thread-wrapper">
+      <div style={ComponentStyle.wrapper(this.props.windowSize)} className="thread-wrapper">
         { this.viewingThread() ? <Thread {...thread_props}/> : <Featured {...featured_props} /> }
         {this.state.viewingCarousel ? <ThreadCarousel {...thread_carousel_props}/> : null }
       </div>

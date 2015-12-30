@@ -2,6 +2,7 @@ import { Component, PropTypes } from 'react';
 import { Toolbar, TextField, IconButton, Badge } from 'material-ui';
 import { toolbarWidth } from 'forum/client/helpers';
 import { ActionDone, EditorModeEdit, NavigationClose, ActionViewCarousel, CommunicationChatBubbleOutline } from 'material-ui/lib/svg-icons';
+import ComponentStyle from 'forum/client/styles/thread/bottom_toolbar';
 import moment from 'moment';
 
 export default class BottomToolbar extends Component {
@@ -25,33 +26,28 @@ export default class BottomToolbar extends Component {
   }
 
   render() {
-    const width = toolbarWidth(this.props.windowSize);
-    let toolbar_style = {
-      position: 'fixed',
-      bottom: 0,
-      width: width,
-      height: this.state.defaultHeight,
-      margin: 0,
-      padding: "0px 5px 10px 5px",
-      textAlign: "center"
-    };
-    let textfield_style = {
-      width: width - 170,
-      top: -15
-    };
     let open_button =  <IconButton tooltip="Star" touch={true} onClick={this.props.toggleCarousel.bind(null)}><ActionViewCarousel/></IconButton>;
     let close_button = <NavigationClose />;
     return(
-      <Toolbar style={toolbar_style}>
-        <TextField multiLine={true} ref="commentField" defaultValue={this.state.comment} style={textfield_style} hintText="Commend" onChange={this.typeComment} />
-        <IconButton tooltip="Star" touch={true} onClick={this.addCommentToThread}>
-          {this.state.comment ? <ActionDone/> : <EditorModeEdit/>}
+      <Toolbar style={ComponentStyle.toolbar(this.props.windowSize, this.state.defaultHeight)}>
+        <TextField
+            multiLine={true}
+            ref="commentField"
+            defaultValue={this.state.comment}
+            style={ComponentStyle.textField(this.props.windowSize)}
+            hintText="Commend"
+            onChange={this.typeComment} />
+        <IconButton
+            tooltip="Star"
+            touch={true}
+            onClick={this.addCommentToThread}>
+          { this.state.comment ? <ActionDone/> : <EditorModeEdit/> }
         </IconButton>
         { this.props.viewingCarousel ? close_button : open_button }
         <Badge
             badgeContent={this.props.newMessages}
             primary={true}
-            badgeStyle={{top: 12, right: 12}}>
+            badgeStyle={ComponentStyle.badge}>
           <CommunicationChatBubbleOutline />
         </Badge>
       </Toolbar>          

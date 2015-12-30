@@ -4,6 +4,7 @@ import moment from 'moment';
 import { EditorInsertComment } from 'material-ui/lib/svg-icons';
 import Reply from './reply';
 import { FlatButton, TextField, Avatar, Styles } from 'material-ui';
+import ComponentStyle from 'forum/client/styles/widgets/comment';
 const { Colors } = Styles;
 
 export default class Comment extends Component {
@@ -72,27 +73,27 @@ export default class Comment extends Component {
     return (
       <div>
         <div>
-          <div style={{display: 'inline-block', marginRight: 10, marginLeft: 5}}>
+          <div style={ComponentStyle.avatar}>
             {comment_avatar}
           </div>
-          <div style={{display: 'inline-block'}}>
+          <div style={ComponentStyle.header}>
             <p>
-              <span className="comment-username" style={{fontSize: "80%", fontWeight: 'bold', color: Colors.cyan700}}>{comment.username}</span>
+              <span className="comment-username" style={ComponentStyle.username}>{comment.username}</span>
             </p>
-            <p style={{fontSize: "60%", color: "rgba(182, 182, 182, 1)", paddingTop: 3}}>
-              <span className="comment-time" style={{paddingRight: 10}}>{moment(comment.createdAt).fromNow()}</span>
-              <span className="comment-reply" style={{paddingRight: 10}}>Reply: {comment.replies ? comment.replies.length : null}</span>
-              <span className="comment-like" style={{paddingRight: 10}} onClick={this.props.onLike.bind(null, comment._id)}>Like: {comment.likes}</span>
+            <p style={ComponentStyle.actions}>
+              <span className="comment-time" style={ComponentStyle.subAction}>{moment(comment.createdAt).fromNow()}</span>
+              <span className="comment-reply" style={ComponentStyle.subAction}>Reply: {comment.replies ? comment.replies.length : null}</span>
+              <span className="comment-like" style={ComponentStyle.subAction} onClick={this.props.onLike.bind(null, comment._id)}>Like: {comment.likes}</span>
               { comment.userId === currentUserId && !this.state.editing ? <span className="comment-edit" onClick={this.editComment}>Edit</span> : null }
             </p>
           </div>
-          <div style={{display: 'inline-block', float: 'right', padding: 5}}>
-            <EditorInsertComment className="insert-comment" color={Colors.grey500} style={{padding: 0, marginRight: 10}} onClick={this.props.onCommend.bind(null, comment._id)}/>
+          <div style={ComponentStyle.insertCommentDiv}>
+            <EditorInsertComment className="insert-comment" color={Colors.grey500} style={ComponentStyle.insertIcon} onClick={this.props.onCommend.bind(null, comment._id)}/>
           </div>
         </div>
         <div>
-          <div style={{paddingLeft: 30}}>
-            <div className="comment-text" style={{fontSize: "80%", wordWrap: 'break-word', paddingLeft: 25, whiteSpace: 'pre'}}>
+          <div style={ComponentStyle.commentDiv}>
+            <div className="comment-text" style={ComponentStyle.comment}>
               {this.state.editing ? this.renderEditing(comment.text) : comment.text }
             </div>
             {replies}
@@ -104,12 +105,12 @@ export default class Comment extends Component {
 
   renderEditing(text) {
     return (
-      <div style={{width: '100%'}}>
+      <div style={ComponentStyle.editingDiv}>
         <TextField
             ref="commentInput"    
             defaultValue={text}
             multiLine={true}
-            style={{width: '90%', fontSize: '90%'}}
+            style={ComponentStyle.commentEditField}
         />
         <p>
           <FlatButton label="Cancel" onTouchTap={this.updateComment}/>   

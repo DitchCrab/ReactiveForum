@@ -5,6 +5,7 @@ import Immutable from 'immutable';
 import moment from 'moment';
 import { IconButton } from 'material-ui';
 import { NavigationMoreHoriz } from 'material-ui/lib/svg-icons';
+import ComponentStyle from 'forum/client/styles/widgets/comment_list';
 
 export default class CommentList extends Component {
   static propTypes = {
@@ -70,14 +71,14 @@ export default class CommentList extends Component {
         comment_props.moveToReplyId = this.props.moveToReplyId.bind(null, []);
       }
       return (
-        <div key={comment._id} ref={comment._id} className="s-grid-cell s-grid-cell-sm-12" style={{margin: 0, flexBasis: "100%", paddingTop: 5}}>
+        <div key={comment._id} ref={comment._id} style={ComponentStyle.wrapper}>
           <Comment  {...comment_props}/>
         </div>
       )
     });
     return (
       <div className="s-grid-top">
-        <IconButton touch={true} style={{marginLeft: 'auto', marginRight: 'auto'}} onClick={this.getMoreComments} className="more-comments">
+        <IconButton touch={true} style={ComponentStyle.iconButton} onClick={this.getMoreComments} className="more-comments">
           <NavigationMoreHoriz/>
         </IconButton>
         {comment_list}

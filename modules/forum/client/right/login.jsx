@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import { TextField, RaisedButton, FlatButton } from 'material-ui';
+import ComponentStyle from 'forum/client/styles/right/login';
 
 export default class Login extends Component {
   constructor(props, context) {
@@ -12,13 +13,13 @@ export default class Login extends Component {
 
   render() {
     return (
-      <div style={{width: 300, padding:20, textAlign: 'center'}}>
-        <p style={{color: 'red'}}>{this.state.error}</p>
+      <div style={ComponentStyle.wrapper}>
+        <p style={ComponentStyle.error}>{this.state.error}</p>
         <TextField
             hintText="Username" value={this.state.username} onChange={this.getLoginInfo.bind(null, 'username')} />
         <TextField
             hintText="Password" type="password" value={this.state.password} onChange={this.getLoginInfo.bind(null, 'password')} />
-        <RaisedButton primary={true} label="Sign In" style={{margin: 8}} onClick={this.userLogin}/>
+        <RaisedButton primary={true} label="Sign In" style={ComponentStyle.loginButton} onClick={this.userLogin}/>
         <br/>
         <FlatButton label="Sign up" onClick={this.userSignup}/>
       </div>

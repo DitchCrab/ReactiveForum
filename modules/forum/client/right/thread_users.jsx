@@ -2,6 +2,7 @@ import { Component, PropTypes } from 'react';
 import ReactMixin from 'react-mixin';
 import { List, ListItem, Checkbox, FlatButton, Styles, Avatar } from 'material-ui';
 import Immutable from 'immutable';
+import ComponentStyle from 'forum/client/styles/right/thread_users';
 const {Colors} = Styles;
 
 @ReactMixin.decorate(ReactMeteorData)
@@ -39,29 +40,20 @@ const {Colors} = Styles;
     }
     
     render() {
-      let w_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 100;
-      const wrapper_style = {
-        height: `${w_h}px`
-      };
-      const button_style = {
-        minWidth: 50
-      };
       let user_list = this.data.users.map((user, index) => this.renderEachUser(user, index));
       let selectItems = [
         { payload: true, text: "All"},
         { payload: false, text: "None"}
       ];
       return (
-        <div className="s-grid-top" style={wrapper_style}>
-          <div className="s-grid-cell s-grid-cell-sm-12 s-grid-cell-top">
-            <div>
-              <p><span style={{fontSize: '80%'}} color={Colors.grey}>Select:</span>
-                <FlatButton label="All" style={button_style} onClick={this.makeSelection.bind(null, true)}/><FlatButton label="None" style={button_style} onClick={this.makeSelection.bind(null, false)}/></p>
-            </div>
-            <List subheader="Today">
-              {user_list}
-            </List>
+        <div style={ComponentStyle.wrapper}>
+          <div>
+            <p><span style={ComponentStyle.text}>Select:</span>
+              <FlatButton label="All" style={ComponentStyle.button} onClick={this.makeSelection.bind(null, true)}/><FlatButton label="None" style={ComponentStyle.button} onClick={this.makeSelection.bind(null, false)}/></p>
           </div>
+          <List subheader="Users in thread">
+            {user_list}
+          </List>
         </div>
       )
     }
@@ -82,7 +74,7 @@ const {Colors} = Styles;
             key={user._id}
             leftAvatar={avatar}
             primaryText={user.username}
-            rightIconButton={ <Checkbox style={{width: 30, paddingTop: 10}}
+            rightIconButton={ <Checkbox style={ComponentStyle.checkBox}
                                         defaultChecked={checked}
                                         onCheck={this.filterUser.bind(null, user._id)}/>}>
         </ListItem>

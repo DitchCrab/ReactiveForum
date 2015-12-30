@@ -1,6 +1,7 @@
 import { Component, PropTypes } from 'react';
 import { IconButton, List, ListItem, Avatar, Styles } from 'material-ui';
 import { ToggleStarBorder, ImagePhoto } from 'material-ui/lib/svg-icons';
+import ComponentStyle from 'forum/client/styles/thread/featured';
 const { Colors } = Styles;
 
 export default class Featured extends Component {
@@ -28,7 +29,7 @@ export default class Featured extends Component {
       } else {
         var thread_avatar = <Avatar>{thread.user.username[0]}</Avatar>;
       };
-      let des = <p><span style={{color: Colors.cyan700, fontWeight: 'bold'}}>{thread.user.username}</span> - {thread.description}</p>;
+      let des = <p><span style={ComponentStyle.description}>{thread.user.username}</span> - {thread.description}</p>;
       const list_item_props = {
         key: thread._id,
         leftAvatar: thread_avatar,

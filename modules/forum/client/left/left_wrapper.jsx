@@ -5,6 +5,7 @@ import { ContentAdd } from 'material-ui/lib/svg-icons';
 import ThreadList from './thread_list';
 import Immutable from 'immutable';
 import InfiniteScroll from 'forum/client/widgets/infinite_scroll';
+import ComponentStyle from 'forum/client/styles/left/left_wrapper';
 const { Colors } = Styles;
 
 export default class LeftWrapper extends Component {
@@ -53,17 +54,6 @@ export default class LeftWrapper extends Component {
   }
   
   render() {
-    let w_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 100;
-    let wrapper_style= {};
-    if (this.props.windowSize !== 'small') {
-      wrapper_style = {
-        height: `${w_h}px`,
-        overflowY: "auto"
-      };
-    };
-    let search_style = {
-      width: '90%',
-    };
     const infinite_props = {
       pageStart: 0,
       loadMore: this.props.increaseBrowsingLimit,
@@ -73,14 +63,20 @@ export default class LeftWrapper extends Component {
     };
     return (
       <div>
-        <div ref="leftWrapper" style={wrapper_style}>
+        <div ref="leftWrapper" style={ComponentStyle.wrapper(this.props.windowSize)}>
           <InfiniteScroll {...infinite_props}>
             <TextField
-                hintText="Search" style={search_style} onBlur={this.clearSearch} onKeyUp={this.searchThreadsByEnter} errorText={this.props.searchError}/>
+                hintText="Search" style={ComponentStyle.searchField}
+                onBlur={this.clearSearch}
+                onKeyUp={this.searchThreadsByEnter}
+                errorText={this.props.searchError}/>
             <div>
               { this.renderCategory() }
             </div>
-            <ThreadList currentUser={this.props.currentUser} threads={this.props.threads} viewThread={this.props.viewThread.bind(null)}/>
+            <ThreadList
+                currentUser={this.props.currentUser}
+                threads={this.props.threads}
+                viewThread={this.props.viewThread.bind(null)}/>
           </InfiniteScroll>
         </div>
         {this.props.currentUser ? this.renderNewThread() : null }
@@ -91,12 +87,18 @@ export default class LeftWrapper extends Component {
   renderCategory(category, index) {
     const categories = this.props.categories.map((category) => {
       return (
-        <MenuItem key={category._id} value={category._id} primaryText={category.name} />
+        <MenuItem
+            key={category._id}
+            value={category._id}
+            primaryText={category.name} />
       )
     });
+    
     if (this.props.currentUser) {
       return (
-        <DropDownMenu value={this.state.categoryValue} onChange={this.handleSelectCategory} style={{width: '100%'}}>
+        <DropDownMenu
+            value={this.state.categoryValue}
+            onChange={this.handleSelectCategory} style={ComponentStyle.dropDownCategory}>
           <MenuItem key={1} value={1} primaryText="All" />
           <MenuItem key={2} value={2} primaryText="Flagged" />
           {categories}
@@ -104,7 +106,10 @@ export default class LeftWrapper extends Component {
       )
     } else {
       return (
-        <DropDownMenu value={this.state.categoryValue} onChange={this.handleSelectCategory} style={{width: '100%'}}>
+        <DropDownMenu
+            value={this.state.categoryValue}
+            onChange={this.handleSelectCategory}
+            style={ComponentStyle.dropDownCategory}>
           <MenuItem key={1} value={1} primaryText="All" />
           {categories}
         </DropDownMenu>
@@ -114,8 +119,8 @@ export default class LeftWrapper extends Component {
   
   renderNewThread() {
     return (
-      <div style={{position: "fixed", bottom: "10px", left: "10px" }}>
-        <IconButton style={{backgroundColor: "rgba(244, 67, 54, 1)", borderRadius: "50%", marginLeft: "auto", marginRight: "auto", display: "block"}} onClick={this._openDialog}>
+      <div style={ComponentStyle.newThreadDiv}>
+        <IconButton style={ComponentStyle.newThreadButton} onClick={this._openDialog}>
           <ContentAdd color={Colors.white}/>
         </IconButton>
       </div>

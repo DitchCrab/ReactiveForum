@@ -6,6 +6,7 @@ import { LeftNav, IconButton, Avatar, FlatButton, AppBar, Popover, Styles } from
 import LeftWrapper from './left/left_wrapper';
 import MiniProfile from './right/mini_profile';
 import Login from './right/login';
+import ComponentStyle from './styles/app';
 import { ActionViewList, ActionHistory, SocialPerson } from 'material-ui/lib/svg-icons';
 const { Colors } = Styles;
 
@@ -75,7 +76,6 @@ export default class App extends Component {
       title: "Modrn",
       onTitleTouchTap: this.viewSection.bind(null, 'thread'),
       iconElementRight: this.renderRightIcon(),
-      style: {position: 'fixed', top: 0, left: 0}
     };
     if ( this.state.windowSize === 'small')  {
       app_bar_props.iconElementLeft = this.renderLeftIcon();
@@ -101,7 +101,7 @@ export default class App extends Component {
     };
     return (
       <div>
-        <AppBar {...app_bar_props}/>
+        <AppBar style={ComponentStyle.appBar} {...app_bar_props}/>
         <Popover className="right-popover" {...pop_over_props} >
           {user ? <MiniProfile currentUser={user} /> : <Login /> }
         </Popover>
@@ -116,13 +116,13 @@ export default class App extends Component {
     if (user) {
       button = this.renderUserAvatar();
     } else {
-      button =  <FlatButton id="signin-anchor" ref="signInButton" label="Sign In" onClick={this.openPopover}/>        
+      button =  <FlatButton id="signin-anchor" ref="signInButton" label="Sign In" onClick={this.openPopover}/> 
     }
     return (
       <div>
         { this.props.params.thread && this.state.section === 'browsing' && this.state.windowSize === 'small' ? <IconButton onClick={this.viewSection.bind(null, 'thread')}><ActionHistory color={Colors.white}/></IconButton> : null }
         { this.state.windowSize !== 'large' ? <IconButton onClick={this.openSideNav}> <SocialPerson color={Colors.white}/> </IconButton> : null }
-        <span style={{marginLeft: 10}}>
+        <span style={ComponentStyle.rightButton}>
           {button}
         </span>
       </div>

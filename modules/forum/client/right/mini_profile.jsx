@@ -3,6 +3,7 @@ import ThreadUsers from './thread_users';
 import UserAvatars from 'forum/collections/user_avatars';
 import { ContentInbox, ActionGrade } from 'material-ui/lib/svg-icons';
 import { Avatar, List, ListItem, Styles } from 'material-ui';
+import ComponentStyle from 'forum/client/styles/right/mini_profile';
 const { Colors } = Styles;
 
 export default class MiniProfile extends React.Component {
@@ -22,7 +23,6 @@ export default class MiniProfile extends React.Component {
     if (!this.props.currentUser) {
       return <div/>
     }
-    let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     let user = this.props.currentUser;
     var avatar = <Avatar>{user.username[0]}</Avatar>;
     if (user.profile) {
@@ -30,21 +30,11 @@ export default class MiniProfile extends React.Component {
         avatar = <Avatar src={user.profile.avatar}/>;
       }
     }
-    const input_style = {
-      cursor: "pointer",
-      position: "absolute",
-      top: "0px",
-      bottom: "0px",
-      right: "0px",
-      left: "0px",
-      width: "100%",
-      opacity: "0"
-    };
     return (
-      <List style={{width: 200}}>
-        <div className="greeting-user" style={{fontWeight: 'bold', color: Colors.cyan700, textAlign: 'center', padding: 5}}>Hello {user.username}</div>
+      <List style={ComponentStyle.list}>
+        <div className="greeting-user" style={ComponentStyle.nameDiv}>Hello {user.username}</div>
         <ListItem primaryText="New Avatar" leftIcon={<ContentInbox />} >
-          <input type="file" id="profileAvatarInput" style={input_style} onChange={this._uploadImg} />
+          <input type="file" id="profileAvatarInput" style={ComponentStyle.fileInput} onChange={this._uploadImg} />
         </ListItem>
         <ListItem primaryText="Sign out" leftIcon={<ActionGrade />} onClick={this.userLogout} />
       </List>

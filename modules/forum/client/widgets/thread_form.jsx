@@ -1,5 +1,6 @@
 import { Component, PropTypes } from 'react';
 import { SelectField, TextField, FlatButton } from 'material-ui';
+import ComponentStyle from 'forum/client/styles/widgets/thread_form';
 import Immutable from 'immutable';
 
 export default class ThreadForm extends Component {
@@ -16,16 +17,6 @@ export default class ThreadForm extends Component {
 
   render() {
     let menuItems = Immutable.fromJS(this.props.categories).map(x => x.set('payload', x.get("_id")).set('text', x.get("name"))).toJS();
-    const img_input_style = {
-      cursor: "pointer",
-      position: "absolute",
-      top: "0px",
-      bottom: "0px",
-      right: "0px",
-      left: "0px",
-      width: "100%",
-      opacity: "0"
-    }
     return (
       <div className="modal-form">
         <SelectField
@@ -51,11 +42,11 @@ export default class ThreadForm extends Component {
             onChange={this._editTags}/>
         <div className="image-select">
           <FlatButton primary={true} label="Choose an Image">
-            <input type="file" id="imageButton" style={img_input_style} onChange={this._editImg}/>
+            <input type="file" id="imageButton" style={ComponentStyle.fileInput} onChange={this._editImg}/>
           </FlatButton>
         </div>
         <div>
-          {this.props.threadParams.img ? <img src={this.props.threadParams.img} style={{width: 100, height: 100}} /> : null }
+          {this.props.threadParams.img ? <img src={this.props.threadParams.img} style={ComponentStyle.image} /> : null }
         </div>
       </div>
     )

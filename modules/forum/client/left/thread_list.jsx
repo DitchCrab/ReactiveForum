@@ -1,6 +1,7 @@
 import { Component, PropTypes } from 'react';
 import { Card, CardMedia, CardTitle, IconButton, Styles } from 'material-ui';
 import { ContentFlag, ToggleStar, CommunicationComment } from 'material-ui/lib/svg-icons';
+import ComponentStyle from 'forum/client/styles/left/thread_list';
 const { Colors } = Styles;
 
 export default  class ThreadList extends Component {
@@ -34,20 +35,20 @@ export default  class ThreadList extends Component {
   renderEachThread(thread) {
     let user = this.props.currentUser;
     return (
-      <Card key={thread._id} style={{marginBottom: 12}}  onClick={this.props.viewThread.bind(null, thread._id)}>
+      <Card key={thread._id} style={ComponentStyle.card}  onClick={this.props.viewThread.bind(null, thread._id)}>
         <CardMedia>
           <img src={(thread.imgUrl)} />
         </CardMedia>
         <CardTitle title={thread.title} subtitle={thread.description}/>
-        <div style={{textAlign: 'right'}}>
+        <div style={ComponentStyle.cardAction}>
           <IconButton touch={true} onClick={this.likeThread.bind(null, thread._id)} >
             <ToggleStar/>
           </IconButton>
-          <div className="thread-like" style={{display: 'inline-block',fontSize: '80%'}}>{thread.likes}</div>                              
+          <div className="thread-like" style={ComponentStyle.textDiv}>{thread.likes}</div>                              
           <IconButton touch={true} >
             <CommunicationComment/>
           </IconButton>
-          <div className="thread-comment" style={{display: 'inline-block',fontSize: '80%'}}>{thread.comments ? thread.comments.length: null }</div>
+          <div className="thread-comment" style={ComponentStyle.textDiv}>{thread.comments ? thread.comments.length: null }</div>
           {this.renderFlag(user, thread._id)}
         </div>
       </Card>          

@@ -233,13 +233,19 @@ export default class Main extends Component {
     if (this.data.viewThread) {
       return (
         <div style={Layout.rightNav(this.props.windowSize)}>
-          <ThreadUsers threadUsers={thread_users} userBlackList={this.state.userBlackList} updateBlackList={this.updateBlackList} onUser={this.setUser}/>
+          <ThreadUsers
+              threadUsers={thread_users}
+              userBlackList={this.state.userBlackList}
+              updateBlackList={this.updateBlackList}
+              onUser={this.setUser}/>
         </div>
       )
     } else {
       return (
-        <div className="s-grid-cell s-grid-cell-sm-12 s-grid-cell-md-3 s-grid-cell-lg-2">
-          <FeaturedUsers featuredUsers={this.data.featuredUsers} onUser={this.setUser} />
+        <div style={Layout.rightNav(this.props.windowSize)}>
+          <FeaturedUsers
+              featuredUsers={this.data.featuredUsers}
+              onUser={this.setUser} />
         </div>
       )
     }
@@ -268,7 +274,10 @@ export default class Main extends Component {
           autoDetectWindowHeight={true}
           autoScrollBodyContent={true}
           onRequestClose={this._closeDialog}>
-        <ThreadForm categories={this.data.categories} threadParams={this.state.newThread} onEdit={this.editNewThread}/>
+        <ThreadForm
+            categories={this.data.categories}
+            threadParams={this.state.newThread}
+            onEdit={this.editNewThread}/>
       </Dialog>
     )
   }    

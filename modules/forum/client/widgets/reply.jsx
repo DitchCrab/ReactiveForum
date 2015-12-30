@@ -1,6 +1,7 @@
 import { Component, PropTypes } from 'react';
 import moment from 'moment';
 import { TextField, FlatButton, Avatar, Styles } from 'material-ui';
+import ComponentStyle from 'forum/client/styles/widgets/reply';
 const { Colors } = Styles;
 
 export default class Reply extends Component {
@@ -43,21 +44,21 @@ export default class Reply extends Component {
       var reply_avatar = <Avatar src={reply.avatar} />;
     }
     return (
-      <div style={{paddingTop: 10, paddingBottom: 10, paddingLeft: '-10'}}>
-        <div style={{display: 'inline-block', marginRight: 10, marginLeft: 5}}>
+      <div style={ComponentStyle.wrapper}>
+        <div style={ComponentStyle.avatar}>
           {reply_avatar}
         </div>
-        <div style={{display: 'inline-block'}}>
+        <div style={ComponentStyle.header}>
           <p>
-            <span className="reply-username" style={{fontSize: "80%", fontWeight: 'bold', color: Colors.cyan700}}>{reply.username}</span>
+            <span className="reply-username" style={ComponentStyle.username}>{reply.username}</span>
           </p>
-          <p style={{fontSize: "60%", color: "rgba(182, 182, 182, 1)", paddingTop: 3}}>
-            <span className="reply-createdAt" style={{paddingRight: 10}}>{moment(reply.createdAt).fromNow()}</span>
-            <span className="reply-like" onClick={this.props.onLikeReply.bind(null)} style={{paddingRight: 10}}>Like: {reply.likes}</span>
+          <p style={ComponentStyle.actions}>
+            <span className="reply-createdAt" style={ComponentStyle.subAction}>{moment(reply.createdAt).fromNow()}</span>
+            <span className="reply-like" onClick={this.props.onLikeReply.bind(null)} style={ComponentStyle.subAction}>Like: {reply.likes}</span>
             { reply.userId === currentUserId && !this.state.editing ? <span className="reply-edit" onClick={this.editReply}>Edit</span> : null }
           </p>
         </div>
-        <div className="reply-text" style={{fontSize: "80%", wordWrap: 'break-word', marginLeft: 55}}>
+        <div className="reply-text" style={ComponentStyle.replyDiv}>
           { this.state.editing ? this.renderEditing(reply.text) : reply.text }
         </div>
       </div>
@@ -66,12 +67,12 @@ export default class Reply extends Component {
 
   renderEditing(text) {
     return (
-      <div style={{width: '100%'}}>
+      <div style={ComponentStyle.editingDiv}>
         <TextField
             ref="replyInput"    
             defaultValue={text}
             multiLine={true}
-            style={{width: '90%', fontSize: '90%'}}
+            style={ComponentStyle.replyEditField}
         />
         <p>
           <FlatButton label="Cancel" onTouchTap={this.updateReply}/>   

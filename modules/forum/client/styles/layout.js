@@ -4,8 +4,8 @@ export default {
     flexWrap: 'wrap',
     flexDirection: 'row',
     alignItem: 'flex-start',
-    marginTop: '3.2rem',
-    margin: '0.625rem'
+    margin: '0.625rem',
+    marginTop: '4.8rem'
   },
   leftNav: (windowSize) => {
     let style = {
@@ -13,10 +13,12 @@ export default {
     };
     switch (windowSize) {
       case 'medium':
-        style.width = '31.67%';
+        style.width = '33.33%';
+        style.padding = '0.625rem';
         break;
       case 'large':
-        style.width = '23.33%';
+        style.width = '25%';
+        style.padding = '0.625rem';
         break;
     }
     return style;
@@ -27,7 +29,7 @@ export default {
     };
     switch (windowSize) {
       case 'large':
-        style.width = '15%';
+        style.width = '16.67%';
         break;
     }
     return style;
@@ -39,9 +41,11 @@ export default {
     switch (windowSize) {
       case 'medium':
         style.width = '66.66%';
+        style.padding = '0.625rem';
         break;
       case 'large':
-        style.width = '60%';
+        style.width = '58.33%';
+        style.padding = '0.625rem';
         break;
     }
     return style;

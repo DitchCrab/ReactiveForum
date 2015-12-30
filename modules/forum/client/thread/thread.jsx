@@ -8,6 +8,7 @@ import FacebookShare from 'forum/client/icons/facebook_share';
 import TwitterShare from 'forum/client/icons/twitter_share';
 import RedditShare from 'forum/client/icons/reddit_share';
 const { Colors } = Styles;
+import ComponentStyle from 'forum/client/styles/thread/thread';
 import moment from 'moment';
 
 export default class Thread extends Component {
@@ -64,45 +65,50 @@ export default class Thread extends Component {
     let thread = this.props.thread;
     var comment_field;
     if (this.props.currentUser !== null && this.props.currentUser !== undefined) {
-      comment_field = <BottomToolbar newMessages={this.props.newMessages} moveToCommentId={this.moveToCommentId} threadId={this.props.thread._id} toggleCarousel={this.props.toggleCarousel.bind(null)} viewingCarousel={this.props.viewingCarousel} windowSize={this.props.windowSize}/>;
+      const comment_field_props = {
+        newMessages: this.props.newMessages,
+        moveToCommentId: this.moveToCommentId,
+        threadId: this.props.thread._id,
+        toggleCarousel: this.props.toggleCarousel.bind(null),
+        viewingCarousel: this.props.viewingCarousel,
+        windowSize: this.props.windowSize
+      };
+      comment_field = <BottomToolbar {...comment_field_props}/>;
     }
     var avatar = require('../img/avatar.png');
     if (thread.user.avatar) {
       avatar = thread.user.avatar;
     };
-    const social_share_container_styles = {
-      textAlign: 'center',
-    };
     return (
       <div>
-        <Card style={{paddingBottom: 60}}>
+        <Card style={ComponentStyle.card}>
           <CardHeader
-              title={<span className="thread-main-user" style={{fontWeight: 'bold', color: Colors.cyan700}}>{thread.user.username}</span>}
+              title={<span className="thread-main-user" style={ComponentStyle.headerTitle}>{thread.user.username}</span>}
               avatar={avatar}/>
           <CardMedia overlay={<CardTitle title={thread.title}/>}>
             <img src={thread.imgUrl}/>
           </CardMedia>
-          <div style={{textAlign: 'right', margin: 0, padding: 0}}>
+          <div style={ComponentStyle.cardContainer}>
             <IconButton touch={true}  onClick={this.likeThread}>
               <ToggleStar color={Colors.grey700}/>
             </IconButton>
-            <div style={{display: 'inline-block',fontSize: '60%'}}>{thread.likes}</div>                
+            <div style={ComponentStyle.subNote}>{thread.likes}</div>                
             <IconButton touch={true}>
               <CommunicationComment color={Colors.grey700}/>
             </IconButton>
-            <div style={{display: 'inline-block',fontSize: '60%'}}>{thread.comments ? thread.comments.length : null}</div>
+            <div style={ComponentStyle.subNote}>{thread.comments ? thread.comments.length : null}</div>
             <IconMenu iconButtonElement={<SocialShare color={Colors.grey700} />}>
-              <div style={social_share_container_styles}>
+              <div style={ComponentStyle.socialShare}>
                 <IconButton onTouchTap={this.share.bind(null, 'facebook')}>
                   <FacebookShare color={Colors.indigo500}/>
                 </IconButton>
               </div>
-              <div style={social_share_container_styles}>
+              <div style={ComponentStyle.socialShare}>
                 <IconButton onTouchTap={this.share.bind(null, 'twitter')}>
                   <TwitterShare color={Colors.blue500}/>
                 </IconButton>
               </div>
-              <div style={social_share_container_styles}>
+              <div style={ComponentStyle.socialShare}>
                 <IconButton onTouchTap={this.share.bind(null, 'reddit')}>
                   <RedditShare color={Colors.orange700}/>
                 </IconButton>
@@ -112,7 +118,7 @@ export default class Thread extends Component {
           <CardText>
             <span className="thread-main-description">{thread.description}</span>
           </CardText>
-          <CardActions style={{margin: 0, padding: 0}}>
+          <CardActions style={ComponentStyle.cardAction}>
             {this.renderCommentList()}
           </CardActions>
         </Card>
@@ -172,7 +178,7 @@ export default class Thread extends Component {
           actions={customActions}
           open={this.state.showCommentDialog}
           onRequestClose={this.closeReplyDialog}>
-        {this.props.currentUser ? <TextField multiLine={true} ref="Reply" style={{width: '100%'}}/> : <h4>Please signup to reply</h4>}
+        {this.props.currentUser ? <TextField multiLine={true} ref="Reply" style={ComponentStyle.replyField}/> : <h4>Please signup to reply</h4>}
       </Dialog>
     )    
   }

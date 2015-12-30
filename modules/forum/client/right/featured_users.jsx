@@ -1,5 +1,6 @@
 import { Component, PropTypes } from 'react';
 import { List, ListItem, Checkbox, FlatButton, Styles, Avatar } from 'material-ui';
+import ComponentStyle from 'forum/client/styles/right/featured_users';
 const {Colors} = Styles;
 
 export default class FeaturedUsers extends Component {
@@ -19,18 +20,12 @@ export default class FeaturedUsers extends Component {
   }
 
   render() {
-    let w_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 100;
-    const wrapper_style = {
-      height: `${w_h}px`
-    };
     let user_list = this.props.featuredUsers.map((user, index) => this.renderEachUser(user, index));
     return (
-      <div className="s-grid-top" style={wrapper_style}>
-        <div className="s-grid-cell s-grid-cell-sm-12 s-grid-cell-top">
-          <List subheader="Best contributors">
-            {user_list}
-          </List>
-        </div>
+      <div style={ComponentStyle.wrapper}>
+        <List style={ComponentStyle.list} subheader="Best contributors">
+          {user_list}
+        </List>
       </div>
     )
   }

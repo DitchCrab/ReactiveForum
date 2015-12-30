@@ -6,6 +6,7 @@ import { ToggleStarBorder, HardwareKeyboardArrowLeft, HardwareKeyboardArrowRight
 import Swipeable from 'react-swipeable';
 import Immutable from 'immutable';
 import OnClickOutside from 'react-onclickoutside';
+import ComponentStyle from 'forum/client/styles/thread/thread_carousel';
 const { Colors } = Styles;
 
 @ReactMixin.decorate(OnClickOutside)
@@ -34,22 +35,17 @@ export default class ThreadCarousel extends Component {
   }
 
   render() {
-    const width = toolbarWidth(this.props.windowSize);    
-    let carousel_style = {
-      position: 'fixed',
-      bottom: '56',
-      height: 150,
-      width: width,
-      background: 'rgba(0, 0, 0, 0.2)',
-    };
     let threads = this.state.threads.map(thread => this.renderEachCarouselThread(thread));
     return (
-      <Swipeable style={carousel_style} onSwipedRight={this.handleRightSwipe} onSwipedLeft={this.handleLeftSwipe}>
+      <Swipeable
+          style={ComponentStyle.wrapper(this.props.windowSize)}
+          onSwipedRight={this.handleRightSwipe}
+          onSwipedLeft={this.handleLeftSwipe}>
         { checkMobileDevice() ? null : this.renderLeftArrow() }
         <GridList
             cols={3}
             cellHeight={150}
-            style={{maxHeight: "100%"}}
+            style={ComponentStyle.gridList}
         >
           {threads}
         </GridList>
@@ -60,7 +56,7 @@ export default class ThreadCarousel extends Component {
 
   renderLeftArrow() {
     return (
-      <IconButton onClick={this.handleLeftSwipe} style={{position: 'absolute', left: -20, top: 50, zIndex: 9999}}>
+      <IconButton onClick={this.handleLeftSwipe} style={ComponentStyle.leftArrow}>
         <HardwareKeyboardArrowLeft  color={Colors.white}/>
       </IconButton>
     )    
@@ -68,7 +64,7 @@ export default class ThreadCarousel extends Component {
 
   renderRightArrow() {
     return (
-      <IconButton onClick={this.handleRightSwipe} style={{position: 'absolute', right: -20, top: 50, zIndex: 9999}}>
+      <IconButton onClick={this.handleRightSwipe} style={ComponentStyle.rightArrow}>
         <HardwareKeyboardArrowRight color={Colors.white} />
       </IconButton>
     )    
@@ -105,8 +101,8 @@ export default class ThreadCarousel extends Component {
       <GridTile key={thread._id}
                 title={thread.title}
                 subtitle={<span>by <b>{thread.user.username}</b></span>}
-                                                            actionIcon={<IconButton><ToggleStarBorder color="white"/></IconButton>}
-                  onClick={this.props.viewThread.bind(null, thread._id)} >
+                actionIcon={<IconButton><ToggleStarBorder color={Colors.white}/></IconButton>}
+                onClick={this.props.viewThread.bind(null, thread._id)} >
         <img src={thread.imgUrl} />
       </GridTile>
     )
