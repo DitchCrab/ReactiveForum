@@ -109,26 +109,9 @@ export default class Main extends Component {
     }
   }
   
-  componentWillMount() {
-    // Hack to open dialog to create new thread.
-    // Todo: bind callback
-    Tracker.autorun(() => {
-      if (Session.get('openNewThreadDialog') && !this.state.showDialog) {
-        this._openDialog();
-        Session.set('openNewThreadDialog', null);
-      }
-    })
-  }
-
   componentDidMount() {
     if (this.props.params.thread) {
       this.props.viewSection.bind(null, 'thread')();
-    }
-  }
-
-  componentDidUpdate() {
-    if (this.props.openSideNav === true) {
-      this.refs.rightNav.toggle();
     }
   }
 
@@ -142,6 +125,7 @@ export default class Main extends Component {
     let browsing = this.renderBrowsing(search_error);
     let filter_user = this.renderFilterUser();
     const right_nav_props = {
+      open: this.props.openSideNav,
       docked: false,
       onRequestChange: this.props.closeSideNav,
       disableSwipeToOpen: true,
@@ -216,7 +200,8 @@ export default class Main extends Component {
       onSearch: this.searchThreads,
       viewThread: this.viewThread,
       increaseBrowsingLimit: this.increaseBrowsingLimit,
-      windowSize: this.props.windowSize
+      windowSize: this.props.windowSize,
+      openNewThreadDialog: this._openDialog
     }
     return (
       <div style={Layout.leftNav(this.props.windowSize)}>
@@ -271,7 +256,8 @@ export default class Main extends Component {
           open={this.state.showDialog}
           autoDetectWindowHeight={true}
           autoScrollBodyContent={true}
-          onRequestClose={this._closeDialog}>
+          onRequestClose={this._closeDialog}
+          width={this.props.windowSize === 'small' ? '90%' : '75%'}>
         <ThreadForm
             categories={this.data.categories}
             threadParams={this.state.newThread}

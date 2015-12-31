@@ -73,7 +73,7 @@ export default class App extends Component {
     let user = this.data.user;
     // Props for AppBar element
     let app_bar_props = {
-      title: "Modrn",
+      title: "DitchCrab",
       onTitleTouchTap: this.viewSection.bind(null, 'thread'),
       iconElementRight: this.renderRightIcon(),
     };
@@ -116,15 +116,15 @@ export default class App extends Component {
     if (user) {
       button = this.renderUserAvatar();
     } else {
-      button =  <FlatButton id="signin-anchor" ref="signInButton" label="Sign In" onClick={this.openPopover}/> 
+      button =  <FlatButton ref="signInButton" label="Sign In" style={{color: Colors.white}} onClick={this.openPopover}/> 
     }
     return (
       <div>
         { this.props.params.thread && this.state.section === 'browsing' && this.state.windowSize === 'small' ? <IconButton onClick={this.viewSection.bind(null, 'thread')}><ActionHistory color={Colors.white}/></IconButton> : null }
         { this.state.windowSize !== 'large' ? <IconButton onClick={this.openSideNav}> <SocialPerson color={Colors.white}/> </IconButton> : null }
-        <span style={ComponentStyle.rightButton}>
+        <div style={ComponentStyle.rightButton(this.data.user)}>
           {button}
-        </span>
+        </div>
       </div>
     )
   }

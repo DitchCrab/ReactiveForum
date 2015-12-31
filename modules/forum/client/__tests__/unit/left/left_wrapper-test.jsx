@@ -13,7 +13,8 @@ describe('Left wrapper', () => {
     onSelectCategory: () => {return 3;},
     resetSearch: () => {return 4;},
     increaseBrowsingLimit: () => {return 5;},
-    windowSize: 'small'
+    windowSize: 'small',
+    openNewThreadDialog: () => {},
   };
 
   describe('when user not log in', () => {
@@ -97,7 +98,7 @@ describe('Left wrapper', () => {
         _id: 1,
         username: 'Tom'
       };
-      jasmineReact.spyOnClass(LeftWrapper, '_openDialog');
+      spyOn(foo, 'openNewThreadDialog');
       component = TestUtils.renderIntoDocument(
         <LeftWrapper currentUser={currentUser} {...foo}/>
       )
@@ -111,7 +112,7 @@ describe('Left wrapper', () => {
     it('open dialog when user click on button', () => {
       const button = TestUtils.findRenderedComponentWithType(component, IconButton);
       TestUtils.Simulate.click(ReactDOM.findDOMNode(button));
-      expect(jasmineReact.classPrototype(LeftWrapper)._openDialog.calls.count()).toEqual(1);
+      expect(foo.openNewThreadDialog.calls.count()).toEqual(1);
     });
   })
    

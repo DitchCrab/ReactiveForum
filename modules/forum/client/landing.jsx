@@ -1,5 +1,6 @@
 import { Component, PropTypes } from 'react';
 import { GridList, RaisedButton } from 'material-ui';
+import ComponentStyle from 'forum/client/styles/landing';
 
 export default class Landing extends Component {
   static contextTypes = {
@@ -13,24 +14,17 @@ export default class Landing extends Component {
   }
 
   render() {
-    const height = window.innerHeight * 0.7;
-    const centerStyle = {
-      position: 'absolute',
-      left: '50%',
-      marginRight: '-50%',
-      transform: 'translate(-50%, -50%)'
-    };
+    var bg = require('./img/bgL.jpg');
     return (
-      <div style={{backgroundImage: "url('bg.jpg')"}}>
-        <GridList
-            cols={1}
-            style={{height: `${height}px`}}>
-          <h1 id="heading-name" className="white">EXPAT HOME</h1>
-        </GridList>
-        <GridList
-            cols={1}>
-          <RaisedButton id="landing-discover" label="Discover" primary={true} style={centerStyle} onClick={this.redirect}/>
-        </GridList>
+      <div style={ComponentStyle.wrapper}>
+        <div style={ComponentStyle.nav}>
+          <h1>DitchCrab</h1>
+        </div>
+        <div style={ComponentStyle.main}>
+          <p>Don't know where to whin after a shitty day?</p>
+          <br/>
+          <RaisedButton label="Punch here" style={ComponentStyle.button} primary={true} onClick={this.redirect}/>
+        </div>
       </div>
     );
   }

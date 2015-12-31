@@ -19,7 +19,8 @@ export default class LeftWrapper extends Component {
     onSelectCategory: PropTypes.func.isRequired,
     resetSearch: PropTypes.func.isRequired,
     increaseBrowsingLimit: PropTypes.func.isRequired,
-    windowSize: PropTypes.string
+    windowSize: PropTypes.string,
+    openNewThreadDialog: PropTypes.func
   }
 
   static defaultProps = {
@@ -35,7 +36,6 @@ export default class LeftWrapper extends Component {
     this.searchThreadsByEnter = this.searchThreadsByEnter.bind(this);
     this.renderNewThread = this.renderNewThread.bind(this);
     this.handleSelectCategory = this.handleSelectCategory.bind(this);
-    this._openDialog = this._openDialog.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -120,15 +120,11 @@ export default class LeftWrapper extends Component {
   renderNewThread() {
     return (
       <div style={ComponentStyle.newThreadDiv}>
-        <IconButton style={ComponentStyle.newThreadButton} onClick={this._openDialog}>
+        <IconButton style={ComponentStyle.newThreadButton} onClick={this.props.openNewThreadDialog}>
           <ContentAdd color={Colors.white}/>
         </IconButton>
       </div>
     )
-  }
-
-  _openDialog() {
-    Session.set('openNewThreadDialog', true);
   }
 
   clearSearch(event) {

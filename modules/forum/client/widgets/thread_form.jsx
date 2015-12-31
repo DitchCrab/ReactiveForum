@@ -1,5 +1,5 @@
 import { Component, PropTypes } from 'react';
-import { SelectField, TextField, FlatButton } from 'material-ui';
+import { MenuItem, SelectField, TextField, FlatButton } from 'material-ui';
 import ComponentStyle from 'forum/client/styles/widgets/thread_form';
 import Immutable from 'immutable';
 
@@ -27,15 +27,13 @@ export default class ThreadForm extends Component {
   }
 
   render() {
-    let menuItems = Immutable.fromJS(this.props.categories).map(x => x.set('payload', x.get("_id")).set('text', x.get("name"))).toJS();
     return (
       <div className="modal-form">
-        <SelectField
-            value={this.props.threadParams.category}
-            onChange={this._editCategory}
-            hintText="Category"
-            menuItems={menuItems} />
-
+        <SelectField hintText="Select category" value={this.props.threadParams.category} onChange={this._editCategory}>
+          {this.props.categories.map((category) => {
+            return (<MenuItem key={category._id} value={category._id} primaryText={category.name}/>)
+           })}
+        </SelectField>
         <TextField
             value={this.props.threadParams.title}
             floatingLabelText="Title"
@@ -63,9 +61,8 @@ export default class ThreadForm extends Component {
     )
   }
 
-  _editCategory(event, selectedIndex, menuItem) {
-    this.setState({selectValue: menuItem.payload});
-    this.props.onEdit.bind(null, 'category', menuItem.payload)();
+  _editCategory(event, selectedIndex, value) {
+    this.props.onEdit.bind(null, 'category', value)();
   }
 
   _editTitle(event) {

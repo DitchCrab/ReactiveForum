@@ -109,6 +109,7 @@ export default class ThreadCarousel extends Component {
   }
 
   handleClickOutside(event) {
+    event.preventDefault();
     this.props.onClickOutside.bind(null)();
   }
 

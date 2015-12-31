@@ -9,7 +9,7 @@ describe('Landing Page', () => {
   
   it('should display the slogan', () => {
     const header = TestUtils.findRenderedDOMComponentWithTag(root, 'h1');
-    expect(header.innerText).toContain('EXPAT HOME');
+    expect(header.innerText).toContain('DitchCrab');
   });
 
   it('has discover button', () => {

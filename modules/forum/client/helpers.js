@@ -19,6 +19,10 @@ export function windowSize() {
   }
 }
 
+export function windowHeight() {
+  return Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+}
+
 export function toolbarWidth(windowSize) {
   let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
   var width;

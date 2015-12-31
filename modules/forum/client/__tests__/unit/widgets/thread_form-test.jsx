@@ -2,7 +2,7 @@ import TestUtils from 'react-addons-test-utils';
 import ReactDOM from 'react-dom';
 import jasmineReact from 'jasmine-react-helpers-hotfix-0.14';
 import ThreadForm from 'forum/client/widgets/thread_form';
-import { TextField, SelectField, FlatButton } from 'material-ui';
+import { TextField, SelectField, FlatButton, MenuItem } from 'material-ui';
 
 describe('Thread form widget', () => {
   var component;
@@ -30,7 +30,7 @@ describe('Thread form widget', () => {
 
   it('render selectfield', () => {
     const selectfield = TestUtils.findRenderedComponentWithType(component, SelectField);
-    expect(selectfield.props.menuItems.length).toEqual(2);
+    expect(selectfield.props.children.length).toEqual(2);
   });
 
   it('change value of title field', () => {

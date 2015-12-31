@@ -35,17 +35,9 @@ Meteor.methods({
     params['updatedAt'] = moment.utc().format();
     Meteor.users.update({_id: current_user._id}, {$inc: {'threads': 1, 'contribution': 1}});
     if(params.imgId) {
-      let img = ThreadImgs.find({_id: params.imgId});
-      let observe = img.observe({
-        changed: function(newImg, oldImg) {
-          if (newImg.url()) {
-            observe.stop();
-            params['imgUrl'] = newImg.url();
-            Threads.insert(params);
-          }
-        }
-      });
-      return 1;
+      let img = ThreadImgs.findOne({_id: params.imgId});
+      params['imgUrl'] = img.url({brokenIsFine: true});
+      return Threads.insert(params);
     } else {
       return Threads.insert(params);      
     }

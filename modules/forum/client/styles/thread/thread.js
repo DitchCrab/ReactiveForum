@@ -26,6 +26,11 @@ export default {
     fontSize: '0.6rem'
   },
 
+  share: {
+    marginLeft: 10,
+    marginRight: 10
+  },
+
   socialShare: {
     textAlign: 'center'
   },

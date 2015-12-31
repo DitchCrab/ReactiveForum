@@ -33,11 +33,11 @@ export default class Thread extends Component {
     }
   }
   
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.thread._id !== this.props.thread._id) {
-      const found = _.find(nextProps.threadList, (thread) => { return thread._id === nextProps.thread});
+  componentDidUpdate(prevProps) {
+    if (prevProps.thread._id !== this.props.thread._id) {
+      const found = _.find(prevProps.threadList, (thread) => { return thread._id === this.props.thread});
       if (!found) {
-        this.props.updateThreadList(nextProps.thread);
+        this.props.updateThreadList(this.props.thread);
       }
     }  
   }
@@ -97,7 +97,7 @@ export default class Thread extends Component {
               <CommunicationComment color={Colors.grey700}/>
             </IconButton>
             <div style={ComponentStyle.subNote}>{thread.comments ? thread.comments.length : null}</div>
-            <IconMenu iconButtonElement={<SocialShare color={Colors.grey700} />}>
+            <IconMenu style={ComponentStyle.share} iconButtonElement={<SocialShare color={Colors.grey700} />}>
               <div style={ComponentStyle.socialShare}>
                 <IconButton onTouchTap={this.share.bind(null, 'facebook')}>
                   <FacebookShare color={Colors.indigo500}/>
