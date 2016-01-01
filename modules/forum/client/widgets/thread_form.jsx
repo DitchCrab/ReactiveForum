@@ -2,50 +2,65 @@ import { Component, PropTypes } from 'react';
 import { MenuItem, SelectField, TextField, FlatButton } from 'material-ui';
 import ComponentStyle from 'forum/client/styles/widgets/thread_form';
 import Immutable from 'immutable';
+import ThreadImgs from 'forum/collections/thread_imgs';
+import Threads from 'forum/collections/threads';
 
 export default class ThreadForm extends Component {
   static propTypes = {
     categories: PropTypes.arrayOf(PropTypes.object),
-    threadParams: PropTypes.object,
-    onEdit: PropTypes.func
+    clearState: PropTypes.func,
+    onCancel: PropTypes.bool,
+    onSubmit: PropTypes.bool
   };
 
   static defaultProps = {
     categories: [],
-    threadParams: {}
   }
 
   constructor(props, context) {
     super(props);
-    this.state = {selectValue: null};
+    this.state = {};
     this._editCategory = this._editCategory.bind(this);
     this._editTitle = this._editTitle.bind(this);
     this._editDescription = this._editDescription.bind(this);
     this._editImg = this._editImg.bind(this);
     this._renderImg = this._renderImg.bind(this);
     this._editTags = this._editTags.bind(this);
+    this._cancel = this._cancel.bind(this);
+    this._submit = this._submit.bind(this);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.onCancel && !prevProps.onCancel) {
+      this._cancel();
+      return;
+    }
+    if (this.props.onSubmit && !prevProps.onSubmit) {
+      this._submit();
+      return
+    }
   }
 
   render() {
     return (
       <div className="modal-form">
-        <SelectField hintText="Select category" value={this.props.threadParams.category} onChange={this._editCategory}>
+        <SelectField hintText="Select category" value={this.state.category} onChange={this._editCategory}>
           {this.props.categories.map((category) => {
             return (<MenuItem key={category._id} value={category._id} primaryText={category.name}/>)
            })}
         </SelectField>
         <TextField
-            value={this.props.threadParams.title}
+            value={this.state.title}
             floatingLabelText="Title"
             onChange={this._editTitle}/>
 
         <TextField
-            value={this.props.threadParams.description}
+            value={this.state.description}
             floatingLabelText="Description"
             multiLine={true}
             onChange={this._editDescription}/>
         <TextField
-            value={this.props.threadParams.tags? this.props.threadParams.tags.join(", ") : null}
+            value={this.state.tags? this.state.tags.join(", ") : null}
             hintText="Seperate by ','"
             floatingLabelText="Tag"
             onChange={this._editTags}/>
@@ -55,24 +70,24 @@ export default class ThreadForm extends Component {
           </FlatButton>
         </div>
         <div>
-          {this.props.threadParams.img ? <img src={this.props.threadParams.img} style={ComponentStyle.image} /> : null }
+          {this.state.img ? <img src={this.state.img} style={ComponentStyle.image} /> : null }
         </div>
       </div>
     )
   }
 
   _editCategory(event, selectedIndex, value) {
-    this.props.onEdit.bind(null, 'category', value)();
+    this.setState({category: value});
   }
 
   _editTitle(event) {
     event.preventDefault();
-    this.props.onEdit.bind(null, 'title', event.target.value)();
+    this.setState({title: event.target.value});
   }
 
   _editDescription(event) {
     event.preventDefault;
-    this.props.onEdit.bind(null, 'description', event.target.value)();      
+    this.setState({description: event.target.value});
   }
 
   _editImg(event) {
@@ -98,15 +113,30 @@ export default class ThreadForm extends Component {
       canvas.height = canvas.width * (image.height / image.width);
       ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
       let new_img = canvas.toDataURL("image/jpeg", 0.8);
-      this.props.onEdit.bind(null, 'img', new_img)();
+      this.setState({img: new_img});
     };
     image.src = src;
   }
 
   _editTags(event) {
     event.preventDefault();
-    let tags = Immutable.List(event.target.value.split(',')).map(x => x.trim()).toArray();
-    this.props.onEdit.bind(null, 'tags', tags)();
+    let tags = _.map(event.target.value.split(','), (x) => {return x.trim()});
+    this.setState({tags: tags});
+  }
+
+  _cancel() {
+    this.props.clearState();
+  }
+
+  _submit() {
+    ThreadImgs.insert(this.state.img, (err, imgObj) => {
+      let params = this.state;
+      params['imgId'] = imgObj._id;
+      Meteor.call('createThread', params, (err, res) => {
+        this.setState({});
+        this.props.clearState();
+      })
+    });
   }
 };
 

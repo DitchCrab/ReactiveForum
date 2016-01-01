@@ -4,7 +4,7 @@ export default {
     let style= {};
     if (windowSize !== 'small') {
       style = {
-        height: `${w_h}px`,
+        height: w_h,
         overflowY: 'auto'
       };
     };
@@ -12,7 +12,7 @@ export default {
   },
   
   searchField: {
-    width: '90%'
+    width: '100%'
   },
   
   dropDownCategory: {

@@ -4,8 +4,8 @@ export default {
     flexWrap: 'wrap',
     flexDirection: 'row',
     alignItem: 'flex-start',
-    margin: '0.625rem',
-    marginTop: '4.8rem'
+    margin: '0rem 0.625rem',
+    paddingTop: '4.8rem',
   },
   leftNav: (windowSize) => {
     let style = {

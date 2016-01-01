@@ -1,9 +1,9 @@
 import { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { CircularProgress, ListItem, TextField, List, IconButton, Styles, DropDownMenu, MenuItem } from 'material-ui';
+import RefreshIndicator from 'material-ui/lib/refresh-indicator';
 import { ContentAdd } from 'material-ui/lib/svg-icons';
 import ThreadList from './thread_list';
-import Immutable from 'immutable';
 import InfiniteScroll from 'forum/client/widgets/infinite_scroll';
 import ComponentStyle from 'forum/client/styles/left/left_wrapper';
 const { Colors } = Styles;
@@ -32,6 +32,7 @@ export default class LeftWrapper extends Component {
     super(props);
     this.state = {filterParams: {}, hasMore: true, categoryValue: 1};
     this.renderCategory = this.renderCategory.bind(this);
+    this.renderInfinite = this.renderInfinite.bind(this);
     this.clearSearch = this.clearSearch.bind(this);
     this.searchThreadsByEnter = this.searchThreadsByEnter.bind(this);
     this.renderNewThread = this.renderNewThread.bind(this);
@@ -42,8 +43,25 @@ export default class LeftWrapper extends Component {
     if (nextProps.searchError) {
       Meteor.setTimeout(() => {nextProps.resetSearch.bind(null)()}, 1000);
     }
-    if (nextProps.threads.length - this.props.threads.length < 5) {
-      this.setState({hasMore: false});
+    //Stop infinite scroll 
+    let sub = nextProps.threads.length - this.props.threads.length;
+    if ( this.state.hasMore) {
+      // Stop when initial  threads in category is less than limit
+      if (nextProps.threads.length < 10) {
+        this.setState({hasMore: false});
+        return;
+      }
+      // When loading in the same category, stop if last query add less than 10 items
+      if ( nextProps.threads[0].category === this.props.threads[0].category) {
+        if (sub > 0 && sub < 10) {
+          this.setState({hasMore: false});
+        }
+      //When change category, if initial load is less than previous category load. Stop.  
+      } else {
+        if (sub < 0) {
+          this.setState({hasMore: false});
+        }
+      }
     }
   }
 
@@ -54,33 +72,41 @@ export default class LeftWrapper extends Component {
   }
   
   render() {
-    const infinite_props = {
-      pageStart: 0,
-      loadMore: this.props.increaseBrowsingLimit,
-      hasMore: this.state.hasMore,
-      loader: <div/>,
-      parentLarge: this.state.parentLarge
-    };
     return (
       <div>
         <div ref="leftWrapper" style={ComponentStyle.wrapper(this.props.windowSize)}>
-          <InfiniteScroll {...infinite_props}>
-            <TextField
-                hintText="Search" style={ComponentStyle.searchField}
-                onBlur={this.clearSearch}
-                onKeyUp={this.searchThreadsByEnter}
-                errorText={this.props.searchError}/>
-            <div>
-              { this.renderCategory() }
-            </div>
-            <ThreadList
-                currentUser={this.props.currentUser}
-                threads={this.props.threads}
-                viewThread={this.props.viewThread.bind(null)}/>
-          </InfiniteScroll>
+          { this.props.windowSize === 'small' || this.state.parentLarge ? this.renderInfinite() : null }
         </div>
         {this.props.currentUser ? this.renderNewThread() : null }
       </div>
+    )
+  }
+
+  renderInfinite() {
+    let infinite_props = {
+      pageStart: 0,
+      loadMore: this.props.increaseBrowsingLimit,
+      hasMore: this.state.hasMore,
+      loader: <RefreshIndicator size={40} left={80} top={5} status="loading" />,
+    };
+    if (this.props.windowSize !== 'small') {
+      infinite_props.parentLarge = this.state.parentLarge;
+    }
+    return (
+      <InfiniteScroll {...infinite_props}>
+        <TextField
+            hintText="Search" style={ComponentStyle.searchField}
+            onBlur={this.clearSearch}
+            onKeyUp={this.searchThreadsByEnter}
+            errorText={this.props.searchError}/>
+        <div>
+          { this.renderCategory() }
+        </div>
+        <ThreadList
+            currentUser={this.props.currentUser}
+            threads={this.props.threads}
+            viewThread={this.props.viewThread.bind(null)}/>
+      </InfiniteScroll>
     )
   }
   
@@ -140,7 +166,7 @@ export default class LeftWrapper extends Component {
   }
 
   handleSelectCategory(e, index, value) {
-    this.setState({categoryValue: value});
+    this.setState({categoryValue: value, hasMore: true});
     this.props.onSelectCategory.bind(null, value)();
   }
 

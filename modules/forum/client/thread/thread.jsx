@@ -15,13 +15,13 @@ export default class Thread extends Component {
   static propTypes = {
     thread: PropTypes.object,
     currentUser: PropTypes.object,
-    toggleCarousel: PropTypes.func,
     viewingCarousel: PropTypes.bool,
     notSeenUser: PropTypes.array,
-    updateThreadList: PropTypes.func,
     threadList: PropTypes.array,
     newMessages: PropTypes.number,
-    windowSize: PropTypes.string
+    windowSize: PropTypes.string,
+    toggleCarousel: PropTypes.func,
+    updateThreadList: PropTypes.func,
   }
 
   componentDidMount() {
@@ -30,6 +30,19 @@ export default class Thread extends Component {
       if (!found) {
         this.props.updateThreadList(this.props.thread);
       }
+    }
+  }
+
+  shouldComponentUpdate(nextProps) {
+    const same_user = this.props.currentUser._id === nextProps.currentUser._id;
+    const same_thread = _.isEqual(this.props.thread, nextProps.thread);
+    const same_list = _.isEqual(this.props.threadList, nextProps.threadList);
+    const same_blacklist = _.isEqual(this.props.notSeenUser, nextProps.notSeenUser);
+    const same_carousel = this.props.viewingCarousel === nextProps.viewingCarousel;
+    if ( same_user && same_thread && same_list && same_blacklist && same_carousel) {
+      return false;
+    } else {
+      return true;
     }
   }
   

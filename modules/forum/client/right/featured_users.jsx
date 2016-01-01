@@ -19,6 +19,10 @@ export default class FeaturedUsers extends Component {
     this.linkToUserPost = this.linkToUserPost.bind(this);
   }
 
+  shouldComponentUpdate(nextProps) {
+    return this.props.featuredUsers.length !== nextProps.featuredUsers.length;
+  }
+  
   render() {
     let user_list = this.props.featuredUsers.map((user, index) => this.renderEachUser(user, index));
     return (

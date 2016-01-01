@@ -9,16 +9,16 @@ import Immutable from 'immutable';
 export default class Wrapper extends Component {
 
   static propTypes = {
-    viewThread: PropTypes.func,
     userBlackList: PropTypes.arrayOf(PropTypes.string),
     mainThreads: PropTypes.arrayOf(PropTypes.object),
     thread: PropTypes.object,
     currentUser: PropTypes.object,
     category: PropTypes.arrayOf(PropTypes.object),
     threadList: PropTypes.arrayOf(PropTypes.object),
-    updateThreadList: PropTypes.func,
     onUser: PropTypes.string,
-    windowSize: PropTypes.string
+    windowSize: PropTypes.string,
+    viewThread: PropTypes.func,
+    updateThreadList: PropTypes.func,
   }
 
   static defaultProps = {
@@ -31,11 +31,11 @@ export default class Wrapper extends Component {
       viewingCarousel: false,
       newMessages: 0
     };
-    this.viewingThread = this.viewingThread.bind(this);
     this.toggleCarousel = this.toggleCarousel.bind(this);
     this.closeCarousel = this.closeCarousel.bind(this);
   }
 
+  
   componentWillReceiveProps(nextProps) {
     var id;
     if (this.props.currentUser) {
@@ -96,18 +96,10 @@ export default class Wrapper extends Component {
     };
     return (
       <div style={ComponentStyle.wrapper(this.props.windowSize)} className="thread-wrapper">
-        { this.viewingThread() ? <Thread {...thread_props}/> : <Featured {...featured_props} /> }
+        { this.props.thread ? <Thread {...thread_props}/> : <Featured {...featured_props} /> }
         {this.state.viewingCarousel ? <ThreadCarousel {...thread_carousel_props}/> : null }
       </div>
     );
-  }
-
-  viewingThread() {
-    if (this.props.thread) {
-      return true;
-    } else {
-      return false;
-    } 
   }
 
   toggleCarousel() {

@@ -13,7 +13,7 @@ export default class InfiniteScroll extends Component {
   static defaultProps = {
     pageStart: 0,
     hasMore: false,
-    threshold: 250
+    threshold: 800
   }
 
   static PropTypes = {
@@ -37,7 +37,7 @@ export default class InfiniteScroll extends Component {
     this.attachScrollListener();      
   }
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate(nextProps, nextState) {
     return !_.isEqual(this.props.children, nextProps.children);
   }
 

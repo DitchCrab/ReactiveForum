@@ -41,6 +41,16 @@ export default class Comment extends Component {
     }
   }
 
+  shouldComponentUpdate(nextProps) {
+    const same_user = this.props.currentUser._id === nextProps.currentUser._id;
+    const same_comment = _.isEqual(this.props.comment, nextProps.comment);
+    if (same_user && same_comment) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+  
   render() {
     let comment = this.props.comment;
     if (!comment) {

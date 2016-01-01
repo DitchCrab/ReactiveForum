@@ -19,6 +19,10 @@ export default class Featured extends Component {
     super(props);
   }
 
+  shouldComponentUpdate(nextProps) {
+    return !_.isEqual(this.props.threads, nextProps.threads);
+  }
+
   render() {
     if (!this.props.threads) {
       return <div/>

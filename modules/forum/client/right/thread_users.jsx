@@ -38,6 +38,16 @@ const {Colors} = Styles;
         users: users,
       }
     }
+
+    shouldComponentUpdate(nextProps) {
+      const same_users = _.isEqual(this.props.threadUsers, nextProps.threadUsers);
+      const same_list = _.isEqual(this.props.userBlackList, nextProps.userBlackList);
+      if (same_users && same_list) {
+        return false;
+      } else {
+        return true;        
+      }
+    }
     
     render() {
       let user_list = this.data.users.map((user, index) => this.renderEachUser(user, index));

@@ -34,6 +34,16 @@ export default class ThreadCarousel extends Component {
     this.renderRightArrow = this.renderRightArrow.bind(this);
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    const same_list =this.props.threadList.length !== nextProps.threadList.length;
+    const same_index = this.state.index === nextState.index;
+    if (same_list && same_index) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+  
   render() {
     let threads = this.state.threads.map(thread => this.renderEachCarouselThread(thread));
     return (

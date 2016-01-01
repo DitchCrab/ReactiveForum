@@ -8,7 +8,6 @@ import LeftWrapper from './left/left_wrapper';
 import ThreadUsers from './right/thread_users';
 import ThreadForm from './widgets/thread_form';
 import FeaturedUsers from './right/featured_users';
-import ThreadImgs from 'forum/collections/thread_imgs';
 import moment from 'moment';
 import Categories from 'forum/collections/categories';
 import Threads from 'forum/collections/threads';

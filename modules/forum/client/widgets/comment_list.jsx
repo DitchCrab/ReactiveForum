@@ -43,6 +43,18 @@ export default class CommentList extends Component {
     this.getMoreComments = this.getMoreComments.bind(this);
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    const same_user = this.props.currentUser._id === nextProps.currentUser._id;
+    const same_comments = _.isEqual(this.props.comments, nextProps.comments);
+    const same_list = _.isEqual(this.props.notSeenUser, nextProps.notSeenUser);
+    const same_mark = this.state.timeMark === nextState.timeMark;
+    if (same_user && same_comments && same_list && same_mark) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+  
   render() {
     if (this.props.comments.length < 1) {
       return <div/>

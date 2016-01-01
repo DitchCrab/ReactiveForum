@@ -31,6 +31,16 @@ export default class Reply extends Component {
       }
     }  
   }
+
+  shouldComponentUpdate(nextProps) {
+    const same_user = this.props.currentUser._id === nextProps.currentUser._id;
+    const same_reply = _.isEqual(this.props.reply, nextProps.reply);
+    if (same_user && same_reply) {
+      return false;
+    } else {
+      return true;
+    }
+  }
   
   render() {
     let reply = this.props.reply;

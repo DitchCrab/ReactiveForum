@@ -23,6 +23,10 @@ export default  class ThreadList extends Component {
     this.renderFlag = this.renderFlag.bind(this);
   }
 
+  shouldComponentUpdate(nextProps) {
+    return !_.isEqual(this.props.threads, nextProps.threads);
+  }
+
   render() {
     let cards = this.props.threads.map(thread => this.renderEachThread(thread));
     return (

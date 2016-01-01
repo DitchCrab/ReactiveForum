@@ -7,12 +7,12 @@ import moment from 'moment';
 
 export default class BottomToolbar extends Component {
   static propTypes = {
-    toggleCarousel: PropTypes.func,
     viewingCarousel: PropTypes.bool,
+    windowSize: PropTypes.string,
     threadId: PropTypes.string,
     newMessages: PropTypes.number,
+    toggleCarousel: PropTypes.func,
     moveToCommentId: PropTypes.func,
-    windowSize: PropTypes.string
   }
 
   static defaultProps = {
@@ -27,6 +27,16 @@ export default class BottomToolbar extends Component {
     this.addCommentToThread = this.addCommentToThread.bind(this);
   }
 
+  shouldComponentUpdate(nextProps) {
+    const same_id = _.isEqual(this.props.threadId, nextProps.threadId);
+    const same_carousel = this.props.viewingCarousel === nextProps.viewingCarousel;
+    if (same_id && same_carousel) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+  
   render() {
     let open_button =  <IconButton tooltip="Star" touch={true} onClick={this.props.toggleCarousel.bind(null)}><ActionViewCarousel/></IconButton>;
     let close_button = <NavigationClose />;
