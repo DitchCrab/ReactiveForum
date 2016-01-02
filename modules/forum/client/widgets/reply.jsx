@@ -6,8 +6,10 @@ const { Colors, AutoPrefix } = Styles;
 
 export default class Reply extends Component {
   static propTypes = {
+    // If user signed in
     currentUser: PropTypes.object,
     reply: PropTypes.object,
+    // Callbacks for server methods
     onLikeReply: PropTypes.func,
     newReplyId: PropTypes.string,
     moveToReplyId: PropTypes.func,
@@ -16,12 +18,17 @@ export default class Reply extends Component {
   
   constructor(props) {
     super(props);
-    this.state = {editing: false};
+    this.state = {
+      editing: false
+    };
+    // Decoupling from main render method
     this.renderEditing = this.renderEditing.bind(this);
+    // Open or close editing
     this.editReply = this.editReply.bind(this);
     this.updateReply = this.updateReply.bind(this);
   }
 
+  // If new reply is created by user, scroll to that dom element
   componentDidMount() {
     if (this.props.newReplyId === this.props.reply._id) {
       let view = ReactDOM.findDOMNode(this);

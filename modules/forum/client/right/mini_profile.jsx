@@ -8,12 +8,14 @@ const { Colors } = Styles;
 
 export default class MiniProfile extends React.Component {
   static propTypes = {
+    // if user signed in
     currentUser: PropTypes.object
   }
   
   constructor(props, context) {
     super(props);
     this.userLogout = this.userLogout.bind(this);
+    // Image proccessing methods
     this._uploadImg = this._uploadImg.bind(this);
     this._resizeImg = this._resizeImg.bind(this);
     this.updateAvatar = this.updateAvatar.bind(this);
@@ -41,6 +43,8 @@ export default class MiniProfile extends React.Component {
     )
   }
 
+  // Only availabe for modern browsers
+  // Need fallback to send image directly to server on old browsers
   _uploadImg(event) {
     event.preventDefault();
     let reader = new FileReader();

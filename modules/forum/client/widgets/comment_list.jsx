@@ -10,29 +10,38 @@ const { AutoPrefix } = Styles;
 
 export default class CommentList extends Component {
   static propTypes = {
+    // If user sign in
     currentUser: PropTypes.object,
+    // Thread comments
     comments: PropTypes.array,
-    notSeenUser: PropTypes.array,
+    // Filtered users
+    userBlackList: PropTypes.array,
+    // State of new comment or reply just created
     newCommentId: PropTypes.string,
     newReplyId: PropTypes.arrayOf(PropTypes.string),
+    moveToCommentId: PropTypes.func,
+    moveToReplyId: PropTypes.func,
+    // Callback for server methods
     onLike: PropTypes.func,
     onCommend: PropTypes.func,
     onLikeReply: PropTypes.func,
-    moveToCommentId: PropTypes.func,
-    moveToReplyId: PropTypes.func,
     updateComment: PropTypes.func,
     updateReply: PropTypes.func
   }
 
   static defaultProps = {
     comments: [],
-    notSeenUser: [],
+    userBlackList: [],
     newReplyId: [],
   }
   
   constructor(props) {
     super(props);
-    this.state = {timeMark: null};
+    this.state = {
+      // Only show comments after this timeMark
+      timeMark: null
+    };
+    // Set initial timeMark
     if (!this.state.timeMark) {
       let mark = Immutable.fromJS(this.props.comments).takeLast(2).toJS();
       if (mark.length > 0) {
@@ -47,7 +56,7 @@ export default class CommentList extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     const same_user = _.isEqual(this.props.currentUser, nextProps.currentUser);
     const same_comments = _.isEqual(this.props.comments, nextProps.comments);
-    const same_list = _.isEqual(this.props.notSeenUser, nextProps.notSeenUser);
+    const same_list = _.isEqual(this.props.userBlackList, nextProps.userBlackList);
     const same_mark = this.state.timeMark === nextState.timeMark;
     if (same_user && same_comments && same_list && same_mark) {
       return false;
@@ -60,12 +69,13 @@ export default class CommentList extends Component {
     if (this.props.comments.length < 1) {
       return <div/>
     }
+    // Only render comments after timeMark
     let comments = Immutable.fromJS(this.props.comments).skipUntil(x => x.get('createdAt') >= this.state.timeMark).toJS();
     if (!comments) {
       return <div/>
     }
     let comment_list = comments.map((comment) => {
-      if (Immutable.fromJS(this.props.notSeenUser).find(x => x === comment.userId)) {
+      if (Immutable.fromJS(this.props.userBlackList).find(x => x === comment.userId)) {
         return <div/>;
       }
       let comment_props = {
@@ -99,6 +109,7 @@ export default class CommentList extends Component {
     )
   }
 
+  // Decrease timeMark to view more comments
   getMoreComments() {
     let mark = Immutable.fromJS(this.props.comments).takeUntil(x => x.get('createdAt') >= this.state.timeMark).takeLast(2).toJS();
     if (mark.length > 0) {

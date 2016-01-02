@@ -31,7 +31,6 @@ describe('main', () => {
       jasmineReact.spyOnClass(Main, '_closeDialog');
       jasmineReact.spyOnClass(Main, '_cancelForm');
       jasmineReact.spyOnClass(Main, '_submitForm');
-      jasmineReact.spyOnClass(Main, 'editNewThread');
       spyOn(Categories, 'find').and.returnValue({fetch: () => {}});
       const currentUser = {
         _id: 1,
@@ -131,7 +130,6 @@ describe('main', () => {
       jasmineReact.spyOnClass(Main, '_closeDialog');
       jasmineReact.spyOnClass(Main, '_cancelForm');
       jasmineReact.spyOnClass(Main, '_submitForm');
-      jasmineReact.spyOnClass(Main, 'editNewThread');
       const currentUser = {
         _id: 1,
         username: 'Tom'

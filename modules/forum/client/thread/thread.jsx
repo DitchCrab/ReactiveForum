@@ -13,17 +13,24 @@ import moment from 'moment';
 
 export default class Thread extends Component {
   static propTypes = {
+    // Current viewing thread
     thread: PropTypes.object,
+    // If user signed in
     currentUser: PropTypes.object,
+    // Used to open or close carousel
     viewingCarousel: PropTypes.bool,
-    notSeenUser: PropTypes.array,
+    userBlackList: PropTypes.array,
+    // List of threads which viewed
     threadList: PropTypes.array,
+    // Number of new comments in a thread
     newMessages: PropTypes.number,
-    windowSize: PropTypes.string,
+    // Callbacks
     toggleCarousel: PropTypes.func,
     updateThreadList: PropTypes.func,
+    windowSize: PropTypes.string,
   }
 
+  // Update threadList if current thread is not in it
   componentDidMount() {
     if (this.props.thread) {
       const found = _.find(this.props.threadList, (thread) => { return thread._id === this.props.thread});
@@ -37,7 +44,7 @@ export default class Thread extends Component {
     const same_user = _.isEqual(this.props.currentUser, nextProps.currentUser);
     const same_thread = _.isEqual(this.props.thread, nextProps.thread);
     const same_list = _.isEqual(this.props.threadList, nextProps.threadList);
-    const same_blacklist = _.isEqual(this.props.notSeenUser, nextProps.notSeenUser);
+    const same_blacklist = _.isEqual(this.props.userBlackList, nextProps.userBlackList);
     const same_carousel = this.props.viewingCarousel === nextProps.viewingCarousel;
     const view_dialog = this.state.showReplyDialog === nextState.showReplyDialog;
     const same_messages_count = this.props.newMessages == nextProps.newMessages;
@@ -48,6 +55,7 @@ export default class Thread extends Component {
     }
   }
   
+  // Update threadList if current thread is not in it
   componentDidUpdate(prevProps) {
     if (prevProps.thread._id !== this.props.thread._id) {
       const found = _.find(prevProps.threadList, (thread) => { return thread._id === this.props.thread});
@@ -59,20 +67,30 @@ export default class Thread extends Component {
   
   constructor(props, context) {
     super(props);
-    this.state = {showReplyDialog: false, newReplyId: []};
+    this.state = {
+      // Open or close reply dialog by state
+      showReplyDialog: false,
+      // [comment._id, reply_id] -> use to move to particular reply
+      newReplyId: []
+    };
+    // Decoupling from main render methods
     this.renderCommentList = this.renderCommentList.bind(this);
     this.renderReplyDialog = this.renderReplyDialog.bind(this);
+    // Open or close text field for reply in dialog
     this.openReplyDialog = this.openReplyDialog.bind(this);
     this.closeReplyDialog = this.closeReplyDialog.bind(this);
+    // Call server methods
     this.likeReply = this.likeReply.bind(this);
     this.likeComment = this.likeComment.bind(this);
     this.likeThread = this.likeThread.bind(this);
     this.addReply = this.addReply.bind(this);
     this.cancelReply = this.cancelReply.bind(this);
-    this.moveToCommentId = this.moveToCommentId.bind(this);
-    this.moveToReplyId = this.moveToReplyId.bind(this);
     this.updateComment = this.updateComment.bind(this);
     this.updateReply = this.updateReply.bind(this);
+    // Fire after new comment or reply is created
+    this.moveToCommentId = this.moveToCommentId.bind(this);
+    this.moveToReplyId = this.moveToReplyId.bind(this);
+    // Handle Social share event
     this.share = this.share.bind(this);
   }
 
@@ -147,7 +165,7 @@ export default class Thread extends Component {
     const comment_list_props = {
       currentUser: this.props.currentUser,
       comments: this.props.thread.comments,
-      notSeenUser: this.props.notSeenUser,
+      userBlackList: this.props.userBlackList,
       newReplyId: this.state.newReplyId,
       newCommentId: this.state.newCommentId,
       moveToCommentId: this.moveToCommentId,

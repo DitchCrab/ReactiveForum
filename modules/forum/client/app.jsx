@@ -4,10 +4,10 @@ import ReactMixin from 'react-mixin';
 import LeftWrapper from './left/left_wrapper';
 import MiniProfile from './right/mini_profile';
 import Login from './right/login';
-import ComponentStyle from './styles/app';
 import { windowSize } from './helpers';
 import { LeftNav, IconButton, Avatar, FlatButton, AppBar, Popover, Styles } from 'material-ui';
 import { ActionViewList, ActionHistory, SocialPerson } from 'material-ui/lib/svg-icons';
+import ComponentStyle from './styles/app';
 const { Colors, AutoPrefix } = Styles;
 
 @ReactMixin.decorate(ReactMeteorData)
@@ -24,16 +24,16 @@ export default class App extends Component {
     super(props);
     this.state = {activePopover: false, section: 'thread', windowSize: windowSize()};
     this.context = context;
-    this.handleResize = this.handleResize.bind(this);
+    // Rendering methods decoupling from main render method
     this.renderRightIcon = this.renderRightIcon.bind(this);
     this.renderLeftIcon = this.renderLeftIcon.bind(this);
     this.renderUserAvatar = this.renderUserAvatar.bind(this);
+    // Update view of ['thread', 'browsing'] on small screen
     this.viewSection = this.viewSection.bind(this);
+    // Update popover state
     this.openPopover = this.openPopover.bind(this);
     this.closePopover = this.closePopover.bind(this);
-    this.selectCategory = this.selectCategory.bind(this);
-    this.searchThreads = this.searchThreads.bind(this);
-    this.viewThread = this.viewThread.bind(this);
+    // right SideNav manipulation
     this.openSideNav = this.openSideNav.bind(this);
     this.closeSideNav = this.closeSideNav.bind(this);
   }
@@ -45,8 +45,8 @@ export default class App extends Component {
   }
 
   componentWillMount() {
-    /* Track Sign In and Sign Out event
-       anchor the right DOM element for popover */
+    // Track Sign In and Sign Out event
+    // Anchor to the right DOM element for Popover component
     Tracker.autorun(() => {
       Meteor.user();
       this.setState({activePopover: false});
@@ -58,6 +58,7 @@ export default class App extends Component {
 
   componentDidMount() {
     this.setState({signinButton: ReactDOM.findDOMNode(this.refs.signInButton)});
+    // Track resize event for responsive layout
     window.addEventListener('resize', this.handleResize);
   }
 
@@ -66,6 +67,7 @@ export default class App extends Component {
   }
 
   handleResize() {
+    // WindowSize as 'small', 'medium', 'large'
     this.setState({windowSize: windowSize()});
   }
 
@@ -77,12 +79,15 @@ export default class App extends Component {
       onTitleTouchTap: this.viewSection.bind(null, 'thread'),
       iconElementRight: this.renderRightIcon(),
     };
+    // Burger menu button do not show on small screen
     if ( this.state.windowSize === 'small')  {
       app_bar_props.iconElementLeft = this.renderLeftIcon();
     } else {
       app_bar_props.showMenuIconButton = false;
     }
     //Props for Popover element
+    // If user not signin -> Popover has Login form
+    // Else -> Popover has MiniProfile
     let pop_over_props = {
       open: this.state.activePopover,
       anchorEl: this.state.signinButton,
@@ -96,7 +101,6 @@ export default class App extends Component {
       openSideNav: this.state.sideNavOpen,
       closeSideNav: this.closeSideNav,
       currentUser: this.data.user,
-      updateSection: this.viewSection,
       windowSize: this.state.windowSize
     };
     return (
@@ -110,6 +114,10 @@ export default class App extends Component {
     )
   }
 
+  // Right incons includes:
+  // For small screen: SignIn button OR Avatar, SocialPerson icon, AND ActionHistory
+  // For medium screen: SignIn button OR Avatar, SocialPerson icon
+  // For large screen: SignIn button OR Avatar
   renderRightIcon() {
     let user = this.data.user;
     var button;
@@ -129,6 +137,7 @@ export default class App extends Component {
     )
   }
 
+  // Burger Menu icon on the left
   renderLeftIcon() {
     return (
       <IconButton onClick={this.viewSection.bind(null, 'browsing')}>
@@ -137,6 +146,8 @@ export default class App extends Component {
     )
   }
 
+  // If user has avatar image -> show image
+  // Else: show first username letter
   renderUserAvatar() {
     let user = this.data.user;
     let avatar = <Avatar id="avatar-anchor" ref="signInButton" onClick={this.openPopover}>{user.username[0]}</Avatar>;
@@ -162,19 +173,6 @@ export default class App extends Component {
     if (this.state.activePopover === true) {
       this.setState({activePopover: false});      
     }
-  }
-
-  selectCategory(id) {
-    Session.set('category', id);
-  }
-
-  searchThreads(params) {
-    Session.set('search', params);
-  }
-
-  viewThread(id) {
-    Session.set('viewThread', id);
-    this.props.history.pushState(null, `/forum/${id}`);
   }
 
   openSideNav() {

@@ -7,8 +7,11 @@ import Threads from 'forum/collections/threads';
 
 export default class ThreadForm extends Component {
   static propTypes = {
+    // Thread categories from db
     categories: PropTypes.arrayOf(PropTypes.object),
+    // Callback when thread is created or cancel
     clearState: PropTypes.func,
+    // Cancel and submit is triggered by parent component.
     onCancel: PropTypes.bool,
     onSubmit: PropTypes.bool
   };
@@ -31,10 +34,12 @@ export default class ThreadForm extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    // If parent component call cancel, close form and clear child state
     if (this.props.onCancel && !prevProps.onCancel) {
       this._cancel();
       return;
     }
+    // If parent component call submit, submit form, clear state and close
     if (this.props.onSubmit && !prevProps.onSubmit) {
       this._submit();
       return
@@ -90,6 +95,8 @@ export default class ThreadForm extends Component {
     this.setState({description: event.target.value});
   }
 
+  // Image manipulation
+  // Need fallback on old broswers
   _editImg(event) {
     event.preventDefault();
     let reader = new FileReader();
@@ -112,7 +119,7 @@ export default class ThreadForm extends Component {
       canvas.width = 600;
       canvas.height = canvas.width * (image.height / image.width);
       ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-      let new_img = canvas.toDataURL("image/jpeg", 0.8);
+      let new_img = canvas.toDataURL("image/jpeg", 0.7);
       this.setState({img: new_img});
     };
     image.src = src;

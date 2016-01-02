@@ -7,12 +7,17 @@ import moment from 'moment';
 
 export default class BottomToolbar extends Component {
   static propTypes = {
+    // If carousel is currently open or not
     viewingCarousel: PropTypes.bool,
-    windowSize: PropTypes.string,
+    // Thread when comment field is bound
     threadId: PropTypes.string,
+    // Notification if receive new messages in a thread
     newMessages: PropTypes.number,
+    // Callback to open or close carousel
     toggleCarousel: PropTypes.func,
+    // Callback with param to move to specific comment just created by user
     moveToCommentId: PropTypes.func,
+    windowSize: PropTypes.string,
   }
 
   static defaultProps = {
@@ -22,16 +27,22 @@ export default class BottomToolbar extends Component {
   
   constructor(props) {
     super(props);
-    this.state = {comment: null, defaultHeight: 56, textFieldHeight: 24};
+    this.state = {
+      comment: null,
+      defaultHeight: 56,
+      textFieldHeight: 24
+    };
     this.typeComment = this.typeComment.bind(this);
+    // call server method
     this.addCommentToThread = this.addCommentToThread.bind(this);
   }
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate(nextProps, nextState) {
     const same_id = _.isEqual(this.props.threadId, nextProps.threadId);
     const same_carousel = this.props.viewingCarousel === nextProps.viewingCarousel;
-    const same_messages_count = this.props.newMessages == nextProps.newMessages;    
-    if (same_id && same_carousel && same_messages_count) {
+    const same_messages_count = this.props.newMessages == nextProps.newMessages;
+    const same_comment = this.state.comment === nextState.comment;
+    if (same_id && same_carousel && same_messages_count && same_comment) {
       return false;
     } else {
       return true;
@@ -73,6 +84,7 @@ export default class BottomToolbar extends Component {
     this.setState({comment: comment});
     let new_height = event.target.clientHeight;
     let old_height = this.state.textFieldHeight;
+    // Adjust height of toolbar on line break
     if (new_height > old_height) {
       this.setState({textFieldHeight: new_height, defaultHeight: this.state.defaultHeight + 24});
     } else if (new_height < old_height) {
@@ -89,6 +101,7 @@ export default class BottomToolbar extends Component {
         }
       })
     }
+    //Reset comment toolbar
     this.refs.commentField.clearValue();
     this.setState({comment: null, defaultHeight: 56, textFieldHeight: 24});
   }

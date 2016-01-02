@@ -46,8 +46,6 @@ export default class Login extends Component {
             this.setState({error: 'Please sign up'});              
           }
         }
-        console.log({res: res});
-        console.log({err: err});
       })
     }
   }

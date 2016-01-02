@@ -8,9 +8,13 @@ const {Colors} = Styles;
 @ReactMixin.decorate(ReactMeteorData)
   export default class ThreadUsers extends Component {
     static propTypes = {
+      // List of users who commended in thread
       threadUsers: PropTypes.arrayOf(PropTypes.string),
+      // List of users which you don't want to see
       userBlackList: PropTypes.arrayOf(PropTypes.string),
+      // Callback to update blacklist
       updateBlackList: PropTypes.func.isRequired,
+      // Callback to view threads which user contributed to
       onUser: PropTypes.func.isRequired
     }
 
@@ -21,13 +25,19 @@ const {Colors} = Styles;
     
     constructor(props, context) {
       super(props);
-      this.state = {showRequestDialog: false, notSeenUser: [], userList: []};
+      this.state = {
+        userList: []
+      };
       this.linkToUserPost = this.linkToUserPost.bind(this);
+      // Fire when select on unselect particular user
       this.filterUser = this.filterUser.bind(this);
+      // Fire when user choose 'all' or 'none'
       this.makeSelection = this.makeSelection.bind(this);
+      // Decoupling from main render method
       this.renderEachUser = this.renderEachUser.bind(this);
     }
 
+    // Get full information of user from list of threadUsers _id
     getMeteorData() {
       let user_list = [];
       if (this.props.threadUsers) {

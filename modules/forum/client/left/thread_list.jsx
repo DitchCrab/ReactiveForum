@@ -6,8 +6,11 @@ const { Colors } = Styles;
 
 export default  class ThreadList extends Component {
   static propTypes = {
+    // List of thread queried
     threads: PropTypes.arrayOf(PropTypes.object),
+    // When user signed in
     currentUser: PropTypes.object,
+    // Callback on click on thread card
     viewThread: PropTypes.func.isRequired,
   }
 
@@ -17,7 +20,9 @@ export default  class ThreadList extends Component {
 
   constructor(props, context) {
     super(props);
+    // Decoupling from main render function
     this.renderEachThread = this.renderEachThread.bind(this);
+    // Server calls
     this.likeThread = this.likeThread.bind(this);
     this.flagThread = this.flagThread.bind(this);
     this.unflagThread = this.unflagThread.bind(this);

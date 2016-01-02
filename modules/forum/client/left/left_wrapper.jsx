@@ -10,17 +10,25 @@ const { Colors, AutoPrefix } = Styles;
 
 export default class LeftWrapper extends Component {
   static propTypes = {
+    // If user signed in
     currentUser: PropTypes.object,
+    // If there's no search result
     searchError: PropTypes.string,
+    // List of thread categories from db
     categories: PropTypes.arrayOf(PropTypes.object),
+    // List of threads queried
     threads: PropTypes.arrayOf(PropTypes.object),
+    // Callback when user click thread card
     viewThread: PropTypes.func.isRequired,
+    // Callbacks for query events
     onSearch: PropTypes.func.isRequired,
     onSelectCategory: PropTypes.func.isRequired,
     resetSearch: PropTypes.func.isRequired,
+    // Callback when scroll to the end
     increaseBrowsingLimit: PropTypes.func.isRequired,
+    // Callback when user click on fab button to create new thread
+    openNewThreadDialog: PropTypes.func,
     windowSize: PropTypes.string,
-    openNewThreadDialog: PropTypes.func
   }
 
   static defaultProps = {
@@ -30,16 +38,25 @@ export default class LeftWrapper extends Component {
   
   constructor(props, context) {
     super(props);
-    this.state = {filterParams: {}, hasMore: true, categoryValue: 1};
+    this.state = {
+      // Define if there's more threads to render
+      hasMore: true,
+      // Store the select value of category
+      categoryValue: 1
+    };
+    // Decoupling from main render methods
     this.renderCategory = this.renderCategory.bind(this);
     this.renderInfinite = this.renderInfinite.bind(this);
+    // Render fab button to trigger New Thread Form Dialog onClick
+    this.renderNewThread = this.renderNewThread.bind(this);
+    // Fire where no sesults from search
     this.clearSearch = this.clearSearch.bind(this);
     this.searchThreadsByEnter = this.searchThreadsByEnter.bind(this);
-    this.renderNewThread = this.renderNewThread.bind(this);
     this.handleSelectCategory = this.handleSelectCategory.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
+    // Evaluate if there is search result. Else clear search query
     if (nextProps.searchError) {
       Meteor.setTimeout(() => {nextProps.resetSearch.bind(null)()}, 1000);
     }
@@ -66,6 +83,7 @@ export default class LeftWrapper extends Component {
   }
 
   componentDidMount() {
+    // On medium and large screen, identify overflow dom element to bind scroling event
     if (this.props.windowSize !== 'small') {
       this.setState({parentLarge: ReactDOM.findDOMNode(this.refs.leftWrapper)});
     }

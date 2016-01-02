@@ -9,16 +9,22 @@ import Immutable from 'immutable';
 export default class Wrapper extends Component {
 
   static propTypes = {
+    // LIst of users that are filtered
     userBlackList: PropTypes.arrayOf(PropTypes.string),
+    // Featured threads OR threads contributed by user
     mainThreads: PropTypes.arrayOf(PropTypes.object),
+    // Current Thread
     thread: PropTypes.object,
+    // If user signed in
     currentUser: PropTypes.object,
-    category: PropTypes.arrayOf(PropTypes.object),
+    // List of thread viewed so far
     threadList: PropTypes.arrayOf(PropTypes.object),
+    // If view threads contributed by user, pass user _id
     onUser: PropTypes.string,
-    windowSize: PropTypes.string,
+    // Callbacks
     viewThread: PropTypes.func,
     updateThreadList: PropTypes.func,
+    windowSize: PropTypes.string,
   }
 
   static defaultProps = {
@@ -29,13 +35,14 @@ export default class Wrapper extends Component {
     super(props);
     this.state = {
       viewingCarousel: false,
+      // Naive identify if thread has new comment
       newMessages: 0
     };
     this.toggleCarousel = this.toggleCarousel.bind(this);
     this.closeCarousel = this.closeCarousel.bind(this);
   }
 
-  
+  // Idenfity if current thread has new comment
   componentWillReceiveProps(nextProps) {
     var id;
     if (this.props.currentUser) {
@@ -50,6 +57,7 @@ export default class Wrapper extends Component {
     }
   }
 
+  // Automatically scroll to the end on receive new comments in thread
   componentWillUpdate() {
     if (this.props.windowSize === 'small') {
       let node = window.document.body;
@@ -60,6 +68,7 @@ export default class Wrapper extends Component {
     }
   }
 
+  // Automatically scroll to the end on receive new comments in thread
   componentDidUpdate() {
     if (this.props.windowSize === 'small') {
       var node = window.document.body;
@@ -79,7 +88,7 @@ export default class Wrapper extends Component {
       thread: this.props.thread,
       toggleCarousel: this.toggleCarousel,
       viewingCarousel: this.state.viewingCarousel,
-      notSeenUser: this.props.userBlackList,
+      userBlackList: this.props.userBlackList,
       newMessages: this.state.newMessages,
       windowSize: this.props.windowSize
     };

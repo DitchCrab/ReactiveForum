@@ -1,3 +1,4 @@
+// Mod from React InfiniteScroll to use in overflow DOM element
 import { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 

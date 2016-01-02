@@ -13,8 +13,11 @@ const { Colors, AutoPrefix } = Styles;
 export default class ThreadCarousel extends Component {
 
   static propTypes = {
+    // List of threads viewed
     threadList: PropTypes.arrayOf(PropTypes.object),
+    // Callback on click
     viewThread: PropTypes.func,
+    // Callback to close carousel
     onClickOutside: PropTypes.func,
     windowSize: PropTypes.string
   }
@@ -25,13 +28,20 @@ export default class ThreadCarousel extends Component {
 
   constructor(props) {
     super(props);
-    this.state={viewIndex: 0, threads: Immutable.fromJS(props.threadList).slice(0, 3).toJS()};
+    this.state={
+      // Carousel helds max 3 threads
+      // Use to view next or previous
+      viewIndex: 0,
+      threads: Immutable.fromJS(props.threadList).slice(0, 3).toJS()
+    };
+    // Decoupling from main render method
     this.renderEachCarouselThread = this.renderEachCarouselThread.bind(this);
+    this.renderLeftArrow = this.renderLeftArrow.bind(this);
+    this.renderRightArrow = this.renderRightArrow.bind(this);
+    // Event handlers
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleRightSwipe = this.handleRightSwipe.bind(this);
     this.handleLeftSwipe = this.handleLeftSwipe.bind(this);
-    this.renderLeftArrow = this.renderLeftArrow.bind(this);
-    this.renderRightArrow = this.renderRightArrow.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -64,6 +74,7 @@ export default class ThreadCarousel extends Component {
     )
   }
 
+  // Only render on no touch devices
   renderLeftArrow() {
     return (
       <IconButton onClick={this.handleLeftSwipe} style={ComponentStyle.leftArrow}>

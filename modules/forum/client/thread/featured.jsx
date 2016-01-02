@@ -6,8 +6,11 @@ const { Colors } = Styles;
 
 export default class Featured extends Component {
   static propTypes = {
+    // List of threads queried
     threads: PropTypes.arrayOf(PropTypes.object),
+    // Callback when click on list item
     viewThread: PropTypes.func,
+    // Pass on when queried threads by particular user
     onUser: PropTypes.string
   }
 

@@ -10,27 +10,39 @@ const { Colors, AutoPrefix } = Styles;
 export default class Comment extends Component {
 
   static propTypes = {
+    // If user signed in
     currentUser: PropTypes.object,
     comment: PropTypes.object,
+    // [comment._id, reply._id] of reply just created. Used to scroll to that reply element
     newReplyId: PropTypes.array,
+    // Id of comment just created
     newCommentId: PropTypes.string,
+    // Callback for server methods
     onCommend: PropTypes.func,
     onLike: PropTypes.func,
     onLikeReply: PropTypes.func,
+    // Callbacks when user create new comment or reply
     moveToReplyId: PropTypes.func,
     moveToCommentId: PropTypes.func,
+    // Callbacks on update events
     updateComment: PropTypes.func,
     updateReply: PropTypes.func
   }
 
   constructor(props) {
     super(props);
-    this.state = {editing: false};
+    this.state = {
+      editing: false
+    };
+    // Render editing field
     this.renderEditing = this.renderEditing.bind(this);
+    // Change state of comment
     this.editComment = this.editComment.bind(this);
+    // Get comment text and fire callback
     this.updateComment = this.updateComment.bind(this);
   }
 
+  // Scroll to comment if receive newCommentId prop
   componentDidMount() {
     if (this.props.comment._id === this.props.newCommentId) {
       let view = ReactDOM.findDOMNode(this);
