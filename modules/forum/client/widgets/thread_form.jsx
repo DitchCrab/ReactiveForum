@@ -11,9 +11,10 @@ export default class ThreadForm extends Component {
     categories: PropTypes.arrayOf(PropTypes.object),
     // Callback when thread is created or cancel
     clearState: PropTypes.func,
+    resetState: PropTypes.func,
     // Cancel and submit is triggered by parent component.
     onCancel: PropTypes.bool,
-    onSubmit: PropTypes.bool
+    onSubmit: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -49,6 +50,7 @@ export default class ThreadForm extends Component {
   render() {
     return (
       <div className="modal-form">
+        <p style={ComponentStyle.error}>{this.state.error}</p>
         <SelectField hintText="Select category" value={this.state.category} onChange={this._editCategory}>
           {this.props.categories.map((category) => {
             return (<MenuItem key={category._id} value={category._id} primaryText={category.name}/>)
@@ -136,14 +138,35 @@ export default class ThreadForm extends Component {
   }
 
   _submit() {
-    ThreadImgs.insert(this.state.img, (err, imgObj) => {
-      let params = this.state;
-      params['imgId'] = imgObj._id;
-      Meteor.call('createThread', params, (err, res) => {
-        this.setState({});
-        this.props.clearState();
-      })
-    });
+    let params_check = ['category', 'title', 'description', 'tags'];
+    let blank = _.reject(params_check, (key) => { return _.has(this.state, key); });
+    if (blank.length > 0) {
+      this.setState({error: `Please fulfill ${blank[0]} field`});
+      this.props.resetState();
+    } else {
+      let params = _.pick(this.state, 'category', 'title', 'description', 'tags');
+      console.log(params.length);
+      if (_.has(this.state, 'img')) {
+        ThreadImgs.insert(this.state.img, (err, imgObj) => {
+          params['imgId'] = imgObj._id;
+          Meteor.call('createThread', params, (err, res) => {
+            if (err) {
+              this.setState({error: 'Unable to create thread'});
+            }
+            this.setState({});
+            this.props.clearState();
+          })
+        });
+      } else {
+        Meteor.call('createThread', params, (err, res) => {
+          if (err) {
+            this.setState({error: 'Unable to create thread'});
+          }
+          this.setState({});
+          this.props.clearState();
+        })
+      }
+    }
   }
 };
 

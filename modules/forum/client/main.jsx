@@ -75,6 +75,7 @@ export default class Main extends Component {
     this._cancelForm = this._cancelForm.bind(this);
     this._submitForm = this._submitForm.bind(this);
     this.clearNewThreadState = this.clearNewThreadState.bind(this);
+    this.resetSubmitState = this.resetSubmitState.bind(this);
     // Currently only add new thread to carousel
     // Todo: remove thread from carousel
     this.updateThreadList = this.updateThreadList.bind(this);
@@ -292,6 +293,7 @@ export default class Main extends Component {
     return (
       <Dialog
           title="Create new thread"
+          modal={true}
           actions={customActions}
           open={this.state.showDialog}
           autoDetectWindowHeight={true}
@@ -302,7 +304,8 @@ export default class Main extends Component {
             categories={this.data.categories}
             clearState={this.clearNewThreadState}
             onCancel={this.state.cancelNewThread}
-            onSubmit={this.state.submitNewThread} />
+            onSubmit={this.state.submitNewThread}
+            resetState={this.resetSubmitState}/>
       </Dialog>
     )
   }    
@@ -355,6 +358,10 @@ export default class Main extends Component {
 
   clearNewThreadState() {
     this.setState({cancelNewThread: null, submitNewThread: null, showDialog: false});
+  }
+
+  resetSubmitState() {
+    this.setState({submitNewThread: null});
   }
 
   _cancelForm() {

@@ -9,6 +9,11 @@ Meteor.methods({
   updateAvatar: function(imgId) {
     Helper.checkUser();
     let currentUser = Meteor.user();
+    if (currentUser.profile) {
+      if (typeof currentUser.profile.avatar === 'string') {
+        let old_avatar = UserAvatars.findOne(currentUser.profile.avatarId).remove();
+      }
+    };
     let avatar = UserAvatars.find({_id: imgId});
     let observe = avatar.observe({
       changed: function(newImg, oldImg) {
