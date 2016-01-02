@@ -5,14 +5,14 @@ import { EditorInsertComment } from 'material-ui/lib/svg-icons';
 import Reply from './reply';
 import { FlatButton, TextField, Avatar, Styles } from 'material-ui';
 import ComponentStyle from 'forum/client/styles/widgets/comment';
-const { Colors } = Styles;
+const { Colors, AutoPrefix } = Styles;
 
 export default class Comment extends Component {
 
   static propTypes = {
     currentUser: PropTypes.object,
     comment: PropTypes.object,
-    newReplyId: PropTypes.string,
+    newReplyId: PropTypes.array,
     newCommentId: PropTypes.string,
     onCommend: PropTypes.func,
     onLike: PropTypes.func,
@@ -41,10 +41,11 @@ export default class Comment extends Component {
     }
   }
 
-  shouldComponentUpdate(nextProps) {
-    const same_user = this.props.currentUser._id === nextProps.currentUser._id;
+  shouldComponentUpdate(nextProps, nextState) {
+    const same_user = _.isEqual(this.props.currentUser, nextProps.currentUser);
     const same_comment = _.isEqual(this.props.comment, nextProps.comment);
-    if (same_user && same_comment) {
+    const same_editing_state = this.state.editing === nextState.editing;
+    if (same_user && same_comment && same_editing_state) {
       return false;
     } else {
       return true;
@@ -103,7 +104,7 @@ export default class Comment extends Component {
         </div>
         <div>
           <div style={ComponentStyle.commentDiv}>
-            <div className="comment-text" style={ComponentStyle.comment}>
+            <div className="comment-text" style={AutoPrefix.all(ComponentStyle.comment)}>
               {this.state.editing ? this.renderEditing(comment.text) : comment.text }
             </div>
             {replies}

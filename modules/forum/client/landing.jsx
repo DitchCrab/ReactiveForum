@@ -1,10 +1,12 @@
 import { Component, PropTypes } from 'react';
-import { GridList, RaisedButton } from 'material-ui';
+import { Styles } from 'material-ui';
+import RaisedButton from 'material-ui/lib/raised-button';
 import ComponentStyle from 'forum/client/styles/landing';
+const { AutoPrefix } = Styles;
 
 export default class Landing extends Component {
   static contextTypes = {
-    history: PropTypes.object.isRequired
+    history: PropTypes.object
   }
 
   constructor(props, context) {
@@ -14,16 +16,15 @@ export default class Landing extends Component {
   }
 
   render() {
-    var bg = require('./img/bgL.jpg');
     return (
-      <div style={ComponentStyle.wrapper}>
+      <div style={AutoPrefix.all(ComponentStyle.wrapper)}>
         <div style={ComponentStyle.nav}>
           <h1>DitchCrab</h1>
         </div>
         <div style={ComponentStyle.main}>
           <p>Don't know where to whin after a shitty day?</p>
           <br/>
-          <RaisedButton label="Punch here" style={ComponentStyle.button} primary={true} onClick={this.redirect}/>
+          <RaisedButton label="Punch here" style={AutoPrefix.all(ComponentStyle.button)} primary={true} onClick={this.redirect}/>
         </div>
       </div>
     );

@@ -7,6 +7,7 @@ const { Colors } = Styles;
 export default  class ThreadList extends Component {
   static propTypes = {
     threads: PropTypes.arrayOf(PropTypes.object),
+    currentUser: PropTypes.object,
     viewThread: PropTypes.func.isRequired,
   }
 
@@ -24,7 +25,13 @@ export default  class ThreadList extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return !_.isEqual(this.props.threads, nextProps.threads);
+    const same_user = _.isEqual(this.props.currentUser, nextProps.currentUser);    
+    const same_threads = _.isEqual(this.props.threads, nextProps.threads);
+    if (same_user && same_threads) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   render() {

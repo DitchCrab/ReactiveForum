@@ -30,7 +30,8 @@ export default class BottomToolbar extends Component {
   shouldComponentUpdate(nextProps) {
     const same_id = _.isEqual(this.props.threadId, nextProps.threadId);
     const same_carousel = this.props.viewingCarousel === nextProps.viewingCarousel;
-    if (same_id && same_carousel) {
+    const same_messages_count = this.props.newMessages == nextProps.newMessages;    
+    if (same_id && same_carousel && same_messages_count) {
       return false;
     } else {
       return true;
@@ -68,7 +69,7 @@ export default class BottomToolbar extends Component {
 
   typeComment(event) {
     event.preventDefault();
-    let comment = this.refs.commentField.getValue();
+    let comment = event.target.value;
     this.setState({comment: comment});
     let new_height = event.target.clientHeight;
     let old_height = this.state.textFieldHeight;

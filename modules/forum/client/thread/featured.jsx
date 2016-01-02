@@ -39,7 +39,7 @@ export default class Featured extends Component {
         leftAvatar: thread_avatar,
         primaryText: thread.title,
         secondaryText: des,
-        secondaryTextLines: 3,
+        secondaryTextLines: 2,
         onTouchTap: this.props.viewThread.bind(null, thread._id)
       };
       if (thread.imgUrl) {

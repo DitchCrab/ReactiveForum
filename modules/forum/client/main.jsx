@@ -1,7 +1,5 @@
 import { Component, PropTypes} from 'react';
 import ReactMixin from 'react-mixin';
-import { FlatButton, LeftNav } from 'material-ui';
-import Layout from 'forum/client/styles/layout';
 import Dialog from 'material-ui/lib/dialog';
 import Wrapper from './thread/wrapper';
 import LeftWrapper from './left/left_wrapper';
@@ -11,7 +9,9 @@ import FeaturedUsers from './right/featured_users';
 import moment from 'moment';
 import Categories from 'forum/collections/categories';
 import Threads from 'forum/collections/threads';
-
+import { FlatButton, LeftNav, Styles } from 'material-ui';
+import Layout from 'forum/client/styles/layout';
+const { AutoPrefix } = Styles;
 
 @ReactMixin.decorate(ReactMeteorData)
 export default class Main extends Component {
@@ -133,7 +133,7 @@ export default class Main extends Component {
     switch (this.props.windowSize) {
       case 'small':
         return (
-          <section style={Layout.section}>        
+          <section style={AutoPrefix.all(Layout.section)}>        
             { this.props.section === 'browsing' ? browsing : null }
             { this.props.section === 'thread' ? this.renderThread() : null }
             <LeftNav ref="rightNav" {...right_nav_props}>

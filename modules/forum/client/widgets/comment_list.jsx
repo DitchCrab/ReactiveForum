@@ -3,9 +3,10 @@ import ReactDOM from 'react-dom';
 import Comment from './comment';
 import Immutable from 'immutable';
 import moment from 'moment';
-import { IconButton } from 'material-ui';
+import { IconButton, Styles } from 'material-ui';
 import { NavigationMoreHoriz } from 'material-ui/lib/svg-icons';
 import ComponentStyle from 'forum/client/styles/widgets/comment_list';
+const { AutoPrefix } = Styles;
 
 export default class CommentList extends Component {
   static propTypes = {
@@ -44,7 +45,7 @@ export default class CommentList extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const same_user = this.props.currentUser._id === nextProps.currentUser._id;
+    const same_user = _.isEqual(this.props.currentUser, nextProps.currentUser);
     const same_comments = _.isEqual(this.props.comments, nextProps.comments);
     const same_list = _.isEqual(this.props.notSeenUser, nextProps.notSeenUser);
     const same_mark = this.state.timeMark === nextState.timeMark;
@@ -83,7 +84,7 @@ export default class CommentList extends Component {
         comment_props.moveToReplyId = this.props.moveToReplyId.bind(null, []);
       }
       return (
-        <div key={comment._id} ref={comment._id} style={ComponentStyle.wrapper}>
+        <div key={comment._id} ref={comment._id} style={AutoPrefix.all(ComponentStyle.wrapper)}>
           <Comment  {...comment_props}/>
         </div>
       )

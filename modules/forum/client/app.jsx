@@ -1,14 +1,14 @@
 import { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import ReactMixin from 'react-mixin';
-import { windowSize } from './helpers';
-import { LeftNav, IconButton, Avatar, FlatButton, AppBar, Popover, Styles } from 'material-ui';
 import LeftWrapper from './left/left_wrapper';
 import MiniProfile from './right/mini_profile';
 import Login from './right/login';
 import ComponentStyle from './styles/app';
+import { windowSize } from './helpers';
+import { LeftNav, IconButton, Avatar, FlatButton, AppBar, Popover, Styles } from 'material-ui';
 import { ActionViewList, ActionHistory, SocialPerson } from 'material-ui/lib/svg-icons';
-const { Colors } = Styles;
+const { Colors, AutoPrefix } = Styles;
 
 @ReactMixin.decorate(ReactMeteorData)
 export default class App extends Component {
@@ -122,7 +122,7 @@ export default class App extends Component {
       <div>
         { this.props.params.thread && this.state.section === 'browsing' && this.state.windowSize === 'small' ? <IconButton onClick={this.viewSection.bind(null, 'thread')}><ActionHistory color={Colors.white}/></IconButton> : null }
         { this.state.windowSize !== 'large' ? <IconButton onClick={this.openSideNav}> <SocialPerson color={Colors.white}/> </IconButton> : null }
-        <div style={ComponentStyle.rightButton(this.data.user)}>
+        <div style={AutoPrefix.all(ComponentStyle.rightButton(this.data.user))}>
           {button}
         </div>
       </div>

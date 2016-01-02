@@ -6,7 +6,7 @@ import { ContentAdd } from 'material-ui/lib/svg-icons';
 import ThreadList from './thread_list';
 import InfiniteScroll from 'forum/client/widgets/infinite_scroll';
 import ComponentStyle from 'forum/client/styles/left/left_wrapper';
-const { Colors } = Styles;
+const { Colors, AutoPrefix } = Styles;
 
 export default class LeftWrapper extends Component {
   static propTypes = {
@@ -146,7 +146,7 @@ export default class LeftWrapper extends Component {
   renderNewThread() {
     return (
       <div style={ComponentStyle.newThreadDiv}>
-        <IconButton style={ComponentStyle.newThreadButton} onClick={this.props.openNewThreadDialog}>
+        <IconButton style={AutoPrefix.all(ComponentStyle.newThreadButton)} onClick={this.props.openNewThreadDialog}>
           <ContentAdd color={Colors.white}/>
         </IconButton>
       </div>

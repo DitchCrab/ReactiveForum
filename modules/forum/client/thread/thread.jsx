@@ -33,13 +33,15 @@ export default class Thread extends Component {
     }
   }
 
-  shouldComponentUpdate(nextProps) {
-    const same_user = this.props.currentUser._id === nextProps.currentUser._id;
+  shouldComponentUpdate(nextProps, nextState) {
+    const same_user = _.isEqual(this.props.currentUser, nextProps.currentUser);
     const same_thread = _.isEqual(this.props.thread, nextProps.thread);
     const same_list = _.isEqual(this.props.threadList, nextProps.threadList);
     const same_blacklist = _.isEqual(this.props.notSeenUser, nextProps.notSeenUser);
     const same_carousel = this.props.viewingCarousel === nextProps.viewingCarousel;
-    if ( same_user && same_thread && same_list && same_blacklist && same_carousel) {
+    const view_dialog = this.state.showReplyDialog === nextState.showReplyDialog;
+    const same_messages_count = this.props.newMessages == nextProps.newMessages;
+    if ( same_user && same_thread && same_list && same_blacklist && same_carousel && view_dialog && same_messages_count) {
       return false;
     } else {
       return true;

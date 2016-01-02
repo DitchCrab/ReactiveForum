@@ -7,7 +7,7 @@ import Swipeable from 'react-swipeable';
 import Immutable from 'immutable';
 import OnClickOutside from 'react-onclickoutside';
 import ComponentStyle from 'forum/client/styles/thread/thread_carousel';
-const { Colors } = Styles;
+const { Colors, AutoPrefix } = Styles;
 
 @ReactMixin.decorate(OnClickOutside)
 export default class ThreadCarousel extends Component {
@@ -48,7 +48,7 @@ export default class ThreadCarousel extends Component {
     let threads = this.state.threads.map(thread => this.renderEachCarouselThread(thread));
     return (
       <Swipeable
-          style={ComponentStyle.wrapper(this.props.windowSize)}
+          style={AutoPrefix.all(ComponentStyle.wrapper(this.props.windowSize))}
           onSwipedRight={this.handleRightSwipe}
           onSwipedLeft={this.handleLeftSwipe}>
         { checkMobileDevice() ? null : this.renderLeftArrow() }

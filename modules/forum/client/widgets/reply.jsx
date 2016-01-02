@@ -2,7 +2,7 @@ import { Component, PropTypes } from 'react';
 import moment from 'moment';
 import { TextField, FlatButton, Avatar, Styles } from 'material-ui';
 import ComponentStyle from 'forum/client/styles/widgets/reply';
-const { Colors } = Styles;
+const { Colors, AutoPrefix } = Styles;
 
 export default class Reply extends Component {
   static propTypes = {
@@ -32,10 +32,11 @@ export default class Reply extends Component {
     }  
   }
 
-  shouldComponentUpdate(nextProps) {
-    const same_user = this.props.currentUser._id === nextProps.currentUser._id;
+  shouldComponentUpdate(nextProps, nextState) {
+    const same_user = _.isEqual(this.props.currentUser, nextProps.currentUser);
     const same_reply = _.isEqual(this.props.reply, nextProps.reply);
-    if (same_user && same_reply) {
+    const same_editing_state = this.state.editing === nextState.editing;
+    if (same_user && same_reply && same_editing_state) {
       return false;
     } else {
       return true;
@@ -68,7 +69,7 @@ export default class Reply extends Component {
             { reply.userId === currentUserId && !this.state.editing ? <span className="reply-edit" onClick={this.editReply}>Edit</span> : null }
           </p>
         </div>
-        <div className="reply-text" style={ComponentStyle.replyDiv}>
+        <div className="reply-text" style={AutoPrefix.all(ComponentStyle.replyDiv)}>
           { this.state.editing ? this.renderEditing(reply.text) : reply.text }
         </div>
       </div>

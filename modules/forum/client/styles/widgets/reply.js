@@ -37,7 +37,8 @@ export default {
   replyDiv: {
     fontSize: '0.8rem',
     wordWrap: 'break-word',
-    marginLeft: 55
+    paddingLeft: 55,
+    whiteSpace: 'pre'
   },
 
   editingDiv: {
