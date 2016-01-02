@@ -5,7 +5,9 @@ const {Colors} = Styles;
 
 export default class FeaturedUsers extends Component {
   static propTypes = {
+    // lIst of users which has the most threads and comments
     featuredUsers: PropTypes.arrayOf(PropTypes.object),
+    // Callback when click on user avatar
     onUser: PropTypes.func
   }
 
