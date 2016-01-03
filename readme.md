@@ -1,6 +1,6 @@
 # Modern forum by VuongNgo
-Aim to modernize forum interface using Reactjs && Material Design.
-Proof of concept backed by Meteorjs.
+Aim to modernize forum interface using Reactjs && Material Design.   
+Proof of concept backed by Meteorjs.   
 [Demo](http://188.166.213.121).   
  
 ### Current stacks
@@ -11,9 +11,9 @@ Proof of concept backed by Meteorjs.
 * Material-ui
  
 ### Development mode
-* With test
+* With test:   
     meteor
-* No test
+* No test:   
     VELOCITY=0 meteor
      
 ### Production mode
