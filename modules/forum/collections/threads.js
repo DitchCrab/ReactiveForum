@@ -1,4 +1,25 @@
 const Threads = new Mongo.Collection("groups");
+
+Threads.allow({
+  insert: function() {
+    if (Meteor.user()) {
+      return true;      
+    } else {
+      return false;
+    }
+  },
+  update: function() {
+    if (Meteor.user()) {
+      return true;      
+    } else {
+      return false;
+    }
+  },
+  remove: function() {
+    return false;
+  }
+});
+
 let Schemas = {};
 Schemas.Thread = new SimpleSchema({
   category: {

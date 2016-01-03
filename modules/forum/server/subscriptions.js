@@ -1,6 +1,7 @@
 import Categories from 'forum/collections/categories';
 import Threads from 'forum/collections/threads';
 import ThreadImgs from 'forum/collections/thread_imgs';
+import UserAvatars from 'forum/collections/user_avatars';
 
 Meteor.publish('categories', function() {
   return Categories.find();

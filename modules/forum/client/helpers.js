@@ -9,6 +9,9 @@ export function checkMobileDevice() {
 }
 
 export function windowSize() {
+  if (typeof document === 'undefined') {
+    return 'large';
+  }
   let width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
   if (width <= 640) {
     return 'small';
@@ -20,10 +23,16 @@ export function windowSize() {
 }
 
 export function windowHeight() {
+  if (typeof document === 'undefined') {
+    return 900;
+  }
   return Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 }
 
 export function toolbarWidth(windowSize) {
+  if (typeof document === 'undefined') {
+    return 700;
+  }
   let w_w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
   var width;
   switch (windowSize) {

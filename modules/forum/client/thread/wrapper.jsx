@@ -59,8 +59,11 @@ export default class Wrapper extends Component {
 
   // Automatically scroll to the end on receive new comments in thread
   componentWillUpdate() {
+    if (typeof document === 'undefined') {
+      return;
+    }
     if (this.props.windowSize === 'small') {
-      let node = window.document.body;
+      let node = window.document;
       this.shouldScrollBottom= (node.scrollTop + node.offsetHeight) >= node.scrollHeight;
     } else {
       let node = ReactDOM.findDOMNode(this);
@@ -70,8 +73,11 @@ export default class Wrapper extends Component {
 
   // Automatically scroll to the end on receive new comments in thread
   componentDidUpdate() {
+    if (typeof document === 'undefined') {
+      return;
+    }
     if (this.props.windowSize === 'small') {
-      var node = window.document.body;
+      let node = window.document;
     } else {
       var node = ReactDOM.findDOMNode(this);
     }

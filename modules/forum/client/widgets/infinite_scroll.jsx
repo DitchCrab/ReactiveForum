@@ -61,6 +61,9 @@ export default class InfiniteScroll extends Component {
   }
 
   scrollListener() {
+    if (typeof document === 'undefined') {
+      return false;
+    }
     let el = ReactDOM.findDOMNode(this);
     let scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
     let innerHeight = window.innerHeight;

@@ -1,6 +1,7 @@
+import { windowHeight } from 'forum/client/helpers';
 export default {
   wrapper: function(windowSize) {
-    const w_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) - 100;
+    const w_h = windowHeight() - 100;
     let style= {};
     if (windowSize !== 'small') {
       style = {

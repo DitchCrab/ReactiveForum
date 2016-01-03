@@ -36,6 +36,7 @@ export default class App extends Component {
     // right SideNav manipulation
     this.openSideNav = this.openSideNav.bind(this);
     this.closeSideNav = this.closeSideNav.bind(this);
+    this.handleResize = this.handleResize.bind(this);
   }
 
   getMeteorData() {
