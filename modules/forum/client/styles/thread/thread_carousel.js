@@ -11,7 +11,6 @@ export default {
       background: 'rgba(0, 0, 0, 0.2)',
       transition: 'transform 2s',
       transitionTimingFunction: 'ease-in',
-      transitionTimingFunction: 'ease-out'
     }
   },
 
