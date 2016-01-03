@@ -86,6 +86,9 @@ export default class Main extends Component {
   }
 
   getMeteorData() {
+    let category_handler = Meteor.subscribe('categories');
+    let thread_imgs_handler = Meteor.subscribe('threadImgs');
+    let user_avatars_handler = Meteor.subscribe('userAvatars');
     //Browsing threads (left nav)
     let browsing_query = {};
     let limit = 10;
@@ -125,6 +128,7 @@ export default class Main extends Component {
     
     return {
       categories: Categories.find().fetch(),
+      threadsReady: browsing_handler,
       threads: threads,
       mainThreads: mainThreads,
       viewUser: viewUser,

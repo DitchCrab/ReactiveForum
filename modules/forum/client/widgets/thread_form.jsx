@@ -145,7 +145,6 @@ export default class ThreadForm extends Component {
       this.props.resetState();
     } else {
       let params = _.pick(this.state, 'category', 'title', 'description', 'tags');
-      console.log(params.length);
       if (_.has(this.state, 'img')) {
         ThreadImgs.insert(this.state.img, (err, imgObj) => {
           params['imgId'] = imgObj._id;

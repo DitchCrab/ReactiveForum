@@ -129,5 +129,3 @@ Schemas.Reply = new SimpleSchema({
 
 Threads.attachSchema(Schemas.Thread);
 export default Threads;
-
-global.Threads = Threads;

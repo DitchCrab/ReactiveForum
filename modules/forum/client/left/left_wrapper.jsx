@@ -60,7 +60,13 @@ export default class LeftWrapper extends Component {
     if (nextProps.searchError) {
       Meteor.setTimeout(() => {nextProps.resetSearch.bind(null)()}, 1000);
     }
-    //Stop infinite scroll 
+    // Hack to enable scroll after initial render of 'All'
+    // Meteor returns data many times after subscription
+    if (this.state.hasMore === false && this.state.categoryValue === 1 && nextProps.threads.length < 11) {
+      this.setState({hasMore: true});
+      return;
+    }
+    //Stop infinite scroll
     let sub = nextProps.threads.length - this.props.threads.length;
     if ( this.state.hasMore) {
       // Stop when initial  threads in category is less than limit
