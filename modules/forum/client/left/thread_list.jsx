@@ -50,12 +50,19 @@ export default  class ThreadList extends Component {
 
   renderEachThread(thread) {
     let user = this.props.currentUser;
+    let sub_des = thread.description.split(' ');
+    var des;
+    if (sub_des.length > 20) {
+      des = sub_des.slice(0, 20).join(' ') + '...(more)';
+    } else {
+      des = thread.description;
+    }
     return (
       <Card key={thread._id} style={ComponentStyle.card}  onClick={this.props.viewThread.bind(null, thread._id)}>
         <CardMedia>
-          <img src={(thread.imgUrl)} />
+          <img src={(thread.imgUrl)} style={thread.imgUrl ? ComponentStyle.img : null }/>
         </CardMedia>
-        <CardTitle title={thread.title} subtitle={thread.description}/>
+        <CardTitle title={thread.title} subtitle={des}/>
         <div style={ComponentStyle.cardAction}>
           <IconButton touch={true} onClick={this.likeThread.bind(null, thread._id)} >
             <ToggleStar/>

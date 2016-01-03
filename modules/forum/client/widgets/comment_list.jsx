@@ -43,7 +43,7 @@ export default class CommentList extends Component {
     };
     // Set initial timeMark
     if (!this.state.timeMark) {
-      let mark = Immutable.fromJS(this.props.comments).takeLast(2).toJS();
+      let mark = Immutable.fromJS(this.props.comments).takeLast(8).toJS();
       if (mark.length > 0) {
         this.state.timeMark =  mark[0].createdAt;          
       } else {
@@ -111,7 +111,7 @@ export default class CommentList extends Component {
 
   // Decrease timeMark to view more comments
   getMoreComments() {
-    let mark = Immutable.fromJS(this.props.comments).takeUntil(x => x.get('createdAt') >= this.state.timeMark).takeLast(2).toJS();
+    let mark = Immutable.fromJS(this.props.comments).takeUntil(x => x.get('createdAt') >= this.state.timeMark).takeLast(8).toJS();
     if (mark.length > 0) {
       this.setState({timeMark: mark[0].createdAt});      
     }

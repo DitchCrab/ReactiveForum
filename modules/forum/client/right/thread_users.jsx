@@ -82,7 +82,7 @@ const {Colors} = Styles;
       let avatar = <Avatar onClick={this.linkToUserPost.bind(null, user._id)}>{user.username[0]}</Avatar>;
       if (user.profile) {
         if (user.profile.avatar) {
-          <Avatar src={user.profile.avatar} onClick={this.linkToUserPost.bind(null, user._id)} />;
+          avatar = <Avatar src={user.profile.avatar} onClick={this.linkToUserPost.bind(null, user._id)} />;
         }
       }
       let checked = true;

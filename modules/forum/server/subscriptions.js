@@ -2,7 +2,7 @@ import Threads from 'forum/collections/threads';
 import ThreadImgs from 'forum/collections/thread_imgs';
 
 Meteor.publish('featured-threads', function() {
-  return Threads.find({}, {sort: {likes: -1}, limit: 10});
+  return Threads.find({}, {sort: {likes: -1}, limit: 20});
 });
 
 Meteor.publish('browsing-threads', function(query, limit) {

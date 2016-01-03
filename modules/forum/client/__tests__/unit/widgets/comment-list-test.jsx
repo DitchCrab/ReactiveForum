@@ -63,7 +63,14 @@ describe('Comment list widget', () => {
       const comments = [
         {_id: 1, username: 'Tom', createdAt: moment.utc().format(), text: "hello"},
         {_id: 2, username: 'Tom', createdAt: moment.utc().add(1, 'minute').format(), text: "hello"},
-        {_id: 3, username: 'Tom', createdAt: moment.utc().add(2, 'minutes').format(), text: "hello"}        
+        {_id: 3, username: 'Tom', createdAt: moment.utc().add(2, 'minutes').format(), text: "hello"},        
+        {_id: 4, username: 'Tom', createdAt: moment.utc().add(3, 'minutes').format(), text: "hello"},       
+        {_id: 5, username: 'Tom', createdAt: moment.utc().add(4, 'minutes').format(), text: "hello"},       
+        {_id: 6, username: 'Tom', createdAt: moment.utc().add(5, 'minutes').format(), text: "hello"},       
+        {_id: 7, username: 'Tom', createdAt: moment.utc().add(6, 'minutes').format(), text: "hello"},       
+        {_id: 8, username: 'Tom', createdAt: moment.utc().add(7, 'minutes').format(), text: "hello"},       
+        {_id: 9, username: 'Tom', createdAt: moment.utc().add(8, 'minutes').format(), text: "hello"},       
+        {_id: 10, username: 'Tom', createdAt: moment.utc().add(9, 'minutes').format(), text: "hello"}        
       ]
       component = TestUtils.renderIntoDocument(
         <CommentList comments={comments} {...foo} />
@@ -72,7 +79,7 @@ describe('Comment list widget', () => {
 
     it('has two commend', () => {
       const comments = TestUtils.scryRenderedComponentsWithType(component, Comment);
-      expect(comments.length).toEqual(2);
+      expect(comments.length).toEqual(8);
     });
 
     it('call getMoreComments func', () => {
@@ -80,7 +87,7 @@ describe('Comment list widget', () => {
       const mark = component.state.timeMark;
       TestUtils.Simulate.click(button);
       const comments = TestUtils.scryRenderedComponentsWithType(component, Comment);      
-      expect(comments.length).toEqual(3);
+      expect(comments.length).toEqual(10);
     });
   })  
   

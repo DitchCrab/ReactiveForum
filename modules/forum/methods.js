@@ -9,11 +9,11 @@ Meteor.methods({
   updateAvatar: function(imgId) {
     Helper.checkUser();
     let currentUser = Meteor.user();
-    if (currentUser.profile) {
-      if (typeof currentUser.profile.avatar === 'string') {
-        let old_avatar = UserAvatars.findOne(currentUser.profile.avatarId).remove();
-      }
-    };
+//    if (currentUser.profile) {
+//      if (typeof currentUser.profile.avatar === 'string') {
+//        let old_avatar = UserAvatars.findOne(currentUser.profile.avatarId).remove();
+//      }
+//    };
     let avatar = UserAvatars.find({_id: imgId});
     let observe = avatar.observe({
       changed: function(newImg, oldImg) {
@@ -21,6 +21,16 @@ Meteor.methods({
           observe.stop();
           let imgUrl = newImg.url();
           Meteor.users.update({_id: currentUser._id}, {$set: {'profile.avatarId': imgId, 'profile.avatar': imgUrl}});
+          Threads.find({'user._id': currentUser._id}).forEach(function(thread) {
+            Threads.update({_id: thread._id}, {$set: {'user.avatar': imgUrl}});
+          });
+          Threads.find({comments: {$elemMatch: {userId: currentUser._id}}}).forEach(function(thread) {
+            let update_comments = _.map(thread.comments, function(comment) {
+              if (comment.userId === currentUser._id) { comment.avatar = imgUrl};
+              return comment;
+            });
+            Threads.update({_id: thread._id}, {$set: {comments: update_comments}});
+          })
         }
       }
     });

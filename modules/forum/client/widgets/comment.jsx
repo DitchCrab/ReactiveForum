@@ -14,7 +14,7 @@ export default class Comment extends Component {
     currentUser: PropTypes.object,
     comment: PropTypes.object,
     // [comment._id, reply._id] of reply just created. Used to scroll to that reply element
-    newReplyId: PropTypes.array,
+    newReplyId: PropTypes.string,
     // Id of comment just created
     newCommentId: PropTypes.string,
     // Callback for server methods

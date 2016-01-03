@@ -11,7 +11,7 @@ export default class Featured extends Component {
     // Callback when click on list item
     viewThread: PropTypes.func,
     // Pass on when queried threads by particular user
-    onUser: PropTypes.string
+    viewUser: PropTypes.object
   }
 
   static defaultProps = {
@@ -46,16 +46,16 @@ export default class Featured extends Component {
         onTouchTap: this.props.viewThread.bind(null, thread._id)
       };
       if (thread.imgUrl) {
-        list_item_props["rightAvatar"] = <Avatar src={thread.imgUrl} />;
+        list_item_props["rightAvatar"] = <Avatar src={thread.imgUrl} style={ComponentStyle.threadImg}/>;
       } else {
         list_item_props["rightIcon"] = <ImagePhoto />;
       }
       return (
-        <ListItem {...list_item_props} />
+        <ListItem {...list_item_props}/>
       )
     });
     return (
-      <List subheader={this.props.onUser ? "Contributed to threads" : "Featured"}>
+      <List subheader={this.props.viewUser ? `${this.props.viewUser.username} contributed to threads` : 'Featured'}>
         {threads}
       </List>
     )

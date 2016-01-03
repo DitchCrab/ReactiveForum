@@ -10,6 +10,10 @@ export default {
     color: Colors.cyan700
   },
 
+  img: {
+    minHeight: 100,
+  },
+
   cardContainer: {
     textAlign: 'right',
     margin: 0,

@@ -20,7 +20,7 @@ export default class Wrapper extends Component {
     // List of thread viewed so far
     threadList: PropTypes.arrayOf(PropTypes.object),
     // If view threads contributed by user, pass user _id
-    onUser: PropTypes.string,
+    viewUser: PropTypes.object,
     // Callbacks
     viewThread: PropTypes.func,
     updateThreadList: PropTypes.func,
@@ -95,7 +95,7 @@ export default class Wrapper extends Component {
     const featured_props = {
       viewThread: this.props.viewThread.bind(null),
       threads: this.props.mainThreads,
-      onUser: this.props.onUser,
+      viewUser: this.props.viewUser,
     };
     const thread_carousel_props = {
       onClickOutside: this.closeCarousel,

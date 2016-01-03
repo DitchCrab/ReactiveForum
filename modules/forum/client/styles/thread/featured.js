@@ -6,4 +6,10 @@ export default {
     color: Colors.cyan700,
     fontWeight: 'bold'
   },
+
+  threadImg: {
+    borderRadius: 0,
+    height: 48,
+    width: 58
+  }
 }

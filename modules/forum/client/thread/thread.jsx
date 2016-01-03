@@ -119,7 +119,7 @@ export default class Thread extends Component {
               title={<span className="thread-main-user" style={ComponentStyle.headerTitle}>{thread.user.username}</span>}
               avatar={avatar}/>
           <CardMedia overlay={<CardTitle title={thread.title}/>}>
-            <img src={thread.imgUrl}/>
+            <img src={thread.imgUrl} style={ComponentStyle.img}/>
           </CardMedia>
           <div style={ComponentStyle.cardContainer}>
             <IconButton touch={true}  onClick={this.likeThread}>

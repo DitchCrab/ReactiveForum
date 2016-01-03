@@ -3,6 +3,10 @@ export default {
     marginBottom: 12
   },
 
+  img: {
+    minHeight: 200,
+  },
+
   cardAction: {
     textAlign: 'right'
   },

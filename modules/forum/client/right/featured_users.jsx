@@ -40,7 +40,7 @@ export default class FeaturedUsers extends Component {
     let avatar = <Avatar>{user.username[0]}</Avatar>;
     if (user.profile) {
       if (user.profile.avatar) {
-        <Avatar src={user.profile.avatar} />;
+        avatar = <Avatar src={user.profile.avatar} />;
       }
     }
     return (
