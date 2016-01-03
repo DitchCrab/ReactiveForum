@@ -9,11 +9,6 @@ Meteor.methods({
   updateAvatar: function(imgId) {
     Helper.checkUser();
     let currentUser = Meteor.user();
-//    if (currentUser.profile) {
-//      if (typeof currentUser.profile.avatar === 'string') {
-//        let old_avatar = UserAvatars.findOne(currentUser.profile.avatarId).remove();
-//      }
-//    };
     let avatar = UserAvatars.find({_id: imgId});
     let observe = avatar.observe({
       changed: function(newImg, oldImg) {
@@ -49,13 +44,20 @@ Meteor.methods({
     params['createdAt'] = moment.utc().format();
     params['updatedAt'] = moment.utc().format();
     Meteor.users.update({_id: current_user._id}, {$inc: {'threads': 1, 'contribution': 1}});
-    if(params.imgId) {
-      let img = ThreadImgs.findOne({_id: params.imgId});
-      params['imgUrl'] = img.url({brokenIsFine: true});
-      return Threads.insert(params);
-    } else {
-      return Threads.insert(params);      
+    let thread = Threads.insert(params);
+    if (params.imgId) {
+      let img = ThreadImgs.find({_id: params.imgId});
+      let observe = img.observe({
+        changed: function(newImg, oldImg) {
+          if (newImg.url()) {
+            observe.stop();
+            let imgUrl = newImg.url();
+            Threads.update({_id: thread}, {$set: {imgUrl: imgUrl}});
+          }
+        }
+      })
     }
+    return thread;
   },
 
   likeThread: function(threadId) {
