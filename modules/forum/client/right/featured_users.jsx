@@ -22,7 +22,7 @@ export default class FeaturedUsers extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return !_.isEqual(this.props.featuredUsers.length, nextProps.featuredUsers.length);
+    return !_.isEqual(this.props.featuredUsers, nextProps.featuredUsers);
   }
   
   render() {
