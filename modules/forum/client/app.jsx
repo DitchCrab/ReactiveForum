@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import ReactMixin from 'react-mixin';
 import LeftWrapper from './left/left_wrapper';
 import MiniProfile from './right/mini_profile';
-import Login from './right/login';
+import LogOn from './right/log_on';
 import { windowSize } from './helpers';
 import { LeftNav, IconButton, Avatar, FlatButton, AppBar, Popover, Styles } from 'material-ui';
 import { ActionViewList, ActionHistory, SocialPerson } from 'material-ui/lib/svg-icons';
@@ -87,7 +87,7 @@ export default class App extends Component {
       app_bar_props.showMenuIconButton = false;
     }
     //Props for Popover element
-    // If user not signin -> Popover has Login form
+    // If user not signin -> Popover has LogOn form
     // Else -> Popover has MiniProfile
     let pop_over_props = {
       open: this.state.activePopover,
@@ -108,7 +108,7 @@ export default class App extends Component {
       <div>
         <AppBar style={ComponentStyle.appBar} {...app_bar_props}/>
         <Popover className="right-popover" {...pop_over_props} >
-          {user ? <MiniProfile currentUser={user} /> : <Login /> }
+          {user ? <MiniProfile currentUser={user} /> : <LogOn /> }
         </Popover>
         {React.cloneElement(this.props.children, child_props)}
       </div>
@@ -125,13 +125,13 @@ export default class App extends Component {
     if (user) {
       button = this.renderUserAvatar();
     } else {
-      button =  <FlatButton ref="signInButton" label="Sign In" style={{color: Colors.white}} onClick={this.openPopover}/> 
+      button =  <FlatButton ref="signInButton" label="Log On" style={{color: Colors.white}} onClick={this.openPopover}/> 
     }
     return (
       <div>
         { this.props.params.thread && this.state.section === 'browsing' && this.state.windowSize === 'small' ? <IconButton onClick={this.viewSection.bind(null, 'thread')}><ActionHistory color={Colors.white}/></IconButton> : null }
         { this.state.windowSize !== 'large' ? <IconButton onClick={this.openSideNav}> <SocialPerson color={Colors.white}/> </IconButton> : null }
-        <div style={AutoPrefix.all(ComponentStyle.rightButton(this.data.user))}>
+        <div style={AutoPrefix.all(ComponentStyle.rightButton(this.data.user, this.state.windowSize))}>
           {button}
         </div>
       </div>

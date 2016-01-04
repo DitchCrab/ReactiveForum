@@ -4,10 +4,20 @@ export default {
     top: 0,
     left: 0
   },
-  rightButton: function(user) {
+  rightButton: function(user, windowSize) {
     var top = -4;
-    if (user) {
+    if (!user && windowSize === 'large') {
       top = 4;
+    } else if (user) {
+      if (user.profile) {
+        if (user.profile.avatar) {
+          top = 4;
+        } else if (!user.profile.avatar && windowSize === 'large') {
+          top = 4;
+        } 
+      } else if (windowSize === 'large') {
+        top = 4;
+      }
     }
     return {
       display: 'inline-block',

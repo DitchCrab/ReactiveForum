@@ -3,7 +3,7 @@ import App from 'forum/client/app';
 import { LeftNav, IconButton, Avatar, FlatButton, AppBar, Popover, Styles } from 'material-ui';
 import LeftWrapper from 'forum/client/left/left_wrapper';
 import MiniProfile from 'forum/client/right/mini_profile';
-import Login from 'forum/client/right/login';
+import LogOn from 'forum/client/right/log_on';
 
 describe('App forum', () => {
   describe('When not login', () => {
@@ -34,7 +34,7 @@ describe('App forum', () => {
 
     it ('have login button if user not login', () => {
       const button = TestUtils.findRenderedComponentWithType(root, FlatButton);
-      expect(button.props.label).toContain('Sign In');
+      expect(button.props.label).toContain('Log On');
     });
   });
 
