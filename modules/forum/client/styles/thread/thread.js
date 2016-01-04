@@ -41,5 +41,9 @@ export default {
 
   replyField: {
     width: '100%'
+  },
+
+  description: {
+    whiteSpace: 'pre'
   }
 }

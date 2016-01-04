@@ -149,7 +149,7 @@ export default class Thread extends Component {
             </IconMenu>
           </div>
           <CardText>
-            <span className="thread-main-description">{thread.description}</span>
+            <span style={ComponentStyle.description} className="thread-main-description">{thread.description}</span>
           </CardText>
           <CardActions style={ComponentStyle.cardAction}>
             { this.props.thread.comments ? this.renderCommentList() : null }

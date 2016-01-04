@@ -15,5 +15,9 @@ export default {
     display: 'inline-block',
     fontSize: '0.8rem'
   },
+
+  description: {
+    whiteSpace: 'pre'
+  }
   
 }

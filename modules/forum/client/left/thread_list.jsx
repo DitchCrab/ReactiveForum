@@ -62,7 +62,7 @@ export default  class ThreadList extends Component {
         <CardMedia>
           <img src={(thread.imgUrl)} style={thread.imgUrl ? ComponentStyle.img : null }/>
         </CardMedia>
-        <CardTitle title={thread.title} subtitle={des}/>
+        <CardTitle title={thread.title} subtitle={<p style={ComponentStyle.description}>{des}</p>}/>
         <div style={ComponentStyle.cardAction}>
           <IconButton touch={true} onClick={this.likeThread.bind(null, thread._id)} >
             <ToggleStar/>
