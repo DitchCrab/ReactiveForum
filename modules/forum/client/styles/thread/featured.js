@@ -2,9 +2,15 @@ import {Styles} from 'material-ui';
 const {Colors} = Styles;
 
 export default {
-  description: {
+  user: {
     color: Colors.cyan700,
     fontWeight: 'bold'
+  },
+
+  description: {
+    paddingRight: '1.25rem',
+    wordWrap: 'break-word',
+    whiteSpace: 'pre'
   },
 
   threadImg: {

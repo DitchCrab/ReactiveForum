@@ -1,4 +1,7 @@
 import { windowHeight } from 'forum/client/helpers';
+import { Styles } from 'material-ui';
+const { Colors } = Styles;
+
 export default {
   wrapper: function(windowSize) {
     const w_h = windowHeight() - 100;
@@ -6,18 +9,30 @@ export default {
     if (windowSize !== 'small') {
       style = {
         height: w_h,
-        overflowY: 'auto'
+        overflowY: 'auto',
+        padding: '0.625rem'
       };
     };
     return style;
   },
   
   searchField: {
-    width: '100%'
+    width: '90%',
+    padding: '5%'
+  },
+
+  dropDownDiv: {
+    width: '100%',
+    padding: '0.625rem 0rem',
+  },
+
+  dropDownHeader: {
+    padding: '0rem 0.9375rem',
+    color: Colors.cyan700
   },
   
   dropDownCategory: {
-    width: '100%'
+    width: '100%',
   },
 
   newThreadDiv: {

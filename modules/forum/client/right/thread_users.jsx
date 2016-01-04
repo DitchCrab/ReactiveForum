@@ -67,9 +67,9 @@ const {Colors} = Styles;
       ];
       return (
         <div style={ComponentStyle.wrapper}>
-          <div>
-            <p><span style={ComponentStyle.text}>Select:</span>
-              <FlatButton label="All" style={ComponentStyle.button} onClick={this.makeSelection.bind(null, true)}/><FlatButton label="None" style={ComponentStyle.button} onClick={this.makeSelection.bind(null, false)}/></p>
+          <div style={ComponentStyle.selectDiv}>
+            <p><span style={ComponentStyle.text}>Select:</span><span style={ComponentStyle.selectButtons}>
+              <FlatButton label="All" style={ComponentStyle.button} onClick={this.makeSelection.bind(null, true)}/><FlatButton label="None" style={ComponentStyle.button} onClick={this.makeSelection.bind(null, false)}/></span></p>
           </div>
           <List subheader="Users in thread">
             {user_list}

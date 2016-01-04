@@ -123,7 +123,8 @@ export default class LeftWrapper extends Component {
             onBlur={this.clearSearch}
             onKeyUp={this.searchThreadsByEnter}
             errorText={this.props.searchError}/>
-        <div>
+        <div style={ComponentStyle.dropDownDiv}>
+          <p style={ComponentStyle.dropDownHeader}>Select category:</p>
           { this.renderCategory() }
         </div>
         <ThreadList

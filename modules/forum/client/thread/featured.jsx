@@ -36,7 +36,7 @@ export default class Featured extends Component {
       } else {
         var thread_avatar = <Avatar>{thread.user.username[0]}</Avatar>;
       };
-      let des = <p><span style={ComponentStyle.description}>{thread.user.username}</span> - {thread.description}</p>;
+      let des = <p style={ComponentStyle.description}><span style={ComponentStyle.user}>{thread.user.username}</span> - {thread.description}</p>;
       const list_item_props = {
         key: thread._id,
         leftAvatar: thread_avatar,

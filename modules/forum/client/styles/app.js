@@ -1,4 +1,11 @@
+import { Styles } from 'material-ui';
+const {Colors} = Styles;
+
 export default {
+  body: {
+    backgroundColor: Colors.grey100    
+  },
+  
   appBar: {
     position: 'fixed',
     top: 0,

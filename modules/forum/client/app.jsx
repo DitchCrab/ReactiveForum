@@ -105,7 +105,7 @@ export default class App extends Component {
       windowSize: this.state.windowSize
     };
     return (
-      <div>
+      <div style={ComponentStyle.body}>
         <AppBar style={ComponentStyle.appBar} {...app_bar_props}/>
         <Popover className="right-popover" {...pop_over_props} >
           {user ? <MiniProfile currentUser={user} /> : <LogOn /> }
