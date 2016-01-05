@@ -100,7 +100,8 @@ export default class Main extends Component {
     }
     let browsing_handler = Meteor.subscribe('browsing-threads', browsing_query, limit);
     let threads = Threads.find(browsing_query, {sort: {createdAt: -1}, limit: limit}).fetch();
-    
+
+    var viewUser;
     // User's threads or featured threads (main view)
     if (this.state.onUser) {
       let user_thread_handler = Meteor.subscribe('user-threads', this.state.onUser);
@@ -132,6 +133,7 @@ export default class Main extends Component {
       mainThreads: mainThreads,
       viewThread: viewThread,
       featuredUsers: featured_users,
+      viewUser: viewUser
     }
   }
   
