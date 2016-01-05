@@ -4,7 +4,7 @@ const { Colors } = Styles;
 
 export default {
   wrapper: function(windowSize) {
-    const w_h = windowHeight() - 100;
+    const w_h = windowHeight() - 80;
     let style= {};
     if (windowSize !== 'small') {
       style = {

@@ -4,7 +4,7 @@ const {Colors} = Styles;
 
 export default {
   wrapper: (function() {
-    let w_h = windowHeight() - 100;
+    let w_h = windowHeight() - 80;
     return {
       backgroundColor: Colors.white,
       height: w_h,

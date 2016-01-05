@@ -16,7 +16,7 @@ Meteor.publish('userAvatars', function() {
 });
 
 Meteor.publish('featured-threads', function() {
-  return Threads.find({}, {sort: {likes: -1}, limit: 20});
+  return Threads.find({}, {sort: {likes: -1}});
 });
 
 Meteor.publish('browsing-threads', function(query, limit) {

@@ -60,9 +60,10 @@ export default class LeftWrapper extends Component {
     if (nextProps.searchError) {
       Meteor.setTimeout(() => {nextProps.resetSearch.bind(null)()}, 1000);
     }
+
     // Hack to enable scroll after initial render of 'All'
     // Meteor returns data many times after subscription
-    if (this.state.hasMore === false && this.state.categoryValue === 1 && nextProps.threads.length < 11) {
+    if (this.state.hasMore === false && this.state.categoryValue === 1 && nextProps.threads.length < 21) {
       this.setState({hasMore: true});
       return;
     }

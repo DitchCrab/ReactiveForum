@@ -1,8 +1,9 @@
 import {Styles} from 'material-ui';
 const {Colors} = Styles;
+
 export default {
   card: {
-    paddingBottom: 60
+    paddingBottom: 60,
   },
   
   headerTitle: {
@@ -11,7 +12,7 @@ export default {
   },
 
   img: {
-    minHeight: 100,
+    minHeight: 80,
   },
 
   cardContainer: {

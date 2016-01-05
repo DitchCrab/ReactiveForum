@@ -102,16 +102,15 @@ export default class Main extends Component {
     let threads = Threads.find(browsing_query, {sort: {createdAt: -1}, limit: limit}).fetch();
     
     // User's threads or featured threads (main view)
-    let user_thread_handler = Meteor.subscribe('user-threads', this.state.onUser);
-    let featured_thread_handler = Meteor.subscribe('featured-threads');
-    var viewUser;
     if (this.state.onUser) {
+      let user_thread_handler = Meteor.subscribe('user-threads', this.state.onUser);
       let threads_1 = Threads.find({"user._id": this.state.onUser}).fetch();
       let threads_2 = Threads.find({comments: {$elemMatch: {userId: this.state.onUser}}}).fetch();
       viewUser = Meteor.users.findOne({_id: this.state.onUser});
       var mainThreads = _.uniq(_.union(threads_1, threads_2), (thread) => { return thread._id; });      
     } else {
-      var mainThreads = Threads.find({}, {sort: {likes: -1}, limit: 20}).fetch();                
+      let featured_thread_handler = Meteor.subscribe('featured-threads');
+      var mainThreads = Threads.find({}, {sort: {likes: -1}, limit: 10}).fetch();                
     }
 
     //Users with most contributions (right nav)
@@ -128,10 +127,9 @@ export default class Main extends Component {
     
     return {
       categories: Categories.find().fetch(),
-      threadsReady: browsing_handler,
+      threadsReady: browsing_handler.ready(),
       threads: threads,
       mainThreads: mainThreads,
-      viewUser: viewUser,
       viewThread: viewThread,
       featuredUsers: featured_users,
     }
@@ -194,7 +192,7 @@ export default class Main extends Component {
       case 'large':
         return (
           <section style={Layout.section}>
-            {browsing}
+            { browsing }
             {this.renderMain()}
             {filter_user}
             { this.props.currentUser ? this.renderNewThread() : null }

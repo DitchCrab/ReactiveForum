@@ -58,31 +58,35 @@ export default class Wrapper extends Component {
   }
 
   // Automatically scroll to the end on receive new comments in thread
-  componentWillUpdate() {
+  componentWillUpdate(nextProps) {
     if (typeof document === 'undefined') {
       return;
     }
-    if (this.props.windowSize === 'small') {
-      let node = window.document;
-      this.shouldScrollBottom= (node.scrollTop + node.offsetHeight) >= node.scrollHeight;
-    } else {
-      let node = ReactDOM.findDOMNode(this);
-      this.shouldScrollBottom = (node.scrollTop + node.offsetHeight) >= node.scrollHeight;        
+    if (nextProps.thread && this.props.thread) {
+      if (this.props.windowSize === 'small') {
+        let node = window.document;
+        this.shouldScrollBottom= (node.scrollTop + node.offsetHeight) >= node.scrollHeight;
+      } else {
+        let node = ReactDOM.findDOMNode(this);
+        this.shouldScrollBottom = (node.scrollTop + node.offsetHeight) >= node.scrollHeight;        
+      }
     }
   }
 
   // Automatically scroll to the end on receive new comments in thread
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     if (typeof document === 'undefined') {
       return;
     }
-    if (this.props.windowSize === 'small') {
-      let node = window.document;
-    } else {
-      var node = ReactDOM.findDOMNode(this);
-    }
-    if (this.shouldScrollBottom) {
-      node.scrollTop = node.scrollHeight;
+    if (this.props.thread && prevProps.thread) {
+      if (this.props.windowSize === 'small') {
+        let node = window.document;
+      } else {
+        var node = ReactDOM.findDOMNode(this);
+      }
+      if (this.shouldScrollBottom) {
+        node.scrollTop = node.scrollHeight;
+      }
     }
   }
 

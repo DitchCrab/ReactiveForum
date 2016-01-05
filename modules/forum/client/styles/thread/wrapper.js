@@ -4,7 +4,7 @@ const { Colors } = Styles;
 
 export default {
   wrapper: function(windowSize) {
-    let w_h = windowHeight() - 100;
+    let w_h = windowHeight() - 80;
     let padding = '0rem 0.625rem';
     if (windowSize === 'small') {
       padding = 0;

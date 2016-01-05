@@ -1,9 +1,11 @@
+import { windowHeight } from 'forum/client/helpers';
 import { Styles } from 'material-ui';
 const {Colors} = Styles;
 
 export default {
   body: {
-    backgroundColor: Colors.grey100    
+    backgroundColor: Colors.grey100,
+    minHeight: windowHeight()
   },
   
   appBar: {
