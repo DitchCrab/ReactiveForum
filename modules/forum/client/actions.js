@@ -66,7 +66,7 @@ export default function signOut(username, password) {
     store.dispatch(getCurrentUser());
   }
   return {
-    type: CREATE_SESSION,
+    type: DELETE_SESSION,
     authErr: err
   }
 };
@@ -204,7 +204,7 @@ export default function createComment(threadId, comment) {
   let {err, res} = async Meteor.cal('createComment', threadId, comment);
   return {
     type: CREATE_COMMENT,
-    moveToCommentId: res,
+    newCommentId: res,
   }
 };
 
@@ -219,7 +219,7 @@ export default function createReply(threadId, commentId, text) {
   let { err, res } = async Meteor.call('createReply', threadId, commentId, text);
   return {
     type: CREATE_REPLY,
-    moveToReplyId: res
+    newReplyHash: {commentId: commentId, replyIndex: res}
   }
 };
 
