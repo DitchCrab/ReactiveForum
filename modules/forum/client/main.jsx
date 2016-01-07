@@ -18,7 +18,7 @@ export default class Main extends Component {
     
   static contextTypes = {
     history: PropTypes.object.isRequired    
-  }
+  };
 
   static propTypes = {
     // React router params
@@ -32,11 +32,11 @@ export default class Main extends Component {
     currentUser: PropTypes.object,
     // 'small', 'medium' or 'large' size
     windowSize: PropTypes.string
-  }
+  };
 
   static defaultProps = {
     section: 'browsing'
-  }
+  };
   
   constructor(props, context) {
     super(props);

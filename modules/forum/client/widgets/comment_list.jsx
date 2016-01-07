@@ -27,13 +27,13 @@ export default class CommentList extends Component {
     onLikeReply: PropTypes.func,
     updateComment: PropTypes.func,
     updateReply: PropTypes.func
-  }
+  };
 
   static defaultProps = {
     comments: [],
     userBlackList: [],
     newReplyId: [],
-  }
+  };
   
   constructor(props) {
     super(props);

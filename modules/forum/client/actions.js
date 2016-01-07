@@ -1,44 +1,46 @@
+require('babel-polyfill');
+
 // User 'sign in', 'sign out' & 'edit profile'
-const CREATE_USER = 'CREATE_USER';
-const CREATE_SESSION = 'CREATE_SESSION';
-const DELETE_SESSION = 'DELETE_SESSION';
-const USER_SESSION = 'USER_SESSION';
-const USER_SESSION_CHANGED = 'USER_SESSION_CHANGED';
-const UPDATE_USER_AVATAR = 'UPDATE_REPLY';
+export const CREATE_USER = 'CREATE_USER';
+export const CREATE_SESSION = 'CREATE_SESSION';
+export const DELETE_SESSION = 'DELETE_SESSION';
+export const USER_SESSION = 'USER_SESSION';
+export const USER_SESSION_CHANGED = 'USER_SESSION_CHANGED';
+export const UPDATE_USER_AVATAR = 'UPDATE_REPLY';
 
 // Query users with Meteor.users
-const GET_FEATURED_USERS = 'GET_FEATURED_USERS';
-const FEATURED_USERS_CHANGED = 'FEATURED_USERS_CHANGED';
-const REMOVE_FEATURED_USERS = 'REMOVE_FEATURED_USERS';
-const GET_USER = 'GET_USER';
+export const GET_FEATURED_USERS = 'GET_FEATURED_USERS';
+export const FEATURED_USERS_CHANGED = 'FEATURED_USERS_CHANGED';
+export const REMOVE_FEATURED_USERS = 'REMOVE_FEATURED_USERS';
+export const GET_USER = 'GET_USER';
 
 // Categories use to filter threads & create new thread
-const GET_CATEGORIES = 'GET_CATEGORIES';
+export const GET_CATEGORIES = 'GET_CATEGORIES';
 
 // Query threads on specific action
-const GET_BROWSING_THREADS = 'GET_BROWSING_THREADS';
-const BROWSING_THREADS_UPDATED = 'BROWSING_THREADS_UPDATED';
-const REMOVE_BROWSING_THREADS = 'REMOVE_BROWSING_THREADS';
-const GET_FEATURED_THREADS = 'GET_FEATURED_USERS';
-const GET_USER_THREADS = 'GET_USER_THREADS';
+export const GET_BROWSING_THREADS = 'GET_BROWSING_THREADS';
+export const BROWSING_THREADS_UPDATED = 'BROWSING_THREADS_UPDATED';
+export const REMOVE_BROWSING_THREADS = 'REMOVE_BROWSING_THREADS';
+export const GET_FEATURED_THREADS = 'GET_FEATURED_USERS';
+export const GET_USER_THREADS = 'GET_USER_THREADS';
 
 // Update thread
-const LIKE_THREAD = 'LIKE_REPLY';
-const CREATE_COMMENT = 'CREATE_COMMENT';
-const UPDATE_COMMENT = 'UPDATE_COMMENT';
-const LIKE_COMMENT = 'LIKE_COMMENT';
-const CREATE_REPLY = 'CREATE_REPLY';
-const UPDATE_REPLY = 'UPDATE_REPLY';
-const LIKE_REPLY = 'LIKE_REPLY';
+export const LIKE_THREAD = 'LIKE_REPLY';
+export const CREATE_COMMENT = 'CREATE_COMMENT';
+export const UPDATE_COMMENT = 'UPDATE_COMMENT';
+export const LIKE_COMMENT = 'LIKE_COMMENT';
+export const CREATE_REPLY = 'CREATE_REPLY';
+export const UPDATE_REPLY = 'UPDATE_REPLY';
+export const LIKE_REPLY = 'LIKE_REPLY';
 
 // Update user profile
-const FLAG_THREAD = 'FLAG_THREAD';
-const UNFLAG_THREAD = 'UNFLAG_THREAD';
+export const FLAG_THREAD = 'FLAG_THREAD';
+export const UNFLAG_THREAD = 'UNFLAG_THREAD';
 
 // Create new thread
-const CREATE_THREAD;
+export const CREATE_NEW_THREAD = 'CREATE_NEW_THREAD';
 
-export default function signUp(username, password) {
+export async function signUp(username, password) {
   let err = await Accounts.createUser({username: username, password: password, profile: {}});
   if (typeof err === 'undefined') {
     store.dispatch(getCurrentUser());
@@ -49,7 +51,7 @@ export default function signUp(username, password) {
   }
 }
 
-export default function signIn(username, password) {
+export async function signIn(username, password) {
   let err = await Meteor.loginWithPassword(username, password);
   if (typeof err === 'undefined') {
     store.dispatch(getCurrentUser());
@@ -60,7 +62,7 @@ export default function signIn(username, password) {
   }
 };
 
-export default function signOut(username, password) {
+export async function signOut(username, password) {
   let err = await Meteor.logout();
   if (typeof err === 'undefined') {
     store.dispatch(getCurrentUser());
@@ -71,36 +73,38 @@ export default function signOut(username, password) {
   }
 };
 
-export default function getCurrentUser() {
+export function getCurrentUser() {
   let user = Meteor.user();
-  let cursor = Meteor.users.find({_id: user._id}).observe({
-    changed: (oldUsr, newUsr) => {
-      if (typeof Meteor.user() === 'undefined') {
-        observe.stop();
+  if (user) {
+    let cursor = Meteor.users.find({_id: user._id}).observe({
+      changed: (oldUsr, newUsr) => {
+        if (typeof Meteor.user() === 'undefined') {
+          observe.stop();
+        }
+        store.dispatch(currentUserChanged(newUsr));
       }
-      store.dispatch(currentUserChanged(newUsr));
-    }
-  });
+    });
+  }
   return {
     type: USER_SESSION,
     currentUser: user
   }
 };
 
-export default function currentUserChanged(user) {
+export function currentUserChanged(user) {
   return {
     type: USER_SESSION_CHANGED,
     currentUser: user
   }
 };
 
-export default function getFeaturedUsers() {
+export function getFeaturedUsers() {
   if (store.getState().usersObserver) {
     store.getState().usersObserver.stop();
   }
   let users = Meteor.users.find({});
   let cursor = users.observe({
-    changed: (oldUsers, newUsers) {
+    changed: (oldUsers, newUsers) => {
       store.dispatch(featuredUsersChanged(newUsers));
     }
   });
@@ -111,14 +115,14 @@ export default function getFeaturedUsers() {
   }
 };
 
-export default function featuredUsersChanged(users) {
+export function featuredUsersChanged(users) {
   return {
     type: FEATURED_USERS_CHANGED,
     featuredUsers: users
   }
 };
 
-export default function removeFeaturedUsers() {
+export function removeFeaturedUsers() {
   if (store.getState().usersObserver) {
     store.getState().usersObserver.stop();
   }
@@ -127,7 +131,7 @@ export default function removeFeaturedUsers() {
   }
 };
 
-export default function getUser(userId) {
+export function getUser(userId) {
   let user = Meteor.users.findOne({_id: userId});
   return {
     type: GET_USER,
@@ -135,7 +139,7 @@ export default function getUser(userId) {
   }
 };
 
-export default function getCategories() {
+export function getCategories() {
   let categories = Categories.find().fetch();
   return {
     type: GET_CATEGORIES,
@@ -143,7 +147,7 @@ export default function getCategories() {
   }
 };
 
-export default function getBrowsingThreads(query, limit) {
+export function getBrowsingThreads(query, limit) {
   if (store.getState().browsingObserver) {
     store.getState().browsingObserver.stop();
   }
@@ -160,14 +164,14 @@ export default function getBrowsingThreads(query, limit) {
   }
 };
 
-export default function browsingThreadsUpdated(threads) {
+export function browsingThreadsUpdated(threads) {
   return {
     type: BROWSING_THREADS_UPDATED,
     browsingThreads: threads
   }
 };
 
-export default function removeBrowsingThreads() {
+export function removeBrowsingThreads() {
   if (store.getState().browsingObserver) {
     store.getState().browsingObserver.stop();
   }
@@ -176,7 +180,7 @@ export default function removeBrowsingThreads() {
   }
 };
 
-export default function getFeaturedThreads() {
+export function getFeaturedThreads() {
   let threads = Threads.find({}, {sort: {likes: -1}, limit: 20}).fetch();
   return {
     type: GET_FEATURED_THREADS,
@@ -184,7 +188,7 @@ export default function getFeaturedThreads() {
   }
 };
 
-export default function getUserThreads(userId) {
+export function getUserThreads(userId) {
   let own_threads = Threads.find({'user._id': userId}).fetch();
   let in_threads = Threads.find({comments: {$elemMatch: {userId: userId}}}).fetch();
   return {
@@ -193,75 +197,75 @@ export default function getUserThreads(userId) {
   }
 };
 
-export default function likeThread(id) {
+export function likeThread(id) {
   Meteor.call('likeThread', id);
   return {
     type: LIKE_THREAD
   }
 };
 
-export default function createComment(threadId, comment) {
-  let {err, res} = async Meteor.cal('createComment', threadId, comment);
+export async function createComment(threadId, comment) {
+  let {err, res} = await Meteor.call('createComment', threadId, comment);
   return {
     type: CREATE_COMMENT,
     newCommentId: res,
   }
 };
 
-export default function updateComment(commentId, text) {
-  let { err, res } = async Meteor.call('updateComment', commentId, text);
+export async function updateComment(commentId, text) {
+  let { err, res } = await Meteor.call('updateComment', commentId, text);
   return {
     type: UPDATE_COMMENT
   }
 };
 
-export default function createReply(threadId, commentId, text) {
-  let { err, res } = async Meteor.call('createReply', threadId, commentId, text);
+export async function createReply(threadId, commentId, text) {
+  let { err, res } = await Meteor.call('createReply', threadId, commentId, text);
   return {
     type: CREATE_REPLY,
     newReplyHash: {commentId: commentId, replyIndex: res}
   }
 };
 
-export default function updateReply(threadId, commentId, replyIndex, text) {
-  let { err, res } = async Meteor.call('updateReply', threadId, commentId, replyIndex, text);
+export async function updateReply(threadId, commentId, replyIndex, text) {
+  let { err, res } = await Meteor.call('updateReply', threadId, commentId, replyIndex, text);
   return {
     type: UPDATE_REPLY,
   }
 };
 
-export default function likeComment(threadId, commentId) {
-  let { err, res } = async Meteor.call('likeComment', threadId, commentId);
+export async function likeComment(threadId, commentId) {
+  let { err, res } = await Meteor.call('likeComment', threadId, commentId);
   return {
     type: LIKE_COMMENT
   }
 };
 
-export default function likeReply(threadId, commentId, replyIndex) {
-  let { err, res } = async Meteor.call('likeReply', threadId, commentId, replyIndex);
+export async function likeReply(threadId, commentId, replyIndex) {
+  let { err, res } = await Meteor.call('likeReply', threadId, commentId, replyIndex);
   return {
     type: LIKE_REPLY
   }
 };
 
-export default function flagThread(threadId) {
-  let { err, res } = async Meteor.call('flagThread', threadId);
+export async function flagThread(threadId) {
+  let { err, res } = await Meteor.call('flagThread', threadId);
   return {
     type: FLAG_THREAD
   }
 };
 
-export default function unflagThread(threadId) {
-  let { err, res } = async Meteor.call('unflagThread', threadId);
+export async function unflagThread(threadId) {
+  let { err, res } = await Meteor.call('unflagThread', threadId);
   return {
     type: UNFLAG_THREAD
   }
 };
 
-export default function createThread(params) {
-  let { err, res } = async Meteor.call('createThread', params);
+export async function createThread(params) {
+  let { err, res } = await Meteor.call('createThread', params);
   return {
-    type: CREATE_THREAD,
+    type: CREATE_NEW_THREAD,
     createThreadErr: err
   }
 }

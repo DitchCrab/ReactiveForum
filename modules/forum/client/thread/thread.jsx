@@ -28,7 +28,7 @@ export default class Thread extends Component {
     toggleCarousel: PropTypes.func,
     updateThreadList: PropTypes.func,
     windowSize: PropTypes.string,
-  }
+  };
 
   // Update threadList if current thread is not in it
   componentDidMount() {
@@ -38,7 +38,7 @@ export default class Thread extends Component {
         this.props.updateThreadList(this.props.thread);
       }
     }
-  }
+  };
 
   shouldComponentUpdate(nextProps, nextState) {
     const same_user = _.isEqual(this.props.currentUser, nextProps.currentUser);

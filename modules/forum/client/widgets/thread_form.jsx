@@ -19,7 +19,7 @@ export default class ThreadForm extends Component {
 
   static defaultProps = {
     categories: [],
-  }
+  };
 
   constructor(props, context) {
     super(props);

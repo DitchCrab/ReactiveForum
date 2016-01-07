@@ -29,12 +29,12 @@ export default class LeftWrapper extends Component {
     // Callback when user click on fab button to create new thread
     openNewThreadDialog: PropTypes.func,
     windowSize: PropTypes.string,
-  }
+  };
 
   static defaultProps = {
     categories: [],
     threads: []
-  }
+  };
   
   constructor(props, context) {
     super(props);

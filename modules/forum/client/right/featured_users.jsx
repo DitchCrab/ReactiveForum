@@ -9,11 +9,11 @@ export default class FeaturedUsers extends Component {
     featuredUsers: PropTypes.arrayOf(PropTypes.object),
     // Callback when click on user avatar
     onUser: PropTypes.func
-  }
+  };
 
   static defaultProps = {
     featuredUsers: []
-  }
+  };
 
   constructor(props, context) {
     super(props);

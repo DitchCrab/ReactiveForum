@@ -6,7 +6,7 @@ export default class SignIn extends Component {
   static propTypes = {
     // Switch to signup state
     switchTo: PropTypes.func
-  }
+  };
 
   constructor(props) {
     super(props);

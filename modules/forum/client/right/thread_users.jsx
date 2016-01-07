@@ -16,12 +16,12 @@ const {Colors} = Styles;
       updateBlackList: PropTypes.func.isRequired,
       // Callback to view threads which user contributed to
       onUser: PropTypes.func.isRequired
-    }
+    };
 
     static defaultProps = {
       threadUsers: [],
       userBlackList: []
-    }
+    };
     
     constructor(props, context) {
       super(props);

@@ -14,7 +14,7 @@ export default class Reply extends Component {
     newReplyId: PropTypes.string,
     moveToReplyId: PropTypes.func,
     updateReply: PropTypes.func
-  }
+  };
   
   constructor(props) {
     super(props);

@@ -12,11 +12,11 @@ export default  class ThreadList extends Component {
     currentUser: PropTypes.object,
     // Callback on click on thread card
     viewThread: PropTypes.func.isRequired,
-  }
+  };
 
   static defaultProps = {
     threads: []
-  }
+  };
 
   constructor(props, context) {
     super(props);

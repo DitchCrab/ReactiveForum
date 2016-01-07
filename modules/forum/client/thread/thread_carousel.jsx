@@ -20,11 +20,11 @@ export default class ThreadCarousel extends Component {
     // Callback to close carousel
     onClickOutside: PropTypes.func,
     windowSize: PropTypes.string
-  }
+  };
 
   static defaultProps = {
     threadList: []
-  }
+  };
 
   constructor(props) {
     super(props);

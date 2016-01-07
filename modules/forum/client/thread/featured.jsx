@@ -12,11 +12,11 @@ export default class Featured extends Component {
     viewThread: PropTypes.func,
     // Pass on when queried threads by particular user
     viewUser: PropTypes.object
-  }
+  };
 
   static defaultProps = {
     threads: []
-  }
+  };
 
   constructor(props, context) {
     super(props);

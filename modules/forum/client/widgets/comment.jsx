@@ -27,7 +27,7 @@ export default class Comment extends Component {
     // Callbacks on update events
     updateComment: PropTypes.func,
     updateReply: PropTypes.func
-  }
+  };
 
   constructor(props) {
     super(props);

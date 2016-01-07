@@ -7,7 +7,7 @@ const { AutoPrefix } = Styles;
 export default class Landing extends Component {
   static contextTypes = {
     history: PropTypes.object
-  }
+  };
 
   constructor(props, context) {
     super(props);

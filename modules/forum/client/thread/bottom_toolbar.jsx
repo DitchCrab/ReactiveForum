@@ -18,12 +18,12 @@ export default class BottomToolbar extends Component {
     // Callback with param to move to specific comment just created by user
     moveToCommentId: PropTypes.func,
     windowSize: PropTypes.string,
-  }
+  };
 
   static defaultProps = {
     viewingCarousel: false,
     newMessages: 0
-  }
+  };
   
   constructor(props) {
     super(props);

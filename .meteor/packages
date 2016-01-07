@@ -15,12 +15,9 @@ tracker                 # Meteor's client-side reactive programming library
 standard-minifiers      # JS/CSS minifiers run for production mode
 
 webpack:webpack
-reactrouter:react-router-ssr
 cfs:standard-packages
 cfs:filesystem
 aldeed:collection2
-react-runtime
-react-meteor-data
 accounts-password
 sanjo:jasmine
 velocity:console-reporter
@@ -30,3 +27,7 @@ momentjs:moment
 service-configuration
 random
 velocity:html-reporter
+reactrouter:react-router
+react-meteor-data
+reactrouter:react-router-ssr
+react-runtime

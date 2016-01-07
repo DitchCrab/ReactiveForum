@@ -15,7 +15,7 @@ export default class InfiniteScroll extends Component {
     pageStart: 0,
     hasMore: false,
     threshold: 800
-  }
+  };
 
   static PropTypes = {
     pageStart: PropTypes.number,
@@ -24,7 +24,7 @@ export default class InfiniteScroll extends Component {
     threshold: PropTypes.number,
     loader: PropTypes.node.isRequired,
     parentLarge: PropTypes.node
-  }
+  };
   
   constructor(props) {
     super(props);

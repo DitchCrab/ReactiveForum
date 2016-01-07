@@ -25,11 +25,11 @@ export default class Wrapper extends Component {
     viewThread: PropTypes.func,
     updateThreadList: PropTypes.func,
     windowSize: PropTypes.string,
-  }
+  };
 
   static defaultProps = {
     userBlackList: []
-  }
+  };
 
   constructor(props, context) {
     super(props);

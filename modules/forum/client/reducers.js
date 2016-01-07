@@ -1,5 +1,32 @@
-import * from './actions';
 import { combineReducers } from 'redux';
+import {
+  CREATE_USER,
+  CREATE_SESSION,
+  DELETE_SESSION,
+  USER_SESSION,
+  USER_SESSION_CHANGED,
+  UPDATE_USER_AVATAR,
+  GET_FEATURED_USERS,
+  FEATURED_USERS_CHANGED,
+  REMOVE_FEATURED_USERS,
+  GET_USER,
+  GET_CATEGORIES,
+  GET_BROWSING_THREADS,
+  BROWSING_THREADS_UPDATED,
+  REMOVE_BROWSING_THREADS,
+  GET_FEATURED_THREADS,
+  GET_USER_THREADS,
+  LIKE_THREAD,
+  CREATE_COMMENT,
+  UPDATE_COMMENT,
+  LIKE_COMMENT,
+  CREATE_REPLY,
+  UPDATE_REPLY,
+  LIKE_REPLY,
+  FLAG_THREAD,
+  UNFLAG_THREAD,
+  CREATE_NEW_THREAD
+} from './actions';
 
 function session(state = USER_SESSION, action) {
   switch (action.type) {
@@ -11,7 +38,7 @@ function session(state = USER_SESSION, action) {
   }
 }
 
-function authError(state, action) {
+function authError(state = null, action) {
   switch (action.type) {
     case CREATE_USER:
     case CREATE_SESSION:
@@ -82,7 +109,7 @@ function userThreads(state = GET_USER_THREADS, action) {
   }
 }
 
-function usersObserver(state, action) {
+function usersObserver(state = null, action) {
   switch (action.type) {
     case GET_FEATURED_USERS:
       return action.usersObserver;
@@ -91,7 +118,7 @@ function usersObserver(state, action) {
   }
 }
 
-function browsingObserver(state, action) {
+function browsingObserver(state = null, action) {
   switch (action.type) {
     case GET_BROWSING_THREADS:
       return action.browsingObserver;
@@ -100,7 +127,7 @@ function browsingObserver(state, action) {
   }
 }
 
-function newCommentId(state, action) {
+function newCommentId(state = null, action) {
   switch (action.type) {
     case CREATE_COMMENT:
       return action.newCommentId;
@@ -118,9 +145,9 @@ function newReplyHash(state = {}, action) {
   }
 }
 
-function createThreadError(state, action) {
+function createThreadError(state = null, action) {
   switch (action.type) {
-    case CREATE_THREAD:
+    case CREATE_NEW_THREAD:
       return action.createThreadErr;
     default:
       return state;
@@ -140,7 +167,7 @@ const forum = combineReducers({
   browsingObserver,
   newCommentId,
   newReplyHash,
-  createThreadError
+  createThreadError,
 });
 
 export default forum;

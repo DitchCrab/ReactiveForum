@@ -6,8 +6,8 @@ module.exports = {
     // Make sure we use Meteor package for jQuery, react and react-router
     'jquery': '$',
     'react': 'React',
-    'react-router': 'ReactRouter',
     'react-dom': 'ReactDOM',
+    'react-router': 'ReactRouter',
     'react-addons-transition-group': 'React.addons.TransitionGroup',
     'react-addons-create-fragment': 'React.addons.createFragment',
     'react-addons-pure-render-mixin': 'React.addons.PureRenderMixin',

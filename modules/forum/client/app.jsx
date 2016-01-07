@@ -1,4 +1,5 @@
 import { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
 import ReactMixin from 'react-mixin';
 import LeftWrapper from './left/left_wrapper';
@@ -10,15 +11,18 @@ import { ActionViewList, ActionHistory, SocialPerson } from 'material-ui/lib/svg
 import ComponentStyle from './styles/app';
 const { Colors, AutoPrefix } = Styles;
 
+//@connect(state => state)
 @ReactMixin.decorate(ReactMeteorData)
 export default class App extends Component {
   static contextTypes = {
     history: PropTypes.object.isRequired,
-  }
+    router: PropTypes.object,
+    store: PropTypes.object
+  };
 
   static propTypes = {
     params: PropTypes.object.isRequired,
-  }
+  };
 
   constructor(props, context) {
     super(props);
@@ -186,3 +190,4 @@ export default class App extends Component {
 
 };
 
+export default connect(state => state)(App);

@@ -10,7 +10,7 @@ export default class MiniProfile extends React.Component {
   static propTypes = {
     // if user signed in
     currentUser: PropTypes.object
-  }
+  };
   
   constructor(props, context) {
     super(props);
