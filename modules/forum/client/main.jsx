@@ -305,8 +305,7 @@ export default class Main extends Component {
           open={this.state.showDialog}
           autoDetectWindowHeight={true}
           autoScrollBodyContent={true}
-          onRequestClose={this._closeDialog}
-          width={this.props.windowSize === 'small' ? '90%' : '75%'}>
+          onRequestClose={this._closeDialog} >
         <ThreadForm
             categories={this.data.categories}
             clearState={this.clearNewThreadState}
