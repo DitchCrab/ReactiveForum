@@ -1,20 +1,19 @@
+import { connect } from 'react-redux';
 import { Component, PropTypes } from 'react';
-import { MenuItem, SelectField, TextField, FlatButton } from 'material-ui';
-import ComponentStyle from 'forum/client/styles/widgets/thread_form';
+import { FlatButton, RaisedButton, MenuItem, SelectField, TextField } from 'material-ui';
+import ComponentStyle from 'forum/client/styles/thread/thread_form';
 import Immutable from 'immutable';
 import ThreadImgs from 'forum/collections/thread_imgs';
 import Threads from 'forum/collections/threads';
+import * as ThreadActions from '../actions/thread';
+import { pushPath } from 'redux-simple-router';
+import { bindActionCreators } from 'redux';
 
 export default class ThreadForm extends Component {
   static propTypes = {
     // Thread categories from db
     categories: PropTypes.arrayOf(PropTypes.object),
-    // Callback when thread is created or cancel
-    clearState: PropTypes.func,
-    resetState: PropTypes.func,
-    // Cancel and submit is triggered by parent component.
-    onCancel: PropTypes.bool,
-    onSubmit: PropTypes.bool,
+    createThreadError: PropTypes.string
   };
 
   static defaultProps = {
@@ -30,8 +29,13 @@ export default class ThreadForm extends Component {
     this._editImg = this._editImg.bind(this);
     this._renderImg = this._renderImg.bind(this);
     this._editTags = this._editTags.bind(this);
-    this._cancel = this._cancel.bind(this);
     this._submit = this._submit.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.createThreadError !== nextProps.createThreadError) {
+      this.setState({error: nextProps.createThreadError});
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -49,9 +53,10 @@ export default class ThreadForm extends Component {
 
   render() {
     return (
-      <div className="modal-form">
+      <div style={ComponentStyle.wrapper}>
+        <h1 style={ComponentStyle.header}>Create new thread:</h1>
         <p style={ComponentStyle.error}>{this.state.error}</p>
-        <SelectField hintText="Select category" value={this.state.category} onChange={this._editCategory}>
+        <SelectField hintText="Select category" value={this.state.category} onChange={this._editCategory} style={ComponentStyle.div}>
           {this.props.categories.map((category) => {
             return (<MenuItem key={category._id} value={category._id} primaryText={category.name}/>)
            })}
@@ -59,25 +64,33 @@ export default class ThreadForm extends Component {
         <TextField
             value={this.state.title}
             floatingLabelText="Title"
-            onChange={this._editTitle}/>
+            onChange={this._editTitle}
+            style={ComponentStyle.div}/>
 
         <TextField
             value={this.state.description}
             floatingLabelText="Description"
             multiLine={true}
-            onChange={this._editDescription}/>
+            onChange={this._editDescription}
+            style={ComponentStyle.div}/>
         <TextField
             value={this.state.tags? this.state.tags.join(", ") : null}
             hintText="Seperate by ','"
             floatingLabelText="Tag"
-            onChange={this._editTags}/>
-        <div className="image-select">
+            onChange={this._editTags}
+            style={ComponentStyle.div}/>
+        <div style={ComponentStyle.imageDiv}>
           <FlatButton primary={true} label="Choose an Image">
             <input type="file" id="imageButton" style={ComponentStyle.fileInput} onChange={this._editImg}/>
           </FlatButton>
         </div>
         <div>
           {this.state.img ? <img src={this.state.img} style={ComponentStyle.image} /> : null }
+        </div>
+        <div style={ComponentStyle.buttonDiv}>
+          <RaisedButton label="Submit" secondary={true} onTouchTap={this._submit}/>
+          <br/><br/>
+          <FlatButton label="Cancel" onTouchTap={() => this.props.actions.pushPath('/forum')}/>
         </div>
       </div>
     )
@@ -133,39 +146,35 @@ export default class ThreadForm extends Component {
     this.setState({tags: tags});
   }
 
-  _cancel() {
-    this.props.clearState();
-  }
-
   _submit() {
     let params_check = ['category', 'title', 'description', 'tags'];
     let blank = _.reject(params_check, (key) => { return _.has(this.state, key); });
     if (blank.length > 0) {
-      this.setState({error: `Please fulfill ${blank[0]} field`});
-      this.props.resetState();
+      this.setState({error: `Please complete ${blank[0]} field`});
     } else {
       let params = _.pick(this.state, 'category', 'title', 'description', 'tags');
       if (_.has(this.state, 'img')) {
         ThreadImgs.insert(this.state.img, (err, imgObj) => {
           params['imgId'] = imgObj._id;
-          Meteor.call('createThread', params, (err, res) => {
-            if (err) {
-              this.setState({error: 'Unable to create thread'});
-            }
-            this.setState({});
-            this.props.clearState();
-          })
+          this.props.actions.createThread(params);
         });
       } else {
-        Meteor.call('createThread', params, (err, res) => {
-          if (err) {
-            this.setState({error: 'Unable to create thread'});
-          }
-          this.setState({});
-          this.props.clearState();
-        })
+        this.props.actions.createThread(params);
       }
     }
   }
 };
 
+function mapStateToProps(state) {
+  return {
+    categories: state.categories,
+    createThreadError: state.createThreadError,
+  }
+}
+
+const actions = _.extend(ThreadActions, {pushPath: pushPath});
+
+function mapDispatchToProps(dispatch) {
+  return { actions: bindActionCreators(actions, dispatch) };
+}
+export default connect(mapStateToProps, mapDispatchToProps)(ThreadForm);

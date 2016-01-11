@@ -38,10 +38,6 @@ export default class Thread extends Component {
     updateThreadList: PropTypes.func,
   };
 
-  componentWillMount() {
-    this.threadHandler = Meteor.subscribe('viewing-threads');
-  }
-
   componentWillReceiveProps(nextProps) {
     if (this.props.params.id !== nextProps.params.id) {
       this.threadDict.set('id', nextProps.params.id);
@@ -67,7 +63,6 @@ export default class Thread extends Component {
   };
 
   componentWillUnmount() {
-    this.threadHandler.stop();
     this.tracker.stop();
     delete ReactiveDict._dictsToMigrate.thread;
   }

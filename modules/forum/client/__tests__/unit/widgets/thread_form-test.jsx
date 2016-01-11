@@ -1,7 +1,7 @@
 import TestUtils from 'react-addons-test-utils';
 import ReactDOM from 'react-dom';
 import jasmineReact from 'jasmine-react-helpers-hotfix-0.14';
-import ThreadForm from 'forum/client/widgets/thread_form';
+import ThreadForm from 'forum/client/thread/thread_form';
 import { TextField, SelectField, FlatButton, MenuItem } from 'material-ui';
 
 describe('Thread form widget', () => {

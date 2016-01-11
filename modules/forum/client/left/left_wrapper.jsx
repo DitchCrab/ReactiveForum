@@ -35,7 +35,8 @@ export default class LeftWrapper extends Component {
     setBrowsingQuery: PropTypes.func,
     searchError: PropTypes.string,
     // If there is search error, reset search
-    resetSearch: PropTypes.func
+    resetSearch: PropTypes.func,
+    pushState: PropTypes.func
   };
 
   static defaultProps = {
@@ -151,7 +152,7 @@ export default class LeftWrapper extends Component {
   renderNewThread() {
     return (
       <div style={ComponentStyle.newThreadDiv}>
-        <IconButton style={AutoPrefix.all(ComponentStyle.newThreadButton)} onClick={this.props.openNewThreadDialog}>
+        <IconButton style={AutoPrefix.all(ComponentStyle.newThreadButton)} onClick={this.props.pushPath.bind(null, '/forum/create_thread')}>
           <ContentAdd color={Colors.white}/>
         </IconButton>
       </div>

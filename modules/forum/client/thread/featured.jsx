@@ -23,10 +23,6 @@ export default class Featured extends Component {
     this.viewThread = this.viewThread.bind(this);
   }
 
-  componentWillMount() {
-    this.featuredHander = Meteor.subscribe('featured-threads');
-  }
-
   componentDidMount() {
     this.tracker = Tracker.autorun(() => {
       let threads = Threads.find({}, {sort: {likes: -1}, limit: 20}).fetch();
@@ -35,7 +31,6 @@ export default class Featured extends Component {
   }
 
   componentWillUnmount() {
-    this.featuredHander.stop();
     this.tracker.stop();
   }
 

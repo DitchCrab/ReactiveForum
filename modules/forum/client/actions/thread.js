@@ -1,7 +1,9 @@
 //require('babel-polyfill');
 import Threads from 'forum/collections/threads';
+import { pushPath } from 'redux-simple-router';
 import {
   CREATE_THREAD_ERROR,
+  CLEAR_THREAD_ERROR,
   LIKE_THREAD,
   GET_THREAD,
   THREAD_CHANGED,
@@ -21,7 +23,8 @@ export function createThread(params) {
   return dispatch => {
     Meteor.call('createThread', params, (err, res) => {
       if (typeof err === 'undefined') {
-        return dispatch(clearThreadErr());
+        dispatch(clearThreadErr());
+        return dispatch(pushPath(`forum/thread/${res}`));
       };
       return dispatch(createThreadErr(err));
     });
@@ -31,7 +34,7 @@ export function createThread(params) {
 export function createThreadErr(err) {
   return {
     type: CREATE_THREAD_ERROR,
-    createThreadErr: err
+    createThreadErr: err.reason
   }
 };
 

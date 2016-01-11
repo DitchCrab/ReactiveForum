@@ -7,7 +7,7 @@ import LeftWrapper from 'forum/client/left/left_wrapper';
 import ThreadUsers from 'forum/client/right/thread_users';
 import Categories from 'forum/collections/categories';
 import Threads from 'forum/collections/threads';
-import ThreadForm from 'forum/client/widgets/thread_form';
+import ThreadForm from 'forum/client/thread/thread_form';
 import FeaturedUsers from 'forum/client/right/featured_users';
 import { Dialog, FlatButton } from 'material-ui';
 

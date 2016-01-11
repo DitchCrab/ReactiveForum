@@ -23,10 +23,6 @@ export default class User extends Component {
     this.viewThread = this.viewThread.bind(this);
   }
 
-  componentWillMount() {
-    this.userThreadsHandler = Meteor.subscribe('user-threads');
-  }
-
   componentWillReceiveProps(nextProps) {
     if (this.props.params.id !== nextProps.params.id) {
       this.onUserDict.set('id', nextProps.params.id);
@@ -49,8 +45,6 @@ export default class User extends Component {
   }
 
   componentWillUnmount() {
-    this.userThreadsHandler.stop();
-    this.userTracker.stop();
     this.threadsTracker.stop();
     delete ReactiveDict._dictsToMigrate.onUser;
   }

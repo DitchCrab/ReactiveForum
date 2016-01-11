@@ -1,11 +1,8 @@
 import { Component, PropTypes} from 'react';
-import ReactMixin from 'react-mixin';
 import { connect } from 'react-redux';
-import Dialog from 'material-ui/lib/dialog';
 import Wrapper from './thread/wrapper';
 import LeftWrapper from './left/left_wrapper';
 import ThreadUsers from './right/thread_users';
-import ThreadForm from './widgets/thread_form';
 import FeaturedUsers from './right/featured_users';
 import moment from 'moment';
 import Categories from 'forum/collections/categories';
@@ -24,7 +21,6 @@ import * as BlacklistActions from './actions/blacklist';
 import { pushPath } from 'redux-simple-router';
 import { bindActionCreators } from 'redux';
 
-@ReactMixin.decorate(ReactMeteorData)
 export default class Main extends Component {
     
   static contextTypes = {
@@ -52,14 +48,6 @@ export default class Main extends Component {
   constructor(props, context) {
     super(props);
     this.context = context;
-    this.state = {
-      // New thread form dialog
-      showDialog: false,
-      // Store threads which user visited for browsing in 'Carousel'
-      threadList: [],
-      // Filtering user when viewing threads
-      userBlackList: [],
-    };
     // Callback on click on specific thread card
     this.viewThread = this.viewThread.bind(this);
     // Rendering methods decoupling from main render method
@@ -70,50 +58,15 @@ export default class Main extends Component {
     // Result in querying and rendering list of threads which user contributed to
     this.setUser = this.setUser.bind(this);
     // Fab button which is used to open New Thread Form dialog
-    // Only available when user signed in
-    this.renderNewThread = this.renderNewThread.bind(this);
-    // Manipulating New Thread Dialog
-    this._openDialog = this._openDialog.bind(this);      
-    this._closeDialog = this._closeDialog.bind(this);
-    this._cancelForm = this._cancelForm.bind(this);
-    this._submitForm = this._submitForm.bind(this);
-    this.clearNewThreadState = this.clearNewThreadState.bind(this);
-    this.resetSubmitState = this.resetSubmitState.bind(this);
     // Currently only add new thread to carousel
     // Todo: remove thread from carousel
     this.updateThreadList = this.updateThreadList.bind(this);
   }
 
-  getMeteorData() {
-    var viewUser;
-    // User's threads or featured threads (main view)
-    if (this.state.onUser) {
-      let user_thread_handler = Meteor.subscribe('user-threads', this.state.onUser);
-      let threads_1 = Threads.find({"user._id": this.state.onUser}).fetch();
-      let threads_2 = Threads.find({comments: {$elemMatch: {userId: this.state.onUser}}}).fetch();
-      viewUser = Meteor.users.findOne({_id: this.state.onUser});
-      var mainThreads = _.uniq(_.union(threads_1, threads_2), (thread) => { return thread._id; });      
-    } else {
-      let featured_thread_handler = Meteor.subscribe('featured-threads');
-      var mainThreads = Threads.find({}, {sort: {likes: -1}, limit: 10}).fetch();                
-    }
-
-    //Viewing thread (main view)
-    let threadId = this.props.params.thread;
-    let view_thread_handler = Meteor.subscribe('viewing-threads', threadId);
-    var viewThread;
-    if (threadId) {
-      viewThread = Threads.findOne({_id: threadId});          
-    }
-    
-    return {
-      mainThreads: mainThreads,
-      viewThread: viewThread,
-      viewUser: viewUser
-    }
-  }
-
   componentWillMount() {
+    this.featuredThreadsHandler = Meteor.subscribe('featured-threads');
+    this.userThreadsHandler = Meteor.subscribe('user-threads');
+    this.viewingThreadHandler = Meteor.subscribe('viewing-threads');
     this.browsingHandler = Meteor.subscribe('browsing-threads');
     this.imgHandler = Meteor.subscribe('threadImgs');
     this.avatarHandler = Meteor.subscribe('userAvatars');
@@ -155,6 +108,9 @@ export default class Main extends Component {
   }
 
   componentWillUnmount() {
+    this.featuredThreadsHandler.stop(); 
+    this.userThreadsHandler.stop();
+    this.viewingThreadHandler.stop();
     this.browsingHandler.stop();
     this.imgHandler.stop();
     this.avatarHandler.stop();
@@ -185,7 +141,6 @@ export default class Main extends Component {
             <LeftNav ref="rightNav" {...right_nav_props}>
               {filter_user}
             </LeftNav>
-            { this.props.currentUser ? this.renderNewThread() : null }
           </section>
         );
         break;
@@ -197,7 +152,6 @@ export default class Main extends Component {
             <LeftNav ref="rightNav" {...right_nav_props}>
               {filter_user}
             </LeftNav>
-            { this.props.currentUser ? this.renderNewThread() : null }
           </section>
         );
         break;
@@ -207,7 +161,6 @@ export default class Main extends Component {
             { browsing }
             {this.renderMain()}
             {filter_user}
-            { this.props.currentUser ? this.renderNewThread() : null }
           </section>
         );
         break;
@@ -241,14 +194,14 @@ export default class Main extends Component {
       onSearch: this.searchThreads,
       viewThread: this.viewThread,
       windowSize: this.props.windowSize,
-      openNewThreadDialog: this._openDialog,
       hasMoreBrowsing: this.props.hasMoreBrowsing,
       browsingLimit: this.props.browsingLimit,
       setHasMoreBrowsing: this.props.actions.setHasMoreBrowsing,
       setBrowsingLimit: this.props.actions.setBrowsingLimit,
       setBrowsingQuery: this.props.actions.setBrowsingQuery,
       searchError: this.props.searchError,
-      resetSearch: this.props.actions.resetSearch
+      resetSearch: this.props.actions.resetSearch,
+      pushPath: path => this.props.actions.pushPath(path)
     }
     return (
       <div style={Layout.leftNav(this.props.windowSize)}>
@@ -287,69 +240,12 @@ export default class Main extends Component {
     )
   }
 
-  // New thread form in dialog
-  renderNewThread() {
-    let customActions = [
-      <FlatButton
-          key="1"
-          label="Cancel"
-          secondary={true}
-          onTouchTap={this._cancelForm} />,
-      <FlatButton
-          key="2"
-          label="Submit"
-          primary={true}
-          onTouchTap={this._submitForm} />
-    ];
-    return (
-      <Dialog
-          title="Create new thread"
-          modal={true}
-          actions={customActions}
-          open={this.state.showDialog}
-          autoDetectWindowHeight={true}
-          autoScrollBodyContent={true}
-          onRequestClose={this._closeDialog} >
-        <ThreadForm
-            categories={this.props.categories}
-            clearState={this.clearNewThreadState}
-            onCancel={this.state.cancelNewThread}
-            onSubmit={this.state.submitNewThread}
-            resetState={this.resetSubmitState}/>
-      </Dialog>
-    )
-  }    
-
   viewThread(id) {
     this.props.actions.pushPath(`/forum/thread/${id}`);
   }
 
   setUser(id) {
     this.props.actions.pushPath(`/forum/user/${id}`);
-  }
-
-  _openDialog() {
-    this.setState({showDialog: true});
-  }
-
-  _closeDialog() {
-    this.setState({showDialog: false});
-  }
-
-  clearNewThreadState() {
-    this.setState({cancelNewThread: null, submitNewThread: null, showDialog: false});
-  }
-
-  resetSubmitState() {
-    this.setState({submitNewThread: null});
-  }
-
-  _cancelForm() {
-    this.setState({cancelNewThread: true});
-  }
-
-  _submitForm() {
-    this.setState({submitNewThread: true});
   }
 
   updateThreadList(thread) {
@@ -370,8 +266,6 @@ function mapStateToProps(state) {
     searchError: state.searchError,
     featuredThreads: state.featuredThreads,
     userThreads: state.userThreads,
-    usersObserver: state.userObserver,
-    browsingObserver: state.browsingObserver,
     newCommentId: state.newCommentId,
     newReplyHash: state.newReplyHash,
     createThreadError: state.createThreadError,
