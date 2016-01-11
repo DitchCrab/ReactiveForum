@@ -11,16 +11,19 @@ const {Colors} = Styles;
       // List of users who commended in thread
       threadUsers: PropTypes.arrayOf(PropTypes.string),
       // List of users which you don't want to see
-      userBlackList: PropTypes.arrayOf(PropTypes.string),
+      blacklist: PropTypes.arrayOf(PropTypes.string),
       // Callback to update blacklist
-      updateBlackList: PropTypes.func.isRequired,
+      blacklistUser: PropTypes.func.isRequired,
+      whitelistUser: PropTypes.func.isRequired,
+      blacklistAll: PropTypes.func.isRequired,
+      whitelistAll: PropTypes.func.isRequired,
       // Callback to view threads which user contributed to
       onUser: PropTypes.func.isRequired
     };
 
     static defaultProps = {
       threadUsers: [],
-      userBlackList: []
+      blacklist: []
     };
     
     constructor(props, context) {
@@ -37,6 +40,10 @@ const {Colors} = Styles;
       this.renderEachUser = this.renderEachUser.bind(this);
     }
 
+    componentWillMount() {
+      this.threadUsersHandler = Meteor.subscribe('thread-users');
+    }
+
     // Get full information of user from list of threadUsers _id
     getMeteorData() {
       let user_list = [];
@@ -49,9 +56,13 @@ const {Colors} = Styles;
       }
     }
 
+    componentWillUnmount() {
+      this.threadUsersHandler.stop();
+    }
+
     shouldComponentUpdate(nextProps) {
       const same_users = _.isEqual(this.props.threadUsers, nextProps.threadUsers);
-      const same_list = _.isEqual(this.props.userBlackList, nextProps.userBlackList);
+      const same_list = _.isEqual(this.props.blacklist, nextProps.blacklist);
       if (same_users && same_list) {
         return false;
       } else {
@@ -86,7 +97,7 @@ const {Colors} = Styles;
         }
       }
       let checked = true;
-      if (Immutable.fromJS(this.props.userBlackList).find(x => x === user._id)) {
+      if (Immutable.fromJS(this.props.blacklist).find(x => x === user._id)) {
         checked = false;
       }
       return (
@@ -107,22 +118,17 @@ const {Colors} = Styles;
 
     filterUser(id, event, checked) {
       if (checked == false) {
-        let newList = Immutable.fromJS(this.props.userBlackList).concat(Immutable.fromJS(id)).toJS();
-        this.props.updateBlackList.bind(null, newList)();
+        this.props.blacklistUser(id);
       } else {
-        let newList = Immutable.fromJS(this.props.userBlackList).filter(x => x !== id).toJS();
-        this.props.updateBlackList.bind(null, newList)();      
+        this.props.whitelistUser(id);
       }
     }
 
     makeSelection(value) {
       if (value == true) {
-        this.props.updateBlackList.bind(null, [])();
+        this.props.whitelistAll();
       } else {
-        if (this.data.users) {
-          let user_list = Immutable.fromJS(this.data.users).map(x => x.get('_id')).toJS();
-          this.props.updateBlackList.bind(null, user_list)();
-        }
+        this.props.blacklistAll(this.props.threadUsers);
       }
     }
   };

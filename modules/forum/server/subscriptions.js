@@ -33,4 +33,8 @@ Meteor.publish('viewing-threads', function(threadId) {
   
 Meteor.publish('featured-users', function() {
   return Meteor.users.find({}, {sort: {'profile.contribution': -1}, limit: 20});
+});
+
+Meteor.publish('thread-users', function() {
+  return Meteor.users.find();
 })

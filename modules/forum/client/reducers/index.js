@@ -1,27 +1,37 @@
 import { combineReducers } from 'redux';
 import session from './session';
-import { authError, createThreadError } from './errors';
-import featuredUsers from './featured_users';
+import { authError, createThreadError, searchError } from './errors';
 import onUser from './on_user';
 import categories from './categories';
-import browsingThreads from './browsing_threads';
+import { browsingThreads, browsingLimit, browsingQuery, hasMoreBrowsing } from './browsing_threads';
 import featuredThreads from './featured_threads';
 import userThreads from './user_threads';
-import { usersObserver, browsingObserver } from './observers';
 import { newCommentId, newReplyHash } from './notifications';
+import thread from './thread';
+import { windowSize } from './window';
+import { viewedThreads } from './viewed_thread';
+import { threadUserList } from './thread_user_list';
+import { blacklist } from './blacklist';
+import { routeReducer } from 'redux-simple-router';
 
-export default combineReducers({
+export default combineReducers(Object.assign({}, {
+  windowSize,
   session,
   authError,
-  featuredUsers,
   onUser,
   categories,
   browsingThreads,
+  browsingLimit,
+  browsingQuery,
+  hasMoreBrowsing,
+  searchError,
   featuredThreads,
   userThreads,
-  usersObserver,
-  browsingObserver,
   newCommentId,
   newReplyHash,
   createThreadError,
-});
+  thread,
+  viewedThreads,
+  blacklist,
+  threadUserList
+}, {routing: routeReducer}));

@@ -12,7 +12,6 @@ export default class Reply extends Component {
     // Callbacks for server methods
     onLikeReply: PropTypes.func,
     newReplyId: PropTypes.string,
-    moveToReplyId: PropTypes.func,
     updateReply: PropTypes.func
   };
   
@@ -34,7 +33,6 @@ export default class Reply extends Component {
       let view = ReactDOM.findDOMNode(this);
       if (view) {
         view.scrollIntoView();
-        this.props.moveToReplyId();
       }
     }  
   }

@@ -1,12 +1,12 @@
 import { Component, PropTypes } from 'react';
+import ReactMixin from 'react-mixin';
 import { List, ListItem, Checkbox, FlatButton, Styles, Avatar } from 'material-ui';
 import ComponentStyle from 'forum/client/styles/right/featured_users';
 const {Colors} = Styles;
 
+@ReactMixin.decorate(ReactMeteorData)
 export default class FeaturedUsers extends Component {
   static propTypes = {
-    // lIst of users which has the most threads and comments
-    featuredUsers: PropTypes.arrayOf(PropTypes.object),
     // Callback when click on user avatar
     onUser: PropTypes.func
   };
@@ -21,12 +21,24 @@ export default class FeaturedUsers extends Component {
     this.linkToUserPost = this.linkToUserPost.bind(this);
   }
 
-  shouldComponentUpdate(nextProps) {
-    return !_.isEqual(this.props.featuredUsers, nextProps.featuredUsers);
+  componentWillMount() {
+    this.featured_users_handler = Meteor.subscribe('featured-users');
+  }
+
+  getMeteorData() {
+    //Users with most contributions (right nav)
+    let featured_users = Meteor.users.find({}).fetch();
+    return {
+      featuredUsers: featured_users
+    }
+  }
+
+  componentWillUnmount() {
+    this.featured_users_handler.stop();
   }
   
   render() {
-    let user_list = this.props.featuredUsers.map((user, index) => this.renderEachUser(user, index));
+    let user_list = this.data.featuredUsers.map((user, index) => this.renderEachUser(user, index));
     return (
       <div style={ComponentStyle.wrapper}>
         <List style={ComponentStyle.list} subheader="Best contributors">

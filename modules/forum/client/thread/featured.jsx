@@ -1,64 +1,71 @@
 import { Component, PropTypes } from 'react';
-import { IconButton, List, ListItem, Avatar, Styles } from 'material-ui';
-import { ToggleStarBorder, ImagePhoto } from 'material-ui/lib/svg-icons';
-import ComponentStyle from 'forum/client/styles/thread/featured';
-const { Colors } = Styles;
+import { connect } from 'react-redux';
+import Threads from 'forum/collections/threads';
+import * as FeaturesActions from 'forum/client/actions/features';
+import { bindActionCreators } from 'redux';
+import { pushPath } from 'redux-simple-router';
+import ThreadList from './thread_list';
 
 export default class Featured extends Component {
   static propTypes = {
     // List of threads queried
-    threads: PropTypes.arrayOf(PropTypes.object),
-    // Callback when click on list item
-    viewThread: PropTypes.func,
+    featuredThreads: PropTypes.arrayOf(PropTypes.object),
     // Pass on when queried threads by particular user
     viewUser: PropTypes.object
   };
 
   static defaultProps = {
-    threads: []
+    featuredThreads: []
   };
 
   constructor(props, context) {
     super(props);
+    this.viewThread = this.viewThread.bind(this);
+  }
+
+  componentWillMount() {
+    this.featuredHander = Meteor.subscribe('featured-threads');
+  }
+
+  componentDidMount() {
+    this.tracker = Tracker.autorun(() => {
+      let threads = Threads.find({}, {sort: {likes: -1}, limit: 20}).fetch();
+      this.props.actions.getFeaturedThreads(threads);
+    })
+  }
+
+  componentWillUnmount() {
+    this.featuredHander.stop();
+    this.tracker.stop();
   }
 
   shouldComponentUpdate(nextProps) {
-    return !_.isEqual(this.props.threads, nextProps.threads);
+    return !_.isEqual(this.props.featuredThreads, nextProps.featuredThreads);
   }
 
   render() {
-    if (!this.props.threads) {
-      return <div/>
-    }
-    let threads = this.props.threads.map((thread, index) => {
-      if (thread.user.avatar) {
-        var thread_avatar = <Avatar src={thread.user.avatar} />;
-      } else {
-        var thread_avatar = <Avatar>{thread.user.username[0]}</Avatar>;
-      };
-      let des = <p style={ComponentStyle.description}><span style={ComponentStyle.user}>{thread.user.username}</span> - {thread.description}</p>;
-      const list_item_props = {
-        key: thread._id,
-        leftAvatar: thread_avatar,
-        primaryText: thread.title,
-        secondaryText: des,
-        secondaryTextLines: 2,
-        onTouchTap: this.props.viewThread.bind(null, thread._id)
-      };
-      if (thread.imgUrl) {
-        list_item_props["rightAvatar"] = <Avatar src={thread.imgUrl} style={ComponentStyle.threadImg}/>;
-      } else {
-        list_item_props["rightIcon"] = <ImagePhoto />;
-      }
-      return (
-        <ListItem {...list_item_props}/>
-      )
-    });
     return (
-      <List subheader={this.props.viewUser ? `${this.props.viewUser.username} contributed to threads` : 'Featured'}>
-        {threads}
-      </List>
+      <div>
+        <h3>Features: </h3>
+        <ThreadList threads={this.props.featuredThreads} viewThread={this.viewThread} />
+      </div>
     )
+  }
+
+  viewThread(id) {
+    this.props.actions.pushPath(`/forum/thread/${id}`)
   }
 }
 
+function mapStateToProps(state) {
+  return {
+    featuredThreads: state.featuredThreads,
+  }
+}
+
+const actions = _.extend(FeaturesActions, {pushPath: pushPath});
+
+function mapDispatchToProps(dispatch) {
+  return { actions: bindActionCreators(actions, dispatch) };
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Featured);

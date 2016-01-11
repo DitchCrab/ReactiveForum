@@ -9,14 +9,12 @@ export default class BottomToolbar extends Component {
   static propTypes = {
     // If carousel is currently open or not
     viewingCarousel: PropTypes.bool,
-    // Thread when comment field is bound
-    threadId: PropTypes.string,
     // Notification if receive new messages in a thread
     newMessages: PropTypes.number,
     // Callback to open or close carousel
     toggleCarousel: PropTypes.func,
     // Callback with param to move to specific comment just created by user
-    moveToCommentId: PropTypes.func,
+    createComment: PropTypes.func,
     windowSize: PropTypes.string,
   };
 
@@ -38,11 +36,10 @@ export default class BottomToolbar extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const same_id = _.isEqual(this.props.threadId, nextProps.threadId);
     const same_carousel = this.props.viewingCarousel === nextProps.viewingCarousel;
     const same_messages_count = this.props.newMessages == nextProps.newMessages;
     const same_comment = this.state.comment === nextState.comment;
-    if (same_id && same_carousel && same_messages_count && same_comment) {
+    if (same_carousel && same_messages_count && same_comment) {
       return false;
     } else {
       return true;
@@ -95,11 +92,7 @@ export default class BottomToolbar extends Component {
   addCommentToThread() {
     let comment = this.state.comment;
     if (comment && comment.length > 1) {
-      Meteor.call('createComment', this.props.threadId, comment, (err, res) => {
-        if (!err) {
-          this.props.moveToCommentId.bind(null, res)();
-        }
-      })
+      this.props.createComment.bind(null, comment)();
     }
     //Reset comment toolbar
     this.refs.commentField.clearValue();

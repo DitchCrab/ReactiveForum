@@ -20,15 +20,22 @@ export default class LeftWrapper extends Component {
     threads: PropTypes.arrayOf(PropTypes.object),
     // Callback when user click thread card
     viewThread: PropTypes.func.isRequired,
-    // Callbacks for query events
-    onSearch: PropTypes.func.isRequired,
-    onSelectCategory: PropTypes.func.isRequired,
-    resetSearch: PropTypes.func.isRequired,
-    // Callback when scroll to the end
-    increaseBrowsingLimit: PropTypes.func.isRequired,
     // Callback when user click on fab button to create new thread
     openNewThreadDialog: PropTypes.func,
     windowSize: PropTypes.string,
+    // Important for infinite scrolling. Default is 'false' if no more threads to scroll
+    hasMoreBrowsing: PropTypes.bool,
+    // Default to 10 threads. Add 10 subsequently
+    browsingLimit: PropTypes.number,
+    // Set to false at scroll threshold to stop subscription to scoll event
+    // Set to true when there is more threads
+    setHasMoreBrowsing: PropTypes.func,
+    setBrowsingLimit: PropTypes.func,
+    // Set different query for threads based on category or search query
+    setBrowsingQuery: PropTypes.func,
+    searchError: PropTypes.string,
+    // If there is search error, reset search
+    resetSearch: PropTypes.func
   };
 
   static defaultProps = {
@@ -39,8 +46,6 @@ export default class LeftWrapper extends Component {
   constructor(props, context) {
     super(props);
     this.state = {
-      // Define if there's more threads to render
-      hasMore: true,
       // Store the select value of category
       categoryValue: 1
     };
@@ -53,39 +58,13 @@ export default class LeftWrapper extends Component {
     this.clearSearch = this.clearSearch.bind(this);
     this.searchThreadsByEnter = this.searchThreadsByEnter.bind(this);
     this.handleSelectCategory = this.handleSelectCategory.bind(this);
+    this.loadMore = this.loadMore.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
     // Evaluate if there is search result. Else clear search query
     if (nextProps.searchError) {
-      Meteor.setTimeout(() => {nextProps.resetSearch.bind(null)()}, 1000);
-    }
-
-    // Hack to enable scroll after initial render of 'All'
-    // Meteor returns data many times after subscription
-    if (this.state.hasMore === false && this.state.categoryValue === 1 && nextProps.threads.length < 21) {
-      this.setState({hasMore: true});
-      return;
-    }
-    //Stop infinite scroll
-    let sub = nextProps.threads.length - this.props.threads.length;
-    if ( this.state.hasMore) {
-      // Stop when initial  threads in category is less than limit
-      if (nextProps.threads.length < 10) {
-        this.setState({hasMore: false});
-        return;
-      }
-      // When loading in the same category, stop if last query add less than 10 items
-      if ( nextProps.threads[0].category === this.props.threads[0].category) {
-        if (sub > 0 && sub < 10) {
-          this.setState({hasMore: false});
-        }
-      //When change category, if initial load is less than previous category load. Stop.  
-      } else {
-        if (sub < 0) {
-          this.setState({hasMore: false});
-        }
-      }
+      Meteor.setTimeout(() => {nextProps.resetSearch()}, 1000);
     }
   }
 
@@ -110,8 +89,8 @@ export default class LeftWrapper extends Component {
   renderInfinite() {
     let infinite_props = {
       pageStart: 0,
-      loadMore: this.props.increaseBrowsingLimit,
-      hasMore: this.state.hasMore,
+      loadMore: this.loadMore,
+      hasMore: this.props.hasMoreBrowsing,
       loader: <RefreshIndicator size={40} left={80} top={5} status="loading" />,
     };
     if (this.props.windowSize !== 'small') {
@@ -187,13 +166,36 @@ export default class LeftWrapper extends Component {
   searchThreadsByEnter(event) {
     event.preventDefault();
     if (event.keyCode === 13) {
-      this.props.onSearch.bind(null, event.target.value)();
+      let search = event.target.value;
+      let tags = _.map(search.split(' '), x => x.trim());
+      let query = {tags: {$all: tags}};
+      this.props.setBrowsingQuery(query);
     }
   }
 
   handleSelectCategory(e, index, value) {
     this.setState({categoryValue: value, hasMore: true});
-    this.props.onSelectCategory.bind(null, value)();
+    const limit = 10;
+    let query = {};
+    switch (value) {
+      // Hardcode id as 1. search all threads
+      case 1:
+        break;
+     // Hardcode id as 2. Search flag threads stored in user profile
+      case 2:
+        query = {_id: {$in: this.props.currentUser.profile ? this.props.currentUser.profile.flags : []}};
+        break;
+      default:
+        query = {category: value};
+    }
+    this.props.setBrowsingLimit(10);
+    this.props.setBrowsingQuery(query);
+  }
+
+  loadMore() {
+    const limit = this.props.browsingLimit + 10;
+    this.props.setHasMoreBrowsing(false);
+    this.props.setBrowsingLimit(limit);
   }
 
 };

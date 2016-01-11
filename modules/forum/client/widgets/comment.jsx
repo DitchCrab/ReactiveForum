@@ -21,9 +21,6 @@ export default class Comment extends Component {
     onCommend: PropTypes.func,
     onLike: PropTypes.func,
     onLikeReply: PropTypes.func,
-    // Callbacks when user create new comment or reply
-    moveToReplyId: PropTypes.func,
-    moveToCommentId: PropTypes.func,
     // Callbacks on update events
     updateComment: PropTypes.func,
     updateReply: PropTypes.func
@@ -48,7 +45,6 @@ export default class Comment extends Component {
       let view = ReactDOM.findDOMNode(this);
       if (view) {
         view.scrollIntoView();
-        this.props.moveToCommentId.bind(null, null)();
       }
     }
   }
@@ -87,7 +83,6 @@ export default class Comment extends Component {
         };
         if (this.props.newReplyId === reply._id) {
           reply_props.newReplyId = this.props.newReplyId;
-          reply_props.moveToReplyId = this.props.moveToReplyId;
         }
         return <Reply {...reply_props}/>
       })

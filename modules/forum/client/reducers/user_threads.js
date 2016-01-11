@@ -2,7 +2,7 @@ import {
   GET_USER_THREADS  
 } from '../constants';
 
-export default function userThreads(state = GET_USER_THREADS, action) {
+export default function userThreads(state = [], action) {
   switch (action.type) {
     case GET_USER_THREADS:
       return action.userThreads;

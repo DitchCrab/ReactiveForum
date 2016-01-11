@@ -1,5 +1,8 @@
-export function getFeaturedThreads() {
-  let threads = Threads.find({}, {sort: {likes: -1}, limit: 20}).fetch();
+import {
+  GET_FEATURED_THREADS
+} from '../constants';
+
+export function getFeaturedThreads(threads) {
   return {
     type: GET_FEATURED_THREADS,
     featuredThreads: threads

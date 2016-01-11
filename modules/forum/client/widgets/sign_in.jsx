@@ -19,7 +19,7 @@ export default class SignIn extends Component {
     return (
       <div style={ComponentStyle.wrapper}>
         <h3 style={ComponentStyle.header}>Sign In</h3>
-        <p style={ComponentStyle.error}>{this.state.error}</p>
+        <p style={ComponentStyle.error}>{this.props.authError}</p>
         <TextField
             hintText="Username" value={this.state.username} onChange={this.getSignInInfo.bind(null, 'username')} />
         <TextField
@@ -45,13 +45,7 @@ export default class SignIn extends Component {
     } else if (password === undefined || password === null) {
       this.setState({error: 'Password is missing'});
     } else  {
-      Meteor.loginWithPassword(username, password, (err, res) => {
-        if (err) {
-          if (err.error === 403) {
-            this.setState({error: err.reason});              
-          }
-        }
-      })
+      this.props.signIn(username, password);
     }
   }
 

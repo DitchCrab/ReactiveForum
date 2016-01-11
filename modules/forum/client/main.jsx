@@ -1,5 +1,6 @@
 import { Component, PropTypes} from 'react';
 import ReactMixin from 'react-mixin';
+import { connect } from 'react-redux';
 import Dialog from 'material-ui/lib/dialog';
 import Wrapper from './thread/wrapper';
 import LeftWrapper from './left/left_wrapper';
@@ -11,7 +12,17 @@ import Categories from 'forum/collections/categories';
 import Threads from 'forum/collections/threads';
 import { FlatButton, LeftNav, Styles } from 'material-ui';
 import Layout from 'forum/client/styles/layout';
+import ComponentStyle from 'forum/client/styles/main';
 const { AutoPrefix } = Styles;
+import * as BrowsingActions from './actions/browsing';
+import * as CategoriesActions from './actions/categories';
+import * as FeaturesActions from './actions/features';
+import * as ThreadActions from './actions/thread';
+import * as UserActions from './actions/user';
+import * as UserThreadsActions from './actions/user_threads';
+import * as BlacklistActions from './actions/blacklist';
+import { pushPath } from 'redux-simple-router';
+import { bindActionCreators } from 'redux';
 
 @ReactMixin.decorate(ReactMeteorData)
 export default class Main extends Component {
@@ -48,15 +59,7 @@ export default class Main extends Component {
       threadList: [],
       // Filtering user when viewing threads
       userBlackList: [],
-      // Threads query limit
-      browsing_limit: 10
     };
-    // Update threads query on specific category
-    this.selectCategory = this.selectCategory.bind(this);
-    // Update threads query on search input
-    this.searchThreads = this.searchThreads.bind(this);
-    // If search not found, set threads query to none
-    this.resetSearch = this.resetSearch.bind(this);
     // Callback on click on specific thread card
     this.viewThread = this.viewThread.bind(this);
     // Rendering methods decoupling from main render method
@@ -79,28 +82,9 @@ export default class Main extends Component {
     // Currently only add new thread to carousel
     // Todo: remove thread from carousel
     this.updateThreadList = this.updateThreadList.bind(this);
-    // Refiltering users on particular thread
-    this.updateBlackList = this.updateBlackList.bind(this);
-    // Increase query limit on scroll down
-    this.increaseBrowsingLimit = this.increaseBrowsingLimit.bind(this);
   }
 
   getMeteorData() {
-    let category_handler = Meteor.subscribe('categories');
-    let thread_imgs_handler = Meteor.subscribe('threadImgs');
-    let user_avatars_handler = Meteor.subscribe('userAvatars');
-    //Browsing threads (left nav)
-    let browsing_query = {};
-    let limit = 10;
-    if (this.state.filterParams) {
-      browsing_query = this.state.filterParams;
-    }
-    if (this.state.browsing_limit) {
-      limit = this.state.browsing_limit;
-    }
-    let browsing_handler = Meteor.subscribe('browsing-threads', browsing_query, limit);
-    let threads = Threads.find(browsing_query, {sort: {createdAt: -1}, limit: limit}).fetch();
-
     var viewUser;
     // User's threads or featured threads (main view)
     if (this.state.onUser) {
@@ -114,10 +98,6 @@ export default class Main extends Component {
       var mainThreads = Threads.find({}, {sort: {likes: -1}, limit: 10}).fetch();                
     }
 
-    //Users with most contributions (right nav)
-    let featured_users_handler = Meteor.subscribe('featured-users');
-    let featured_users = Meteor.users.find({}).fetch();
-    
     //Viewing thread (main view)
     let threadId = this.props.params.thread;
     let view_thread_handler = Meteor.subscribe('viewing-threads', threadId);
@@ -127,33 +107,63 @@ export default class Main extends Component {
     }
     
     return {
-      categories: Categories.find().fetch(),
-      threadsReady: browsing_handler.ready(),
-      threads: threads,
       mainThreads: mainThreads,
       viewThread: viewThread,
-      featuredUsers: featured_users,
       viewUser: viewUser
     }
   }
-  
+
+  componentWillMount() {
+    this.browsingHandler = Meteor.subscribe('browsing-threads');
+    this.imgHandler = Meteor.subscribe('threadImgs');
+    this.avatarHandler = Meteor.subscribe('userAvatars');
+  }
+
+  componentWillReceiveProps(nextProps, nextState) {
+    if (this.props.browsingLimit !== nextProps.browsingLimit) {
+      this.browsingDict.set('limit', nextProps.browsingLimit);
+    }
+    if (this.props.browsingQuery !== nextProps.browsingQuery) {
+      this.browsingDict.set('query', nextProps.browsingQuery);
+    }
+  }
+
   componentDidMount() {
+    // Get initial categories without watching changes
+    this.props.actions.getInitialCategories();
+    // Get browsing and watch changes
+    this.browsingDict = new ReactiveDict('browsing');
+    this.browsingDict.set('limit', this.props.browsingLimit);
+    this.browsingDict.set('query', this.props.browsingQuery);
     // Rendering the right view based on url
     if (this.props.params.thread) {
       this.props.viewSection.bind(null, 'thread')();
     }
+
+    this.browsingTracker = Tracker.autorun(() => {
+      let threads = Threads.find(this.browsingDict.get('query'), {sort: {createdAt: -1}, limit: this.browsingDict.get('limit')}).fetch();
+      if (threads.length < 1) {
+        this.props.actions.setSearchErr('Sorry, no thread found');
+      }
+      if (!_.isEqual(threads, this.props.browsingThreads)) {
+        this.props.actions.getBrowsingThreads(threads);
+        if (this.browsingDict.get('limit') <= threads.length) {
+          this.props.actions.setHasMoreBrowsing(true);
+        }
+      }
+    })
+  }
+
+  componentWillUnmount() {
+    this.browsingHandler.stop();
+    this.imgHandler.stop();
+    this.avatarHandler.stop();
+    this.browsingTracker.stop();
+    delete ReactiveDict._dictsToMigrate.browsing;
   }
 
   render() {
-    // Show error on failed search
-    // Currently implementing naive search
-    var search_error;
-    if (this.state.filterParams && this.data.threads.length < 1) {
-      if (this.state.filterParams.tags) {
-        search_error = 'Sorry, no post found';
-      }
-    }
-    let browsing = this.renderBrowsing(search_error);
+    let browsing = this.renderBrowsing();
     let filter_user = this.renderUserList();
     // As defined in MaterialUI as LeftNav
     // Only show in small and medium screen
@@ -209,41 +219,36 @@ export default class Main extends Component {
   // Has list of threads contributed by user if clicked on user avatar on right nav
   // Has Thread on viewing thread
   renderMain() {
-    const main_props = {
-      userBlackList: this.state.userBlackList,
-      mainThreads: this.data.mainThreads,
-      thread: this.data.viewThread,
-      currentUser: this.props.currentUser,
-      viewThread: this.viewThread,
-      category: this.state.category,
-      threadList: this.state.threadList,
-      updateThreadList: this.updateThreadList,
-      viewUser: this.data.viewUser,
-      windowSize: this.props.windowSize
-    };
     return (
       <div style={Layout.mainThread(this.props.windowSize)}>
-        <Wrapper {...main_props}/>
+        <div style={ComponentStyle.mainWrapper(this.props.windowSize)}>
+          {this.props.children}
+        </div>
       </div>
-    )
+      )
   }
 
   // Include search, category selection and list of threads
   // On small screen: render if 'section' is 'browsing'
   // On medium and large screen: render as right nav
-  renderBrowsing(error) {
+  renderBrowsing() {
     const left_wrapper_props = {
-      searchError: error,
       resetSearch: this.resetSearch,
-      threads: this.data.threads,
-      categories: this.data.categories,
+      threads: this.props.browsingThreads,
+      categories: this.props.categories,
       currentUser: this.props.currentUser,
       onSelectCategory: this.selectCategory,
       onSearch: this.searchThreads,
       viewThread: this.viewThread,
-      increaseBrowsingLimit: this.increaseBrowsingLimit,
       windowSize: this.props.windowSize,
-      openNewThreadDialog: this._openDialog
+      openNewThreadDialog: this._openDialog,
+      hasMoreBrowsing: this.props.hasMoreBrowsing,
+      browsingLimit: this.props.browsingLimit,
+      setHasMoreBrowsing: this.props.actions.setHasMoreBrowsing,
+      setBrowsingLimit: this.props.actions.setBrowsingLimit,
+      setBrowsingQuery: this.props.actions.setBrowsingQuery,
+      searchError: this.props.searchError,
+      resetSearch: this.props.actions.resetSearch
     }
     return (
       <div style={Layout.leftNav(this.props.windowSize)}>
@@ -258,29 +263,28 @@ export default class Main extends Component {
   // On large screen: render as right nav
   renderUserList() {
     //Currently only filter users by comment
-    let thread_users = [];
-    if (this.data.viewThread) {
-      thread_users = _.map(this.data.viewThread.comments, (comment) => { return comment.userId});      
+    if (this.props.routes[3].path) {
+      if (this.props.routes[3].path.indexOf('thread/') > -1) {
+        return (
+          <div style={Layout.rightNav(this.props.windowSize)}>
+            <ThreadUsers
+                threadUsers={this.props.threadUserList}
+                blacklist={this.props.blacklist}
+                blacklistUser={this.props.actions.blacklistUser}
+                whitelistUser={this.props.actions.whitelistUser}
+                blacklistAll={this.props.actions.blacklistAll}
+                whitelistAll={this.props.actions.whitelistAll}
+                onUser={this.setUser}/>
+          </div>
+        )
+      } 
     }
-    if (this.data.viewThread) {
-      return (
-        <div style={Layout.rightNav(this.props.windowSize)}>
-          <ThreadUsers
-              threadUsers={thread_users}
-              userBlackList={this.state.userBlackList}
-              updateBlackList={this.updateBlackList}
-              onUser={this.setUser}/>
-        </div>
-      )
-    } else {
-      return (
-        <div style={Layout.rightNav(this.props.windowSize)}>
-          <FeaturedUsers
-              featuredUsers={this.data.featuredUsers}
-              onUser={this.setUser} />
-        </div>
-      )
-    }
+    return (
+      <div style={Layout.rightNav(this.props.windowSize)}>
+        <FeaturedUsers
+            onUser={this.setUser} />
+      </div>
+    )
   }
 
   // New thread form in dialog
@@ -307,7 +311,7 @@ export default class Main extends Component {
           autoScrollBodyContent={true}
           onRequestClose={this._closeDialog} >
         <ThreadForm
-            categories={this.data.categories}
+            categories={this.props.categories}
             clearState={this.clearNewThreadState}
             onCancel={this.state.cancelNewThread}
             onSubmit={this.state.submitNewThread}
@@ -316,42 +320,12 @@ export default class Main extends Component {
     )
   }    
 
-  selectCategory(id) {
-    switch (id) {
-      // Hardcode id as 1. search all threads
-      case 1:
-        this.setState({browsing_limit: 10, filterParams: {}});
-        break;
-      // Hardcode id as 2. Search flag threads stored in user profile
-      case 2:
-        this.setState({browsing_limit: 10, filterParams: {_id: {$in: this.props.currentUser.profile ? this.props.currentUser.profile.flags : []}}});
-        break;
-      default:
-        this.setState({browsing_limit: 10, filterParams: {category: id}});
-    }
-  }
-
-  searchThreads(params) {
-    // Search threads where tags match search array
-    let tags = _.map(params.split(' '), (x) => x.trim());
-    this.setState({filterParams: {tags: {$all: tags}}});
-  }
-
-  // If no result from search, reset it
-  resetSearch() {
-    this.setState({filterParams: null});
-  }
-  
   viewThread(id) {
-    this.setState({viewThread: id});
-    this.props.viewSection.bind(null, 'thread')();
-    this.props.history.pushState(null, `/forum/${id}`);
+    this.props.actions.pushPath(`/forum/thread/${id}`);
   }
 
   setUser(id) {
-    this.setState({onUser: id});
-    this.props.history.pushState(null, `/forum`);        
-    this.props.viewSection.bind(null, 'thread')();
+    this.props.actions.pushPath(`/forum/user/${id}`);
   }
 
   _openDialog() {
@@ -383,13 +357,32 @@ export default class Main extends Component {
     this.setState({threadList: threads.concat(thread)});
   }
 
-  updateBlackList(arr) {
-    this.setState({userBlackList: arr});
-  }
-
-  increaseBrowsingLimit() {
-    this.setState({browsing_limit: this.state.browsing_limit + 10});
-  }
-
 };
 
+function mapStateToProps(state) {
+  return {
+    categories: state.categories,
+    onUser: state.onUser,
+    browsingThreads: state.browsingThreads,
+    browsingLimit: state.browsingLimit,
+    browsingQuery: state.browsingQuery,
+    hasMoreBrowsing: state.hasMoreBrowsing,
+    searchError: state.searchError,
+    featuredThreads: state.featuredThreads,
+    userThreads: state.userThreads,
+    usersObserver: state.userObserver,
+    browsingObserver: state.browsingObserver,
+    newCommentId: state.newCommentId,
+    newReplyHash: state.newReplyHash,
+    createThreadError: state.createThreadError,
+    threadUserList: state.threadUserList,
+    blacklist: state.blacklist,
+    windowSize: state.windowSize
+  }
+}
+
+const actions = _.extend(BrowsingActions, CategoriesActions, FeaturesActions, ThreadActions, UserActions, UserThreadsActions, BlacklistActions, {pushPath: pushPath});
+function mapDispatchToProps(dispatch) {
+  return { actions: bindActionCreators(actions, dispatch) };
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Main);

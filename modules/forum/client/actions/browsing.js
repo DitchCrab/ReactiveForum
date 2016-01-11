@@ -1,32 +1,55 @@
-export function getBrowsingThreads(query, limit) {
-  if (store.getState().browsingObserver) {
-    store.getState().browsingObserver.stop();
-  }
-  let threads = Threads.find(query, {sort: {createdAt: -1}, limit: limit});
-  let cursor = threads.observe({
-    changed: (oldThreads, newThreads) => {
-      store.dispatch(browsingThreadsChanged(newThreads));
-    }
-  });
+import Threads from 'forum/collections/threads';
+import {
+  SET_BROWSING_QUERY,
+  SET_BROWSING_LIMIT,
+  BROWSING_THREADS,
+  HAS_MORE_BROWSING,
+  SEARCH_ERROR,
+  RESET_SEARCH
+} from '../constants';
+import store from '../store/create_store';
+
+export function setBrowsingQuery(query) {
   return {
-    type: GET_BROWSING_THREADS,
-    browsingThreads: threads.fetch(),
-    browsingObserver: cursor,
+    type: SET_BROWSING_QUERY,
+    browsingQuery: query
   }
 };
 
-export function browsingThreadsChanged(threads) {
+export function setBrowsingLimit(limit) {
   return {
-    type: BROWSING_THREADS_CHANGED,
+    type: SET_BROWSING_LIMIT,
+    browsingLimit: limit
+  }
+};
+
+export function getBrowsingThreads(threads) {
+  return {
+    type: BROWSING_THREADS,
     browsingThreads: threads
   }
 };
 
-export function removeBrowsingThreads() {
-  if (store.getState().browsingObserver) {
-    store.getState().browsingObserver.stop();
-  }
+export function setHasMoreBrowsing(bool) {
   return {
-    type: REMOVE_BROWSING_THREADS,
+    type: HAS_MORE_BROWSING,
+    hasMoreBrowsing: bool
   }
 };
+
+export function setSearchErr(err) {
+  return {
+    type: SEARCH_ERROR,
+    searchError: err
+  }
+};
+
+export function resetSearch() {
+  return {
+    type: RESET_SEARCH,
+    browsingQuery: {},
+    browsingLimit: 10,
+    searchError: null
+  }
+}
+

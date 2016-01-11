@@ -15,12 +15,10 @@ export default class CommentList extends Component {
     // Thread comments
     comments: PropTypes.array,
     // Filtered users
-    userBlackList: PropTypes.array,
+    blacklist: PropTypes.array,
     // State of new comment or reply just created
     newCommentId: PropTypes.string,
-    newReplyId: PropTypes.arrayOf(PropTypes.string),
-    moveToCommentId: PropTypes.func,
-    moveToReplyId: PropTypes.func,
+    newReplyId: PropTypes.object,
     // Callback for server methods
     onLike: PropTypes.func,
     onCommend: PropTypes.func,
@@ -31,7 +29,7 @@ export default class CommentList extends Component {
 
   static defaultProps = {
     comments: [],
-    userBlackList: [],
+    blacklist: [],
     newReplyId: [],
   };
   
@@ -56,7 +54,7 @@ export default class CommentList extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     const same_user = _.isEqual(this.props.currentUser, nextProps.currentUser);
     const same_comments = _.isEqual(this.props.comments, nextProps.comments);
-    const same_list = _.isEqual(this.props.userBlackList, nextProps.userBlackList);
+    const same_list = _.isEqual(this.props.blacklist, nextProps.blacklist);
     const same_mark = this.state.timeMark === nextState.timeMark;
     if (same_user && same_comments && same_list && same_mark) {
       return false;
@@ -75,13 +73,12 @@ export default class CommentList extends Component {
       return <div/>
     }
     let comment_list = comments.map((comment) => {
-      if (Immutable.fromJS(this.props.userBlackList).find(x => x === comment.userId)) {
+      if (Immutable.fromJS(this.props.blacklist).find(x => x === comment.userId)) {
         return <div/>;
       }
       let comment_props = {
         currentUser: this.props.currentUser,
         newCommentId: this.props.newCommentId,
-        moveToCommentId: this.props.moveToCommentId.bind(null),
         comment: comment,
         onLike: this.props.onLike.bind(null),
         onCommend: this.props.onCommend.bind(null),
@@ -89,9 +86,8 @@ export default class CommentList extends Component {
         updateComment: this.props.updateComment.bind(null, comment._id),
         updateReply: this.props.updateReply.bind(null, comment._id)
       };
-      if (comment._id === this.props.newReplyId[0]) {
-        comment_props.newReplyId = this.props.newReplyId[1];
-        comment_props.moveToReplyId = this.props.moveToReplyId.bind(null, []);
+      if (comment._id === this.props.newReplyHash.commentId) {
+        comment_props.newReplyId = this.props.newReplyHash.replyIndex;
       }
       return (
         <div key={comment._id} ref={comment._id} style={AutoPrefix.all(ComponentStyle.wrapper)}>

@@ -38,7 +38,7 @@ export default class MiniProfile extends React.Component {
         <ListItem primaryText="New Avatar" leftIcon={<ContentInbox />} >
           <input type="file" id="profileAvatarInput" style={ComponentStyle.fileInput} onChange={this._uploadImg} />
         </ListItem>
-        <ListItem primaryText="Sign out" leftIcon={<ActionGrade />} onClick={this.userLogout} />
+        <ListItem primaryText="Sign out" leftIcon={<ActionGrade />} onClick={this.props.signOut} />
       </List>
     )
   }
@@ -74,10 +74,7 @@ export default class MiniProfile extends React.Component {
   }
 
   updateAvatar(img) {
-    UserAvatars.insert(img, (err, imgObj) => {
-      Meteor.call('updateAvatar', imgObj._id, (err, res) => {
-      })
-    })
+    this.props.updateUserAvatar(img);
   }
 
   userLogout() {

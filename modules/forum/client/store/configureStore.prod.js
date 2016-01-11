@@ -1,9 +1,10 @@
 import { createStore, applyMiddleware, compose } from 'redux';
+import thunk from 'redux-thunk';
 import rootReducer from '../reducers';
 
 const finalCreateStore = compose(
   // Middleware you want to use in production:
-//  applyMiddleware(p1, p2, p3),
+  applyMiddleware(thunk),
   // Other store enhancers if you use any
 )(createStore);
 

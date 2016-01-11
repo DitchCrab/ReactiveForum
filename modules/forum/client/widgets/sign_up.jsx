@@ -19,7 +19,7 @@ export default class SignUp extends Component {
     return (
       <div style={ComponentStyle.wrapper}>
         <h3 style={ComponentStyle.header}>Sign Up</h3>
-        <p style={ComponentStyle.error}>{this.state.error}</p>
+        <p style={ComponentStyle.error}>{this.props.authError}</p>
         <TextField
             hintText="New username" value={this.state.username} onChange={this.getSignUpInfo.bind(null, 'username')} />
         <TextField
@@ -48,15 +48,7 @@ export default class SignUp extends Component {
     } else  if (wrongChars.test(username)) {
       this.setState({error: 'Invalid username. Please only user letters, numbers or underscore in username!'});
     } else {
-      Accounts.createUser({username: username, password: password}, (err, res) => {
-        if (err) {
-          if (err.error === 403) {
-            this.setState({error: err.reason});
-          }
-        } else {
-          this.setState({username: null, password: null});
-        }
-      })
+      this.props.signUp(username, password)();
     }
   }
   

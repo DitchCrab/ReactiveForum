@@ -3,6 +3,7 @@ import SignIn from 'forum/client/widgets/sign_in';
 import SignUp from 'forum/client/widgets/sign_up';
 
 export default class LogOn extends Component {
+  
   constructor(props) {
     super();
     this.state = {view: 'signin'};
@@ -12,16 +13,17 @@ export default class LogOn extends Component {
   render() {
     switch (this.state.view) {
       case 'signin':
-        return <SignIn switchTo={this.switchView} />;
+        return <SignIn switchTo={this.switchView} signIn={this.props.signIn} authError={this.props.authError}/>;
         break;
       case 'signup':
-        return <SignUp switchTo={this.switchView} />;
+        return <SignUp switchTo={this.switchView} signUp={this.props.signUp} authError={this.props.authError} />;
         break;
     }
   }
 
   switchView(view) {
     this.setState({view: view});
+    this.props.clearAuthErr();
   }
   
 };

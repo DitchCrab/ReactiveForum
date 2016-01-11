@@ -10,7 +10,7 @@ export default {
       padding = 0;
     }
     return {
-//      backgroundColor: Colors.white,
+      //      backgroundColor: Colors.white,
       height: w_h,
       overflowY: windowSize === 'small' ? 'none' : 'auto',
       padding: padding,
