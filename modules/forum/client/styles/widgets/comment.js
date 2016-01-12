@@ -25,18 +25,7 @@ export default {
   },
 
   subAction: {
-    paddingRight: 10
-  },
-
-  insertCommentDiv: {
-    display: 'inline-block',
-    float: 'right',
-    padding: 5
-  },
-
-  insertIcon: {
-    padding: 0,
-    marginRight: 10
+    paddingRight: 16
   },
 
   commentDiv: {

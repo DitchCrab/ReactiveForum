@@ -1,7 +1,6 @@
 import { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import moment from 'moment';
-import { EditorInsertComment } from 'material-ui/lib/svg-icons';
 import Reply from './reply';
 import { FlatButton, TextField, Avatar, Styles } from 'material-ui';
 import ComponentStyle from 'forum/client/styles/widgets/comment';
@@ -100,13 +99,10 @@ export default class Comment extends Component {
             </p>
             <p style={ComponentStyle.actions}>
               <span className="comment-time" style={ComponentStyle.subAction}>{moment(comment.createdAt).fromNow()}</span>
-              <span className="comment-reply" style={ComponentStyle.subAction}>Reply: {comment.replies ? comment.replies.length : null}</span>
               <span className="comment-like" style={ComponentStyle.subAction} onClick={this.props.onLike.bind(null, comment._id)}>Like: {comment.likes}</span>
+              <span className="comment-reply" style={ComponentStyle.subAction} onClick={this.props.onCommend.bind(null, comment._id)}>Reply</span>
               { comment.userId === currentUserId && !this.state.editing ? <span className="comment-edit" onClick={this.editComment}>Edit</span> : null }
             </p>
-          </div>
-          <div style={ComponentStyle.insertCommentDiv}>
-            <EditorInsertComment className="insert-comment" color={Colors.grey500} style={ComponentStyle.insertIcon} onClick={this.props.onCommend.bind(null, comment._id)}/>
           </div>
         </div>
         <div>
