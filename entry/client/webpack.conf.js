@@ -2,7 +2,7 @@ var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 var babelSettings = { presets: ['react', 'es2015', 'stage-0'] };
-babelSettings.plugins = ['transform-decorators-legacy', 'syntax-async-functions', 'transform-regenerator'];
+babelSettings.plugins = ['transform-decorators-legacy'];
 
 if (process.env.NODE_ENV !== 'production' && !process.env.IS_MIRROR) {
   babelSettings.plugins.push(['react-transform', {

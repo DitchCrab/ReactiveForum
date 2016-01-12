@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { Component, PropTypes } from 'react';
 import { FlatButton, RaisedButton, MenuItem, SelectField, TextField } from 'material-ui';
 import ComponentStyle from 'forum/client/styles/thread/thread_form';
-import Immutable from 'immutable';
 import ThreadImgs from 'forum/collections/thread_imgs';
 import Threads from 'forum/collections/threads';
 import * as ThreadActions from '../actions/thread';

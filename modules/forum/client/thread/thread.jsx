@@ -28,7 +28,7 @@ export default class Thread extends Component {
     currentUser: PropTypes.object,
     // Update when new comment or reply is created by user.
     // Used to scroll to the right element
-    newCommentId: PropTypes.id,
+    newCommentId: PropTypes.string,
     newReplyHash: PropTypes.object,
     blacklist: PropTypes.array,
     // List of threads which viewed

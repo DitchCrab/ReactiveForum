@@ -9,7 +9,6 @@ import {
   SEARCH_ERROR,
   RESET_SEARCH
 } from '../constants';
-import store from '../store/create_store';
 
 export function openBrowsing() {
   return {

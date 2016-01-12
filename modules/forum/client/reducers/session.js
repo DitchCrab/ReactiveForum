@@ -1,16 +1,16 @@
 import {
   USER_SESSION,
-  USER_SESSION_CHANGED
 } from '../constants';
 import { getCurrentUser } from '../actions/session';
 
-const initialState = getCurrentUser().currentUser;
-
-export default function session(state = initialState, action) {
+export default function session(state = null, action) {
   switch (action.type) {
     case USER_SESSION:
-    case USER_SESSION_CHANGED:
-      return action.currentUser;
+      if (typeof action.currentUser !== 'undefined') {
+        return action.currentUser;
+      } else {
+        return null;
+      }
     default:
       return state
   }

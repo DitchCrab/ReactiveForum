@@ -37,4 +37,4 @@ Meteor.publish('featured-users', function() {
 
 Meteor.publish('thread-users', function() {
   return Meteor.users.find();
-})
+});

@@ -33,7 +33,6 @@ export default class LeftWrapper extends Component {
     setBrowsingLimit: PropTypes.func,
     // Set different query for threads based on category or search query
     setBrowsingQuery: PropTypes.func,
-    searchError: PropTypes.string,
     // If there is search error, reset search
     resetSearch: PropTypes.func,
     pushState: PropTypes.func

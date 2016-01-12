@@ -6,7 +6,6 @@ import {
   AUTH_ERROR,
   CLEAR_AUTH_ERROR
 } from '../constants';
-import store from '../store/create_store';
 
 export function signUp(username, password) {
   return dispatch => {
@@ -55,18 +54,7 @@ export function clearAuthErr() {
   }
 };
 
-export function getCurrentUser() {
-  let user = Meteor.user();
-  if (user) {
-    let cursor = Meteor.users.find({_id: user._id}).observe({
-      changed: (newUsr, oldUsr) => {
-        if (typeof Meteor.user() === 'undefined') {
-          observe.stop();
-        }
-        store.dispatch(currentUserChanged(newUsr)); 
-      }
-    });
-  }
+export function getCurrentUser(user) {
   return {
     type: USER_SESSION,
     currentUser: user
@@ -81,13 +69,6 @@ export function updateUserAvatar(img) {
         })
       }
     })
-  }
-};
-
-export function currentUserChanged(user) {
-  return {
-    type: USER_SESSION_CHANGED,
-    currentUser: user
   }
 };
 

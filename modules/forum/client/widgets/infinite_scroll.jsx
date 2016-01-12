@@ -81,6 +81,9 @@ export default class InfiniteScroll extends Component {
   }
 
   attachScrollListener() {
+    if (typeof window !== 'undefined') {
+      return;
+    }
     if (!this.props.hasMore) {
       return;
     }

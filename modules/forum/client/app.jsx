@@ -59,10 +59,16 @@ export default class App extends Component {
     this.setState({signinButton: ReactDOM.findDOMNode(this.refs.signInButton)});
     // Track resize event for responsive layout
     window.addEventListener('resize', this.handleResize);
+    this.sessionTracker = Tracker.autorun(() => {
+      let user = Meteor.user();
+      this.props.actions.getCurrentUser(user);
+    })
+
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.handleResize);
+    this.sessionTracker.stop();
   }
 
   handleResize() {

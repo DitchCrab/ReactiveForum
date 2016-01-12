@@ -18,7 +18,7 @@ export default class CommentList extends Component {
     blacklist: PropTypes.array,
     // State of new comment or reply just created
     newCommentId: PropTypes.string,
-    newReplyId: PropTypes.object,
+    newReplyHash: PropTypes.object,
     // Callback for server methods
     onLike: PropTypes.func,
     onCommend: PropTypes.func,
@@ -30,7 +30,6 @@ export default class CommentList extends Component {
   static defaultProps = {
     comments: [],
     blacklist: [],
-    newReplyId: [],
   };
   
   constructor(props) {

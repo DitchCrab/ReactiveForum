@@ -1,7 +1,6 @@
 export const WINDOW_SIZE = 'WINDOW_SIZE';
 // User 'sign in', 'sign out' & 'edit profile'
 export const USER_SESSION = 'USER_SESSION';
-export const USER_SESSION_CHANGED = 'USER_SESSION_CHANGED';
 
 // Clear error
 export const AUTH_ERROR = 'AUTH_ERROR';

@@ -17,7 +17,6 @@ import {
   FLAG_THREAD,
   UNFLAG_THREAD
 } from '../constants';
-import store from '../store/create_store';
 
 export function createThread(params) {
   return dispatch => {

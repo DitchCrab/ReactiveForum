@@ -1,7 +1,6 @@
 import TestUtils from 'react-addons-test-utils';
 import jasmineReact from 'jasmine-react-helpers-hotfix-0.14';
 import ReactDOM from 'react-dom';
-import Wrapper from 'forum/client/thread/wrapper';
 import Featured from 'forum/client/thread/featured';
 import Thread from 'forum/client/thread/thread';
 import ThreadCarousel from 'forum/client/thread/thread_carousel';

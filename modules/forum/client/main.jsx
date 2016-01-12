@@ -1,6 +1,5 @@
 import { Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
-import Wrapper from './thread/wrapper';
 import LeftWrapper from './left/left_wrapper';
 import ThreadUsers from './right/thread_users';
 import FeaturedUsers from './right/featured_users';
@@ -97,7 +96,7 @@ export default class Main extends Component {
           this.props.actions.setHasMoreBrowsing(true);
         }
       }
-    })
+    });
   }
 
   componentWillUnmount() {
@@ -179,7 +178,6 @@ export default class Main extends Component {
   // On medium and large screen: render as right nav
   renderBrowsing() {
     const left_wrapper_props = {
-      resetSearch: this.resetSearch,
       threads: this.props.browsingThreads,
       categories: this.props.categories,
       currentUser: this.props.currentUser,

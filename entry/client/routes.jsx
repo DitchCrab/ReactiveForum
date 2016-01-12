@@ -5,12 +5,15 @@ import store from 'forum/client/store/create_store';
 import { createHistory } from 'history';
 import { syncReduxAndRouter } from 'redux-simple-router';
 
-const history = createHistory();
-syncReduxAndRouter(history, store);
+var history;
+if (Meteor.isClient) {
+  history = createHistory();
+  syncReduxAndRouter(history, store);
+}
 
 ReactRouterSSR.Run(
   forumRoutes,
   {props: {history: history}},
-  {props: {history: history}},
   injectTapEventPlugin()
 );
+

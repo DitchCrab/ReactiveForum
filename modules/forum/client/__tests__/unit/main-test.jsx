@@ -2,7 +2,6 @@ import TestUtils from 'react-addons-test-utils';
 import jasmineReact from 'jasmine-react-helpers-hotfix-0.14';
 import ReactDOM from 'react-dom';
 import Main from 'forum/client/main';
-import Wrapper from 'forum/client/thread/wrapper';
 import LeftWrapper from 'forum/client/left/left_wrapper';
 import ThreadUsers from 'forum/client/right/thread_users';
 import Categories from 'forum/collections/categories';
