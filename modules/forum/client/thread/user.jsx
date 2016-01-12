@@ -6,6 +6,7 @@ import * as UserActions from 'forum/client/actions/user';
 import { bindActionCreators } from 'redux';
 import { pushPath } from 'redux-simple-router';
 import ThreadList from './thread_list';
+import ComponentStyle from 'forum/client/styles/thread/user';
 
 export default class User extends Component {
   static propTypes = {
@@ -51,8 +52,8 @@ export default class User extends Component {
 
   render() {
     return (
-      <div style={{backgroundColor: 'white'}}>
-        <h3>{this.props.onUser.username} contributed to: </h3>
+      <div style={ComponentStyle.wrapper}>
+        <h1 style={ComponentStyle.header}>{this.props.onUser ? this.props.onUser.username : null} contributed to: </h1>
         <ThreadList threads={this.props.userThreads} viewThread={this.viewThread} />
       </div>
     )

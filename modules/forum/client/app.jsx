@@ -6,11 +6,13 @@ import MiniProfile from './right/mini_profile';
 import LogOn from './right/log_on';
 import { windowSize } from './helpers';
 import { LeftNav, IconButton, Avatar, FlatButton, AppBar, Popover, Styles } from 'material-ui';
-import { ActionViewList, ActionHistory, SocialPerson } from 'material-ui/lib/svg-icons';
+import { ActionHome, ActionViewList, ActionHistory, SocialPerson, ContentClear } from 'material-ui/lib/svg-icons';
 import ComponentStyle from './styles/app';
 const { Colors, AutoPrefix } = Styles;
 import * as sessionActions from './actions/session';
 import * as WindowActions from './actions/window';
+import * as BrowsingActions from './actions/browsing';
+import { pushPath } from 'redux-simple-router';
 import { bindActionCreators } from 'redux';
 
 //@connect(state => state)
@@ -27,14 +29,12 @@ export default class App extends Component {
 
   constructor(props, context) {
     super(props);
-    this.state = {activePopover: false, section: 'thread', windowSize: windowSize()};
+    this.state = {activePopover: false, windowSize: windowSize()};
     this.context = context;
     // Rendering methods decoupling from main render method
     this.renderRightIcon = this.renderRightIcon.bind(this);
     this.renderLeftIcon = this.renderLeftIcon.bind(this);
     this.renderUserAvatar = this.renderUserAvatar.bind(this);
-    // Update view of ['thread', 'browsing'] on small screen
-    this.viewSection = this.viewSection.bind(this);
     // Update popover state
     this.openPopover = this.openPopover.bind(this);
     this.closePopover = this.closePopover.bind(this);
@@ -75,7 +75,6 @@ export default class App extends Component {
     // Props for AppBar element
     let app_bar_props = {
       title: "DitchCrab",
-      onTitleTouchTap: this.viewSection.bind(null, 'thread'),
       iconElementRight: this.renderRightIcon(),
     };
     // Burger menu button do not show on small screen
@@ -96,7 +95,6 @@ export default class App extends Component {
     };
     let child_props = {
       section: this.state.section,
-      viewSection: this.viewSection,
       openSideNav: this.state.sideNavOpen,
       closeSideNav: this.closeSideNav,
       currentUser: this.props.session,
@@ -127,7 +125,7 @@ export default class App extends Component {
     }
     return (
       <div>
-        { this.props.params.thread && this.state.section === 'browsing' && this.props.windowSize === 'small' ? <IconButton onClick={this.viewSection.bind(null, 'thread')}><ActionHistory color={Colors.white}/></IconButton> : null }
+        <IconButton onClick={() => {this.props.actions.pushPath('/forum')}}><ActionHome color={Colors.white}/></IconButton>
         { this.props.windowSize !== 'large' ? <IconButton onClick={this.openSideNav}> <SocialPerson color={Colors.white}/> </IconButton> : null }
         <div style={AutoPrefix.all(ComponentStyle.rightButton(this.props.session, this.props.windowSize))}>
           {button}
@@ -138,11 +136,19 @@ export default class App extends Component {
 
   // Burger Menu icon on the left
   renderLeftIcon() {
-    return (
-      <IconButton onClick={this.viewSection.bind(null, 'browsing')}>
-        <ActionViewList />
-      </IconButton>
-    )
+    if (this.props.browsingOpened) {
+      return (
+        <IconButton onClick={this.props.actions.closeBrowsing}>
+          <ContentClear />
+        </IconButton>
+      )
+    } else {
+      return (
+        <IconButton onClick={this.props.actions.openBrowsing}>
+          <ActionViewList />
+        </IconButton>
+      )
+    }
   }
 
   // If user has avatar image -> show image
@@ -158,10 +164,6 @@ export default class App extends Component {
     return avatar;
   }
 
-  viewSection(name) {
-    this.setState({section: name});
-  }
-  
   openPopover() {
     if (this.state.activePopover === false) {
       this.setState({activePopover: true});      
@@ -187,10 +189,11 @@ function mapStateToProps(state) {
   return {
     windowSize: state.windowSize,
     session: state.session,
+    browsingOpened: state.browsingOpened,
     authError: state.authError,
   }
 }
-const actions = _.extend(sessionActions, WindowActions);
+const actions = _.extend(sessionActions, WindowActions, BrowsingActions, {pushPath: pushPath});
 
 function mapDispatchToProps(dispatch) {
   return { actions: bindActionCreators(actions, dispatch) };

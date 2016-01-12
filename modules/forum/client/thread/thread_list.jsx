@@ -1,7 +1,7 @@
 import { Component, PropTypes } from 'react';
 import { IconButton, List, ListItem, Avatar, Styles } from 'material-ui';
 import { ToggleStarBorder, ImagePhoto } from 'material-ui/lib/svg-icons';
-import ComponentStyle from 'forum/client/styles/thread/featured';
+import ComponentStyle from 'forum/client/styles/thread/thread_list';
 const { Colors } = Styles;
 
 export default class ThreadList extends Component {

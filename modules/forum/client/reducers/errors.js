@@ -4,7 +4,8 @@ import {
   CLEAR_AUTH_ERROR,
   CLEAR_THREAD_ERROR,
   SEARCH_ERROR,
-  RESET_SEARCH
+  RESET_SEARCH,
+  BROWSING_THREADS
 } from '../constants';
 
 export function authError(state = null, action) {
@@ -34,6 +35,12 @@ export function searchError(state = null, action) {
     case SEARCH_ERROR:
     case RESET_SEARCH:
       return action.searchError;
+    case BROWSING_THREADS:
+      if (action.browsingThreads.length > 0) {
+        return null;
+      } else {
+        return state;
+      }
     default:
       return state;
   }

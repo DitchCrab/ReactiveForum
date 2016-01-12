@@ -4,6 +4,7 @@ import Threads from 'forum/collections/threads';
 import * as FeaturesActions from 'forum/client/actions/features';
 import { bindActionCreators } from 'redux';
 import { pushPath } from 'redux-simple-router';
+import ComponentStyle from 'forum/client/styles/thread/featured';
 import ThreadList from './thread_list';
 
 export default class Featured extends Component {
@@ -40,8 +41,8 @@ export default class Featured extends Component {
 
   render() {
     return (
-      <div>
-        <h3>Features: </h3>
+      <div style={ComponentStyle.wrapper}>
+        <h1 style={ComponentStyle.header}>Features: </h1>
         <ThreadList threads={this.props.featuredThreads} viewThread={this.viewThread} />
       </div>
     )

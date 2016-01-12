@@ -13,6 +13,9 @@ export const GET_USER = 'GET_USER';
 // Categories use to filter threads & create new thread
 export const GET_CATEGORIES = 'GET_CATEGORIES';
 
+// Browsing menu actions
+export const OPEN_BROWSING = 'OPEN_BROWSING';
+export const CLOSE_BROWSING = 'CLOSE_BROWSING';
 // Query threads on specific action
 export const SET_BROWSING_QUERY = 'SET_BROWSING_QUERY';
 export const SET_BROWSING_LIMIT = 'SET_BROWSING_LIMIT';

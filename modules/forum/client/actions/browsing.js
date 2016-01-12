@@ -1,5 +1,7 @@
 import Threads from 'forum/collections/threads';
 import {
+  OPEN_BROWSING,
+  CLOSE_BROWSING,
   SET_BROWSING_QUERY,
   SET_BROWSING_LIMIT,
   BROWSING_THREADS,
@@ -8,6 +10,18 @@ import {
   RESET_SEARCH
 } from '../constants';
 import store from '../store/create_store';
+
+export function openBrowsing() {
+  return {
+    type: OPEN_BROWSING
+  }
+};
+
+export function closeBrowsing() {
+  return {
+    type: CLOSE_BROWSING
+  }
+};
 
 export function setBrowsingQuery(query) {
   return {

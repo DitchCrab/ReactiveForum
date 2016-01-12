@@ -1,10 +1,26 @@
 import {
+  OPEN_BROWSING,
+  CLOSE_BROWSING,
   SET_BROWSING_QUERY,
   SET_BROWSING_LIMIT,
   BROWSING_THREADS,
   HAS_MORE_BROWSING,
   RESET_SEARCH,
 } from '../constants';
+import { UPDATE_PATH } from 'redux-simple-router';
+
+export function browsingOpened(state = false, action) {
+  switch (action.type) {
+    case OPEN_BROWSING:
+      return true;
+    case CLOSE_BROWSING:
+      return false;
+    case UPDATE_PATH:
+      return false;
+    default:
+      return state;
+  }
+};
 
 export function browsingThreads(state = [], action) {
   switch (action.type) {

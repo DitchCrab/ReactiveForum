@@ -18,7 +18,9 @@ export default {
   
   searchField: {
     width: '90%',
-    padding: '5%'
+    padding: '5%',
+    height: 56,
+    lineHeight: '38px'
   },
 
   dropDownDiv: {

@@ -3,7 +3,7 @@ import session from './session';
 import { authError, createThreadError, searchError } from './errors';
 import onUser from './on_user';
 import categories from './categories';
-import { browsingThreads, browsingLimit, browsingQuery, hasMoreBrowsing } from './browsing_threads';
+import { browsingOpened, browsingThreads, browsingLimit, browsingQuery, hasMoreBrowsing } from './browsing_threads';
 import featuredThreads from './featured_threads';
 import userThreads from './user_threads';
 import { newCommentId, newReplyHash } from './notifications';
@@ -20,6 +20,7 @@ export default combineReducers(Object.assign({}, {
   authError,
   onUser,
   categories,
+  browsingOpened,
   browsingThreads,
   browsingLimit,
   browsingQuery,

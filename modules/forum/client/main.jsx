@@ -30,8 +30,6 @@ export default class Main extends Component {
   static propTypes = {
     // React router params
     params: PropTypes.object,
-    // Callback to set which section to view for small screen of ['thread', 'browsing']
-    viewSection: PropTypes.func,
     // SideNav state and callback
     openSideNav: PropTypes.bool,
     closeSideNav: PropTypes.func,
@@ -88,11 +86,6 @@ export default class Main extends Component {
     this.browsingDict = new ReactiveDict('browsing');
     this.browsingDict.set('limit', this.props.browsingLimit);
     this.browsingDict.set('query', this.props.browsingQuery);
-    // Rendering the right view based on url
-    if (this.props.params.thread) {
-      this.props.viewSection.bind(null, 'thread')();
-    }
-
     this.browsingTracker = Tracker.autorun(() => {
       let threads = Threads.find(this.browsingDict.get('query'), {sort: {createdAt: -1}, limit: this.browsingDict.get('limit')}).fetch();
       if (threads.length < 1) {
@@ -136,8 +129,8 @@ export default class Main extends Component {
       case 'small':
         return (
           <section style={AutoPrefix.all(Layout.section)}>        
-            { this.props.section === 'browsing' ? browsing : null }
-            { this.props.section === 'thread' ? this.renderMain() : null }
+            { this.props.browsingOpened ? browsing : null }
+            { !this.props.browsingOpened ? this.renderMain() : null }
             <LeftNav ref="rightNav" {...right_nav_props}>
               {filter_user}
             </LeftNav>
@@ -259,6 +252,7 @@ function mapStateToProps(state) {
   return {
     categories: state.categories,
     onUser: state.onUser,
+    browsingOpened: state.browsingOpened,
     browsingThreads: state.browsingThreads,
     browsingLimit: state.browsingLimit,
     browsingQuery: state.browsingQuery,
