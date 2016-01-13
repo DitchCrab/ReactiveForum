@@ -60,14 +60,6 @@ export default class Main extends Component {
     this.updateThreadList = this.updateThreadList.bind(this);
   }
 
-  componentWillMount() {
-    this.featuredThreadsHandler = Meteor.subscribe('featured-threads');
-    this.userThreadsHandler = Meteor.subscribe('user-threads');
-    this.viewingThreadHandler = Meteor.subscribe('viewing-threads');
-    this.browsingHandler = Meteor.subscribe('browsing-threads');
-    this.imgHandler = Meteor.subscribe('threadImgs');
-    this.avatarHandler = Meteor.subscribe('userAvatars');
-  }
 
   componentWillReceiveProps(nextProps, nextState) {
     if (this.props.browsingLimit !== nextProps.browsingLimit) {
@@ -100,12 +92,6 @@ export default class Main extends Component {
   }
 
   componentWillUnmount() {
-    this.featuredThreadsHandler.stop(); 
-    this.userThreadsHandler.stop();
-    this.viewingThreadHandler.stop();
-    this.browsingHandler.stop();
-    this.imgHandler.stop();
-    this.avatarHandler.stop();
     this.browsingTracker.stop();
     delete ReactiveDict._dictsToMigrate.browsing;
   }
