@@ -23,7 +23,7 @@ import { bindActionCreators } from 'redux';
 // Helpers
 import moment from 'moment';
 
-export default class Thread extends Component {
+export class Thread extends Component {
   static propTypes = {
     windowSize: PropTypes.string,
     // Current viewing thread

@@ -1,7 +1,7 @@
 import TestUtils from 'react-addons-test-utils';
 import jasmineReact from 'jasmine-react-helpers-hotfix-0.14';
 import ReactDOM from 'react-dom';
-import Thread from 'forum/client/components/center/thread/thread';
+import {Thread} from 'forum/client/components/center/thread/thread';
 import BottomToolbar from 'forum/client/components/center/thread/bottom_toolbar';
 import CommentList from 'forum/client/components/center/thread/comment_list';
 import { FlatButton, Card, CardHeader, CardMedia, CardTitle, CardActions, IconButton, CardText, Dialog, TextField} from 'material-ui';
@@ -10,12 +10,25 @@ import { ToggleStar, CommunicationComment, SocialShare } from 'material-ui/lib/s
 describe('Thread', () => {
   var component;
   var foo = {
+    actions: {
+      getThread: () => {},
+      addViewedThread: () => {},
+      createComment: () => {},
+      likeThread: () => {},
+      likeComment: () => {},
+      likeReply: () => {},
+      updateComment: () => {},
+      updateReply: () => {},
+      createReply: () => {},
+      pushPath: () => {}
+    },
     toggleCarousel: () => {return 1;},
     updateThreadList: () => {return 2;},
     newMessages: 0,
     threadList: [],
     windowSize: 'large',
-    thread: {_id: 1, title: 'None', imgUrl: 'None', description: 'None', user: {_id: 1, username: 'Tom', avatar: null}, comments: []}
+    thread: {_id: 1, title: 'None', imgUrl: 'None', description: 'None', user: {_id: 1, username: 'Tom', avatar: null}, comments: []},
+    params: {}
   };
   describe('when user sign in', () => {
     beforeEach(() => {
@@ -23,9 +36,9 @@ describe('Thread', () => {
       const viewingCarousel = false;
       const notSeenUser = [1, 2];
       spyOn(Meteor, 'call').and.callFake(() => {return true;});
-      jasmineReact.spyOnClass(Thread, 'likeReply');
-      jasmineReact.spyOnClass(Thread, 'likeComment');
-      jasmineReact.spyOnClass(Thread, 'likeThread');
+      spyOn(foo.actions, 'likeThread');
+      spyOn(foo.actions, 'likeComment');
+      spyOn(foo.actions, 'likeReply');
       jasmineReact.spyOnClass(Thread, 'closeReplyDialog');
       jasmineReact.spyOnClass(Thread, 'openReplyDialog');
       jasmineReact.spyOnClass(Thread, 'addReply');
@@ -33,6 +46,10 @@ describe('Thread', () => {
       component = TestUtils.renderIntoDocument(
         <Thread currentUser={currentUser} viewingCarousel={viewingCarousel} notSeenUser={notSeenUser} {...foo}/>
       );
+    });
+
+    afterEach(() => {
+      delete ReactiveDict._dictsToMigrate.thread;
     });
 
     it('has main card of thread', () => {
@@ -53,7 +70,7 @@ describe('Thread', () => {
     it('trigger likeThread function when user click on star button', () => {
       const like = TestUtils.scryRenderedComponentsWithType(component, IconButton)[0];
       like.props.onClick();
-      expect(jasmineReact.classPrototype(Thread).likeThread).toHaveBeenCalled();
+      expect(foo.actions.likeThread).toHaveBeenCalled();
     });
 
     it('has star icon', () => {
@@ -90,13 +107,13 @@ describe('Thread', () => {
     it('trigger likeComment on callback', () => {
       const list = TestUtils.findRenderedComponentWithType(component, CommentList);
       list.props.onLike();
-      expect(jasmineReact.classPrototype(Thread).likeComment).toHaveBeenCalled();
+      expect(foo.actions.likeComment).toHaveBeenCalled();
     });
 
     it('trigger likeReply on callback', () => {
       const list = TestUtils.findRenderedComponentWithType(component, CommentList);
       list.props.onLikeReply();
-      expect(jasmineReact.classPrototype(Thread).likeReply).toHaveBeenCalled();
+      expect(foo.actions.likeReply).toHaveBeenCalled();
     });
 
     it('trigger closeReplyDialog on callback', () => {
@@ -110,34 +127,6 @@ describe('Thread', () => {
       expect(comps.length).toEqual(1);
     });
 
-    /* it('has two flatbuttons in dialog', () => {
-       component.setState({showCommentDialog: true});
-       const buttons = TestUtils.scryRenderedComponentsWithType(component, FlatButton);
-       expect(buttons.length).toEqual(2);
-       });
-       
-       it('trigger addReply func on click on submit button in dialog', () => {
-       component.setState({showCommentDialog: true});
-       const button = TestUtils.scryRenderedComponentsWithType(component, FlatButton)[0];
-       expect(button.props.label).toEqual('Submit');
-       button.props.onTouchTap();
-       expect(jasmineReact.classPrototype(Thread).addReply).toHaveBeenCalled();
-       });
-
-       it('trigger cancelReply func on click on cancel button in dialog', () => {
-       component.setState({showCommentDialog: true});
-       const button = TestUtils.scryRenderedComponentsWithType(component, FlatButton)[1];
-       expect(button.props.label).toEqual('Cancel');
-       button.props.onTouchTap();
-       expect(jasmineReact.classPrototype(Thread).cancelReply).toHaveBeenCalled();
-       });
-
-       it('has dialog with title of Comment', () => {
-       component.setState({showCommentDialog: true});
-       const dialog = TestUtils.findRenderedComponentWithType(component, Dialog);
-       expect(dialog.props.title).toEqual('Reply');
-       }) */
-    
   });
 
   describe('when user not sign in', () => {
@@ -149,16 +138,14 @@ describe('Thread', () => {
       );
     });
 
+    afterEach(() => {
+      delete ReactiveDict._dictsToMigrate.thread;
+    });
+
     it('does not have BottomToolbar', () => {
       const comps = TestUtils.scryRenderedComponentsWithType(component, BottomToolbar);
       expect(comps.length).toEqual(0);
     });
-
-    /* it('has on flatbutton of Cancel dialog', () => {
-       component.setState({showCommentDialog: true});
-       const buttons = TestUtils.scryRenderedComponentsWithType(component, FlatButton);
-       expect(buttons.length).toEqual(1);
-       }); */
 
     it('has dialog with title of Comment', () => {
       component.setState({showCommentDialog: true});

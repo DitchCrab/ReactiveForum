@@ -11,7 +11,7 @@ import * as ThreadActions from 'forum/client/actions/thread';
 import { pushPath } from 'redux-simple-router';
 import { bindActionCreators } from 'redux';
 
-export default class ThreadForm extends Component {
+export class ThreadForm extends Component {
   static propTypes = {
     // Thread categories from db
     categories: PropTypes.arrayOf(PropTypes.object),

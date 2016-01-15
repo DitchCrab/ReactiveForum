@@ -18,7 +18,7 @@ import { bindActionCreators } from 'redux';
 // Import helpers
 import { windowSize } from '../helpers';
 
-export default class App extends Component {
+export  class App extends Component {
   static contextTypes = {
     history: PropTypes.object.isRequired,
     router: PropTypes.object,
@@ -116,14 +116,14 @@ export default class App extends Component {
     return (
       <div style={ComponentStyle.body}>
         <AppBar style={ComponentStyle.appBar} {...app_bar_props}/>
-        <Popover className="right-popover" {...pop_over_props} >
+        <Popover  {...pop_over_props} >
           {user ? <MiniProfile currentUser={this.props.session} updateUserAvatar={this.props.actions.updateUserAvatar} signOut={this.props.actions.signOut}/> : <LogOn authError={this.props.authError} {...this.props.actions}/> }
         </Popover>
         {React.cloneElement(this.props.children, child_props)}
       </div>
     )
   }
-
+ 
   // Right incons includes:
   // For small screen: SignIn button OR Avatar, SocialPerson icon, AND ActionHistory
   // For medium screen: SignIn button OR Avatar, SocialPerson icon
@@ -139,7 +139,7 @@ export default class App extends Component {
     return (
       <div>
         <IconButton onClick={() => {this.props.actions.pushPath('/forum')}}><ActionHome color={Colors.white}/></IconButton>
-        { this.props.windowSize !== 'large' ? <IconButton onClick={this.openSideNav}> <SocialPerson color={Colors.white}/> </IconButton> : null }
+        { this.props.windowSize !== 'large' ? <IconButton ref="UserList" onClick={this.openSideNav}> <SocialPerson color={Colors.white}/> </IconButton> : null }
         <div style={AutoPrefix.all(ComponentStyle.rightButton(this.props.session, this.props.windowSize))}>
           {button}
         </div>

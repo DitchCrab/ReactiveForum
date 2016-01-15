@@ -32,6 +32,7 @@ export default class CommentList extends Component {
   static defaultProps = {
     comments: [],
     blacklist: [],
+    newReplyHash: {}
   };
   
   constructor(props) {

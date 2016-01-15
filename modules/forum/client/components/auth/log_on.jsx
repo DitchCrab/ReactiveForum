@@ -1,8 +1,14 @@
-import { Component } from 'react';
+import { Component, PropTypes } from 'react';
 import SignIn from './sign_in';
 import SignUp from './sign_up';
 
 export default class LogOn extends Component {
+  static propTypes = {
+    signIn: PropTypes.func,
+    signUp: PropTypes.func,
+    authError: PropTypes.string,
+    clearAuthErr: PropTypes.func
+  };
   
   constructor(props) {
     super();

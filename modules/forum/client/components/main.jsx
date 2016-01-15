@@ -24,7 +24,7 @@ import * as BlacklistActions from '../actions/blacklist';
 import { pushPath } from 'redux-simple-router';
 import { bindActionCreators } from 'redux';
 
-export default class Main extends Component {
+export class Main extends Component {
     
   static contextTypes = {
     history: PropTypes.object.isRequired    
@@ -69,10 +69,6 @@ export default class Main extends Component {
     // Fire when click on particular user avatar.
     // Result in querying and rendering list of threads which user contributed to
     this.setUser = this.setUser.bind(this);
-    // Fab button which is used to open New Thread Form dialog
-    // Currently only add new thread to carousel
-    // Todo: remove thread from carousel
-    this.updateThreadList = this.updateThreadList.bind(this);
   }
 
 
@@ -182,8 +178,6 @@ export default class Main extends Component {
       threads: this.props.browsingThreads,
       categories: this.props.categories,
       currentUser: this.props.currentUser,
-      onSelectCategory: this.selectCategory,
-      onSearch: this.searchThreads,
       viewThread: this.viewThread,
       windowSize: this.props.windowSize,
       hasMoreBrowsing: this.props.hasMoreBrowsing,
@@ -238,11 +232,6 @@ export default class Main extends Component {
 
   setUser(id) {
     this.props.actions.pushPath(`/forum/user/${id}`);
-  }
-
-  updateThreadList(thread) {
-    let threads = this.state.threadList;
-    this.setState({threadList: threads.concat(thread)});
   }
 
 };

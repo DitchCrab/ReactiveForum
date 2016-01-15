@@ -6,14 +6,18 @@ import { Avatar, List, ListItem } from 'material-ui';
 
 describe('Mini Profile', () => {
   var component;
+  var foo = {
+    signOut: () => {},
+    updateUserAvatar: () => {}
+  };
   beforeEach(() => {
-    jasmineReact.spyOnClass(MiniProfile, 'userLogout');
+    spyOn(foo, 'signOut');
     const currentUser = {
       _id: 1,
       username: 'Tom'
     };
     component = TestUtils.renderIntoDocument(
-      <MiniProfile currentUser={currentUser}/>
+      <MiniProfile currentUser={currentUser} {...foo}/>
     )
   });
 
@@ -24,7 +28,7 @@ describe('Mini Profile', () => {
 
   it('sign out user', () => {
     const signout = TestUtils.scryRenderedComponentsWithType(component, ListItem);
-    TestUtils.Simulate.click(ReactDOM.findDOMNode(signout[1]).getElementsByTagName('a')[0]);
-    expect(jasmineReact.classPrototype(MiniProfile).userLogout.calls.count()).toEqual(1);
+    TestUtils.Simulate.click(ReactDOM.findDOMNode(signout[1]).getElementsByTagName('span')[0]);
+    expect(foo.signOut.calls.count()).toEqual(1);
   })
 });

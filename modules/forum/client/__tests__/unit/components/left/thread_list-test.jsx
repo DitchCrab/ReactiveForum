@@ -9,10 +9,13 @@ import moment from 'moment';
 
 describe('Thread list', () => {
   var component;
+  var foo = {
+    viewThread: () => {},
+  };
   describe('with no thread', () => {
     beforeEach(() => {
       component = TestUtils.renderIntoDocument(
-        <ThreadList />
+        <ThreadList {...foo}/>
       )
     });
 
@@ -23,18 +26,15 @@ describe('Thread list', () => {
   });
 
   describe('with two threads and user not sign in', () => {
-    var foo = {
-      view: () => { return 1},
-    };
     var threads;
     beforeEach(() => {
       threads = [
         {_id: 1, imgUrl: '123', title: 'none', description: 'none'},
         {_id: 2, imgUrl: '1234', title: 'none4', description: 'none4'}        
       ];
-      spyOn(foo, 'view');
+      spyOn(foo, 'viewThread');
       component = TestUtils.renderIntoDocument(
-        <ThreadList threads={threads} viewThread={foo.view}/>
+        <ThreadList threads={threads} {...foo}/>
       )
     });
 
@@ -65,28 +65,25 @@ describe('Thread list', () => {
 
     it('has the right description', () => {
       const describes = TestUtils.scryRenderedComponentsWithType(component, CardTitle);
-      expect(describes[0].props.subtitle).toEqual(threads[0].description);
+      expect(describes[0].props.subtitle.props.children).toEqual(threads[0].description);
       expect(describes[0].props.title).toEqual(threads[0].title);      
     });
 
     it('trigger callback when click on card', () => {
       const cards = TestUtils.scryRenderedComponentsWithType(component, Card);
       TestUtils.Simulate.click(ReactDOM.findDOMNode(cards[0]));
-      expect(foo.view.calls.count()).toEqual(1);
+      expect(foo.viewThread.calls.count()).toEqual(1);
     })
 
   });
 
   describe('when user not sign in', () => {
-    var foo = {
-      view: () => { return 1},      
-    };
     beforeEach(() => {
       const threads = [
         {user: {_id: 1, username: 'Tom'}, category: 1, title: 'None', description: 'None', tags: ['hi', 'there'], comments: [], createdAt: moment.utc().format(), updatedAt: moment.utc().format()}
       ];
       component = TestUtils.renderIntoDocument(
-        <ThreadList threads={threads} viewThread={foo.view}/>
+        <ThreadList threads={threads} {...foo}/>
       )
     });
 
@@ -99,9 +96,6 @@ describe('Thread list', () => {
   });
   
   describe('when user sign in', () => {
-    var foo = {
-      view: () => { return 1},
-    };
     var threads;
     beforeEach(() => {
       spyOn(Meteor, 'call');
@@ -113,7 +107,7 @@ describe('Thread list', () => {
         username: 'Tom'
       }
       component = TestUtils.renderIntoDocument(
-        <ThreadList currentUser={currentUser} threads={threads} viewThread={foo.view}/>
+        <ThreadList currentUser={currentUser} threads={threads} {...foo}/>
       )
     });
 

@@ -8,13 +8,13 @@ import Categories from 'forum/collections/categories';
 
 describe('Left wrapper', () => {
   var foo = {
-    viewThread: () => { return 1;},
-    onSearch: (query) => {return query;},
-    onSelectCategory: () => {return 3;},
-    resetSearch: () => {return 4;},
-    increaseBrowsingLimit: () => {return 5;},
+    viewThread: () => {},
+    setHasMoreBrowsing: () => {},
+    setBrowsingLimit: () => {},
+    setBrowsingQuery: () => {},
+    resetSearch: () => {},
+    pushPath: () => {},
     windowSize: 'small',
-    openNewThreadDialog: () => {},
   };
 
   describe('when user not log in', () => {
@@ -98,7 +98,7 @@ describe('Left wrapper', () => {
         _id: 1,
         username: 'Tom'
       };
-      spyOn(foo, 'openNewThreadDialog');
+      spyOn(foo, 'pushPath');
       component = TestUtils.renderIntoDocument(
         <LeftWrapper currentUser={currentUser} {...foo}/>
       )
@@ -112,7 +112,7 @@ describe('Left wrapper', () => {
     it('open dialog when user click on button', () => {
       const button = TestUtils.findRenderedComponentWithType(component, IconButton);
       TestUtils.Simulate.click(ReactDOM.findDOMNode(button));
-      expect(foo.openNewThreadDialog.calls.count()).toEqual(1);
+      expect(foo.pushPath.calls.count()).toEqual(1);
     });
   })
    

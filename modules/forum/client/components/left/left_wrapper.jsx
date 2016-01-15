@@ -21,8 +21,6 @@ export default class LeftWrapper extends Component {
     threads: PropTypes.arrayOf(PropTypes.object),
     // Callback when user click thread card
     viewThread: PropTypes.func.isRequired,
-    // Callback when user click on fab button to create new thread
-    openNewThreadDialog: PropTypes.func,
     windowSize: PropTypes.string,
     // Important for infinite scrolling. Default is 'false' if no more threads to scroll
     hasMoreBrowsing: PropTypes.bool,
@@ -36,7 +34,7 @@ export default class LeftWrapper extends Component {
     setBrowsingQuery: PropTypes.func,
     // If there is search error, reset search
     resetSearch: PropTypes.func,
-    pushState: PropTypes.func
+    pushPath: PropTypes.func
   };
 
   static defaultProps = {

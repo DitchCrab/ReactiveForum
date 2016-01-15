@@ -11,12 +11,13 @@ import UserAvatars from '../../../collections/user_avatars';
 export default class MiniProfile extends React.Component {
   static propTypes = {
     // if user signed in
-    currentUser: PropTypes.object
+    currentUser: PropTypes.object,
+    signOut: PropTypes.func,
+    updateUserAvatar: PropTypes.func
   };
   
   constructor(props, context) {
     super(props);
-    this.userLogout = this.userLogout.bind(this);
     // Image proccessing methods
     this._uploadImg = this._uploadImg.bind(this);
     this._resizeImg = this._resizeImg.bind(this);
@@ -77,10 +78,5 @@ export default class MiniProfile extends React.Component {
 
   updateAvatar(img) {
     this.props.updateUserAvatar(img);
-  }
-
-  userLogout() {
-    Meteor.logout((res, err) => {
-    })
   }
 };

@@ -16,6 +16,10 @@ export default class Reply extends Component {
     newReplyId: PropTypes.string,
     updateReply: PropTypes.func
   };
+
+  static defaultProps = {
+    reply: {}
+  };
   
   constructor(props) {
     super(props);

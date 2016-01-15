@@ -46,7 +46,7 @@ describe('Comment widget', () => {
 
     it('has zero reply', () => {
       const reply = TestUtils.findRenderedDOMComponentWithClass(component, 'comment-reply');
-      expect(reply.innerText).toEqual('Reply: ');
+      expect(reply.innerText).toEqual('Reply');
     });
 
     it('calback onLike function', () => {
@@ -57,8 +57,8 @@ describe('Comment widget', () => {
     });
 
     it('callback onCommend function', () => {
-      const insert_comment = TestUtils.findRenderedDOMComponentWithClass(component, 'insert-comment');
-      TestUtils.Simulate.click(insert_comment);
+      const reply = TestUtils.findRenderedDOMComponentWithClass(component, 'comment-reply');
+      TestUtils.Simulate.click(reply);
       expect(foo.onCommend.calls.count()).toEqual(1);
       expect(foo.onCommend.calls.argsFor(0)[0]).toEqual(1);
     })
@@ -78,11 +78,6 @@ describe('Comment widget', () => {
     it('has 1 like', () => {
       const like = TestUtils.findRenderedDOMComponentWithClass(component, 'comment-like');
       expect(like.innerText).toEqual('Like: 1');
-    });
-
-    it('has one reply', () => {
-      const reply = TestUtils.findRenderedDOMComponentWithClass(component, 'comment-reply');
-      expect(reply.innerText).toEqual('Reply: 1');
     });
 
     it('has 1 reply', () => {

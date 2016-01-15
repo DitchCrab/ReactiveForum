@@ -13,8 +13,6 @@ describe('Comment list widget', () => {
       onLike: (id) => {return id;},
       onCommend: (id) => {return id;},
       onLikeReply: () => {},
-      moveToCommentId: () => {},
-      moveToReplyId: () => {},
       updateComment: () => {},
       updateReply: () => {}
     };

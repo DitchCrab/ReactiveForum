@@ -7,9 +7,14 @@ import SignUp from 'forum/client/components/auth/sign_up';
 
 describe('LogOn form', () => {
   var component;
+  var foo = {
+    signIn: () => {},
+    signup: () => {},
+    clearAuthErr: () => {}
+  };
   beforeEach(() => {
     component = TestUtils.renderIntoDocument(
-      <LogOn />
+      <LogOn {...foo}/>
     );
   });
 
