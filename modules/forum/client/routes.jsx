@@ -1,11 +1,11 @@
 import { Router, Route, IndexRoute } from 'react-router';
-import App from './app';
-import Main from './main';
-import Landing from './landing';
-import Features from './thread/featured';
-import User from './thread/user';
-import Thread from './thread/thread';
-import ThreadForm from './thread/thread_form';
+import App from './components/app';
+import Main from './components/main';
+import Landing from './components/landing';
+import Features from './components/center/lists/featured';
+import User from './components/center/lists/user';
+import Thread from './components/center/thread/thread';
+import ThreadForm from './components/center/lists/thread_form';
 import Root from './containers/root';
   
 /* export default (

@@ -11,7 +11,7 @@ export default {
     }
     return {
       //      backgroundColor: Colors.white,
-      height: w_h,
+      height: windowSize === 'small' ? 'auto': w_h,
       overflowY: windowSize === 'small' ? 'none' : 'auto',
       padding: padding,
     };
