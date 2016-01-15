@@ -165,9 +165,10 @@ export default class Comment extends Component {
   }
 
   updateComment(event) {
+    event.preventDefault();
     let text = this.refs.commentInput.getValue();
-    this.props.updateComment.bind(null, text)();
     this.setState({editing: false});
+    this.props.updateComment.bind(null, text)();
   }
 
   createReply(event) {

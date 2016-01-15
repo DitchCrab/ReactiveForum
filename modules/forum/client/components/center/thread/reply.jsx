@@ -109,9 +109,10 @@ export default class Reply extends Component {
   }
 
   updateReply(event) {
+    event.preventDefault();
     let text = this.refs.replyInput.getValue();
-    this.props.updateReply.bind(null, text)();
     this.setState({editing: false});
+    this.props.updateReply.bind(null, text)();
   }
   
 };
