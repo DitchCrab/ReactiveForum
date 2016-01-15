@@ -20,7 +20,10 @@ describe('Thread', () => {
       updateComment: () => {},
       updateReply: () => {},
       createReply: () => {},
-      pushPath: () => {}
+      pushPath: () => {},
+      createReply: () => {},
+      openReply: () => {},
+      closeReply: () => {}
     },
     toggleCarousel: () => {return 1;},
     updateThreadList: () => {return 2;},
@@ -39,10 +42,6 @@ describe('Thread', () => {
       spyOn(foo.actions, 'likeThread');
       spyOn(foo.actions, 'likeComment');
       spyOn(foo.actions, 'likeReply');
-      jasmineReact.spyOnClass(Thread, 'closeReplyDialog');
-      jasmineReact.spyOnClass(Thread, 'openReplyDialog');
-      jasmineReact.spyOnClass(Thread, 'addReply');
-      jasmineReact.spyOnClass(Thread, 'cancelReply');
       component = TestUtils.renderIntoDocument(
         <Thread currentUser={currentUser} viewingCarousel={viewingCarousel} notSeenUser={notSeenUser} {...foo}/>
       );
@@ -98,12 +97,6 @@ describe('Thread', () => {
       expect(list).toBeDefined();
     });
 
-    it('trigger openReplyDialog on callback', () => {
-      const list = TestUtils.findRenderedComponentWithType(component, CommentList);
-      list.props.onCommend();
-      expect(jasmineReact.classPrototype(Thread).openReplyDialog).toHaveBeenCalled();
-    });
-
     it('trigger likeComment on callback', () => {
       const list = TestUtils.findRenderedComponentWithType(component, CommentList);
       list.props.onLike();
@@ -114,12 +107,6 @@ describe('Thread', () => {
       const list = TestUtils.findRenderedComponentWithType(component, CommentList);
       list.props.onLikeReply();
       expect(foo.actions.likeReply).toHaveBeenCalled();
-    });
-
-    it('trigger closeReplyDialog on callback', () => {
-      const dialog = TestUtils.findRenderedComponentWithType(component, Dialog);
-      dialog.props.onRequestClose();
-      expect(jasmineReact.classPrototype(Thread).closeReplyDialog).toHaveBeenCalled();
     });
 
     it('has one BottomTextInput', () => {
@@ -147,11 +134,6 @@ describe('Thread', () => {
       expect(comps.length).toEqual(0);
     });
 
-    it('has dialog with title of Comment', () => {
-      component.setState({showCommentDialog: true});
-      const dialog = TestUtils.findRenderedComponentWithType(component, Dialog);
-      expect(dialog.props.title).toEqual(null);
-    })
   })
     
 })

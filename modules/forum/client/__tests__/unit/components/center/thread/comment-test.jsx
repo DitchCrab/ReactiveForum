@@ -7,17 +7,19 @@ import Reply from 'forum/client/components/center/thread/reply';
 describe('Comment widget', () => {
   var foo = {
     onLike: (id) => { return id},
-    onCommend: (id) => { return id},
     onLikeReply: () => {},
     moveToCommentId: () => {},
     moveToReplyId: () => {},
     updateComment: () => {},
-    updateReply: () => {}
+    updateReply: () => {},
+    createReply: () => {},
+    openReply: () => {},
+    closeReply: () => {}
   };
   describe('with no reply', () => {
     var component;
     beforeEach(() => {
-      spyOn(foo, 'onCommend');
+      spyOn(foo, 'openReply');
       spyOn(foo, 'onLike');
       component = TestUtils.renderIntoDocument(
         <Comment comment={{_id: 1, userId: 1, username: 'Tom', createdAt: new Date(), text: "Hello"}} {...foo}/>
@@ -56,18 +58,17 @@ describe('Comment widget', () => {
       expect(foo.onLike.calls.argsFor(0)[0]).toEqual(1);
     });
 
-    it('callback onCommend function', () => {
+    it('callback openReply function', () => {
       const reply = TestUtils.findRenderedDOMComponentWithClass(component, 'comment-reply');
       TestUtils.Simulate.click(reply);
-      expect(foo.onCommend.calls.count()).toEqual(1);
-      expect(foo.onCommend.calls.argsFor(0)[0]).toEqual(1);
+      expect(foo.openReply.calls.count()).toEqual(1);
     })
   });
 
   describe('with replies', () => {
     var component;
     beforeEach(() => {
-      spyOn(foo, 'onCommend');
+      spyOn(foo, 'openReply');
       spyOn(foo, 'onLike');
       spyOn(foo, 'onLikeReply');
       component = TestUtils.renderIntoDocument(

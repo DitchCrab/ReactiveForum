@@ -36,6 +36,7 @@ export default {
     fontSize: '0.8rem',
     wordWrap: 'break-word',
     paddingLeft: 25,
+    paddingRight: 8,
     whiteSpace: 'pre'    
   },
 
@@ -46,5 +47,10 @@ export default {
   commentEditField: {
     width: '90%',
     fontSize: '0.9rem'
+  },
+
+  replyHeader: {
+    color: Colors.grey500,
+    paddingTop: 16
   }
 }

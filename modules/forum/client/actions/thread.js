@@ -15,7 +15,9 @@ import {
   LIKE_COMMENT,
   LIKE_REPLY,
   FLAG_THREAD,
-  UNFLAG_THREAD
+  UNFLAG_THREAD,
+  OPEN_REPLY,
+  CLOSE_REPLY
 } from '../constants';
 
 export function createThread(params) {
@@ -126,3 +128,16 @@ export function flagThread(threadId) {
 export function unflagThread(threadId) {
   Meteor.call('unflagThread', threadId);
 };
+
+export function openReply(id) {
+  return {
+    type: OPEN_REPLY,
+    commentId: id
+  }
+};
+
+export function closeReply() {
+  return {
+    type: CLOSE_REPLY
+  }
+}

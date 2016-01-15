@@ -37,9 +37,13 @@ export const LIKE_THREAD = 'LIKE_REPLY';
 export const CREATE_COMMENT = 'CREATE_COMMENT';
 export const UPDATE_COMMENT = 'UPDATE_COMMENT';
 export const LIKE_COMMENT = 'LIKE_COMMENT';
-export const CREATE_REPLY = 'CREATE_REPLY';
 export const UPDATE_REPLY = 'UPDATE_REPLY';
 export const LIKE_REPLY = 'LIKE_REPLY';
+
+//Reply actions
+export const OPEN_REPLY = 'OPEN_REPLY';
+export const CLOSE_REPLY = 'CLOSE_REPLY';
+export const CREATE_REPLY = 'CREATE_REPLY';
 
 // Update user profile
 export const FLAG_THREAD = 'FLAG_THREAD';

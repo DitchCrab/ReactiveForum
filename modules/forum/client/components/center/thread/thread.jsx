@@ -28,6 +28,7 @@ export class Thread extends Component {
     windowSize: PropTypes.string,
     // Current viewing thread
     thread: PropTypes.object,
+    onReplying: PropTypes.string,
     // If user signed in
     currentUser: PropTypes.object,
     // Update when new comment or reply is created by user.
@@ -82,7 +83,8 @@ export class Thread extends Component {
     const view_dialog = this.state.showReplyDialog === nextState.showReplyDialog;
     const same_messages_count = this.props.newMessages == nextProps.newMessages;
     const same_reply_hash = this.props.newReplyHash === nextProps.newReplyHash;
-    if ( same_user && same_thread && same_list && same_blacklist && same_carousel && view_dialog && same_messages_count && same_reply_hash) {
+    const same_reply = this.props.onReplying === nextProps.onReplying;
+    if ( same_user && same_thread && same_list && same_blacklist && same_carousel && view_dialog && same_messages_count && same_reply_hash && same_reply) {
       return false;
     } else {
       return true;
@@ -98,14 +100,7 @@ export class Thread extends Component {
     };
     // Decoupling from main render methods
     this.renderCommentList = this.renderCommentList.bind(this);
-    this.renderReplyDialog = this.renderReplyDialog.bind(this);
     this.renderCarousel = this.renderCarousel.bind(this);
-    // Open or close text field for reply in dialog
-    this.openReplyDialog = this.openReplyDialog.bind(this);
-    this.closeReplyDialog = this.closeReplyDialog.bind(this);
-    // Call server methods
-    this.addReply = this.addReply.bind(this);
-    this.cancelReply = this.cancelReply.bind(this);
     // Handle Social share event
     this.share = this.share.bind(this);
     this.toggleCarousel = this.toggleCarousel.bind(this);
@@ -176,7 +171,6 @@ export class Thread extends Component {
             { this.props.thread.comments ? this.renderCommentList() : null }
           </CardActions>
         </Card>
-        { this.renderReplyDialog() }
         { this.state.viewingCarousel ? this.renderCarousel() : null }
         { comment_field }
       </div>
@@ -191,50 +185,18 @@ export class Thread extends Component {
       newReplyHash: this.props.newReplyHash,
       newCommentId: this.props.newCommentId,
       moveToCommentId: this.moveToCommentId,
-      onCommend: this.openReplyDialog,
       onLike: this.props.actions.likeComment.bind(null, this.props.thread._id),
       onLikeReply: this.props.actions.likeReply.bind(null, this.props.thread._id),
       updateComment: this.props.actions.updateComment.bind(null, this.props.thread._id),
-      updateReply: this.props.actions.updateReply.bind(null, this.props.thread._id)
+      updateReply: this.props.actions.updateReply.bind(null, this.props.thread._id),
+      createReply: this.props.actions.createReply.bind(null, this.props.thread._id),
+      onReplying: this.props.onReplying,
+      closeReply: this.props.actions.closeReply,
+      openReply: this.props.actions.openReply
     };
     return (
       <CommentList {...comment_list_props}/>      
     )
-  }
-
-  renderReplyDialog() {
-    if (this.props.currentUser) {
-      var customActions = [
-        <FlatButton
-            key="submitReply"
-            label="Submit"
-            primary={true}
-            onTouchTap={this.addReply} />,
-        <FlatButton
-            key="cancelReply"
-            label="Cancel"
-            secondary={true}
-            onTouchTap={this.cancelReply} />
-      ];
-    } else {
-      var customActions = [
-        <FlatButton
-            label="Cancel"
-            secondary={true}
-            onTouchTap={this.cancelReply} />
-      ]
-    }
-    return (
-      <Dialog
-          title={this.props.currentUser ? "Reply" : null }
-          autoDetectWindowHeight={true}
-          autoScrollBodyContent={true}
-          actions={customActions}
-          open={this.state.showReplyDialog}
-          onRequestClose={this.closeReplyDialog}>
-        {this.props.currentUser ? <TextField multiLine={true} ref="Reply" style={ComponentStyle.replyField}/> : <h4>Please signup to reply</h4>}
-      </Dialog>
-    )    
   }
 
   renderCarousel() {
@@ -247,28 +209,6 @@ export class Thread extends Component {
     return (
         <ThreadCarousel {...thread_carousel_props}/>
     );
-  }
-
-  openReplyDialog(commentId) {
-    this.setState({onComment: commentId});
-    this.setState({showReplyDialog: true});
-  }
-
-  closeReplyDialog() {
-    this.setState({showReplyDialog: false});
-  }
-
-  cancelReply() {
-    this.setState({showReplyDialog: false});
-  }
-
-  addReply(commentId) {
-    event.preventDefault();
-    let text = this.refs.Reply.getValue();
-    if (text && text.length > 1) {
-      this.props.actions.createReply(this.props.thread._id, this.state.onComment, text);
-      this.setState({showReplyDialog: false});
-    }
   }
 
   share(vendor) {
@@ -309,6 +249,7 @@ function mapStateToProps(state) {
     windowSize: state.windowSize,
     currentUser: state.session,
     thread: state.thread,
+    onReplying: state.onReplying,
     viewedThreads: state.viewedThreads,
     newCommentId: state.newCommentId,
     newReplyHash: state.newReplyHash,

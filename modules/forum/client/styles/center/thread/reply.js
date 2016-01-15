@@ -38,7 +38,13 @@ export default {
     fontSize: '0.8rem',
     wordWrap: 'break-word',
     paddingLeft: 55,
-    whiteSpace: 'pre'
+    paddingRight: 16,
+    whiteSpace: 'pre',
+    textOverflow: 'clip',
+  },
+
+  reply: {
+    width: '100%'
   },
 
   editingDiv: {

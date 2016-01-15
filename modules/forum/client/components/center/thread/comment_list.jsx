@@ -23,10 +23,13 @@ export default class CommentList extends Component {
     newReplyHash: PropTypes.object,
     // Callback for server methods
     onLike: PropTypes.func,
-    onCommend: PropTypes.func,
     onLikeReply: PropTypes.func,
     updateComment: PropTypes.func,
-    updateReply: PropTypes.func
+    updateReply: PropTypes.func,
+    createReply: PropTypes.func,
+    closeReply: PropTypes.func,
+    openReply: PropTypes.func,
+    onReplying: PropTypes.string
   };
 
   static defaultProps = {
@@ -58,7 +61,8 @@ export default class CommentList extends Component {
     const same_comments = _.isEqual(this.props.comments, nextProps.comments);
     const same_list = _.isEqual(this.props.blacklist, nextProps.blacklist);
     const same_mark = this.state.timeMark === nextState.timeMark;
-    if (same_user && same_comments && same_list && same_mark) {
+    const same_reply = this.props.onReplying === nextProps.onReplying;
+    if (same_user && same_comments && same_list && same_mark && same_reply) {
       return false;
     } else {
       return true;
@@ -83,10 +87,13 @@ export default class CommentList extends Component {
         newCommentId: this.props.newCommentId,
         comment: comment,
         onLike: this.props.onLike.bind(null),
-        onCommend: this.props.onCommend.bind(null),
         onLikeReply: this.props.onLikeReply.bind(null, comment._id),
         updateComment: this.props.updateComment.bind(null, comment._id),
-        updateReply: this.props.updateReply.bind(null, comment._id)
+        updateReply: this.props.updateReply.bind(null, comment._id),
+        createReply: this.props.createReply.bind(null, comment._id),
+        onReplying: this.props.onReplying,
+        closeReply: this.props.closeReply,
+        openReply: this.props.openReply.bind(null, comment._id)
       };
       if (comment._id === this.props.newReplyHash.commentId) {
         comment_props.newReplyId = this.props.newReplyHash.replyIndex;

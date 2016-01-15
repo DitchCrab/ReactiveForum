@@ -19,12 +19,15 @@ export default class Comment extends Component {
     // Id of comment just created
     newCommentId: PropTypes.string,
     // Callback for server methods
-    onCommend: PropTypes.func,
     onLike: PropTypes.func,
     onLikeReply: PropTypes.func,
     // Callbacks on update events
     updateComment: PropTypes.func,
-    updateReply: PropTypes.func
+    updateReply: PropTypes.func,
+    createReply: PropTypes.func,
+    closeReply: PropTypes.func,
+    openReply: PropTypes.func,
+    onReplying: PropTypes.string
   };
 
   constructor(props) {
@@ -34,10 +37,12 @@ export default class Comment extends Component {
     };
     // Render editing field
     this.renderEditing = this.renderEditing.bind(this);
+    this.renderReply = this.renderReply.bind(this);
     // Change state of comment
     this.editComment = this.editComment.bind(this);
     // Get comment text and fire callback
     this.updateComment = this.updateComment.bind(this);
+    this.createReply = this.createReply.bind(this);
   }
 
   // Scroll to comment if receive newCommentId prop
@@ -54,7 +59,8 @@ export default class Comment extends Component {
     const same_user = _.isEqual(this.props.currentUser, nextProps.currentUser);
     const same_comment = _.isEqual(this.props.comment, nextProps.comment);
     const same_editing_state = this.state.editing === nextState.editing;
-    if (same_user && same_comment && same_editing_state) {
+    const same_reply = this.props.onReplying === nextProps.onReplying;
+    if (same_user && same_comment && same_editing_state && same_reply) {
       return false;
     } else {
       return true;
@@ -102,7 +108,7 @@ export default class Comment extends Component {
             <p style={ComponentStyle.actions}>
               <span className="comment-time" style={ComponentStyle.subAction}>{moment(comment.createdAt).fromNow()}</span>
               <span className="comment-like" style={ComponentStyle.subAction} onClick={this.props.onLike.bind(null, comment._id)}>Like: {comment.likes}</span>
-              <span className="comment-reply" style={ComponentStyle.subAction} onClick={this.props.onCommend.bind(null, comment._id)}>Reply</span>
+              <span className="comment-reply" style={ComponentStyle.subAction} onClick={this.props.openReply}>Reply</span>
               { comment.userId === currentUserId && !this.state.editing ? <span className="comment-edit" onClick={this.editComment}>Edit</span> : null }
             </p>
           </div>
@@ -111,6 +117,7 @@ export default class Comment extends Component {
           <div style={ComponentStyle.commentDiv}>
             <div className="comment-text" style={AutoPrefix.all(ComponentStyle.comment)}>
               {this.state.editing ? this.renderEditing(comment.text) : comment.text }
+              {this.props.onReplying === this.props.comment._id ? this.renderReply() : null }
             </div>
             {replies}
           </div>
@@ -129,8 +136,25 @@ export default class Comment extends Component {
             style={ComponentStyle.commentEditField}
         />
         <p>
-          <FlatButton label="Cancel" onTouchTap={this.updateComment}/>   
+          <FlatButton label="Cancel" onTouchTap={() => {this.setState({editing: false})}}/>   
           <FlatButton label="Done" primary={true} onTouchTap={this.updateComment} />
+        </p>
+      </div>
+    )
+  }
+
+  renderReply() {
+    return (
+      <div style={ComponentStyle.editingDiv}>
+        <h4 style={ComponentStyle.replyHeader}>Reply to {this.props.comment.username}:</h4>
+        <TextField
+            ref="replyInput"    
+            multiLine={true}
+            style={ComponentStyle.commentEditField}
+        />
+        <p>
+          <FlatButton label="Cancel" onTouchTap={this.props.closeReply}/>   
+          <FlatButton label="Done" primary={true} onTouchTap={this.createReply} />
         </p>
       </div>
     )
@@ -144,5 +168,10 @@ export default class Comment extends Component {
     let text = this.refs.commentInput.getValue();
     this.props.updateComment.bind(null, text)();
     this.setState({editing: false});
+  }
+
+  createReply(event) {
+    let text = this.refs.replyInput.getValue();
+    this.props.createReply.bind(null, text)();
   }
 };

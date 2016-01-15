@@ -14,7 +14,10 @@ describe('Comment list widget', () => {
       onCommend: (id) => {return id;},
       onLikeReply: () => {},
       updateComment: () => {},
-      updateReply: () => {}
+      updateReply: () => {},
+      createReply: () => {},
+      openReply: () => {},
+      closeReply: () => {}
     };
     beforeEach(() => {
       jasmineReact.spyOnClass(CommentList, 'getMoreComments');
@@ -56,6 +59,9 @@ describe('Comment list widget', () => {
       moveToReplyId: () => {},
       updateComment: () => {},
       updateReply: () => {}
+      createReply: () => {},
+      openReply: () => {},
+      closeReply: () => {}
     };
     beforeEach(() => {
       const comments = [

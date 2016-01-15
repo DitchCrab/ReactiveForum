@@ -7,7 +7,7 @@ import { browsingOpened, browsingThreads, browsingLimit, browsingQuery, hasMoreB
 import featuredThreads from './featured_threads';
 import userThreads from './user_threads';
 import { newCommentId, newReplyHash } from './notifications';
-import thread from './thread';
+import { thread, onReplying } from './thread';
 import { windowSize } from './window';
 import { viewedThreads } from './viewed_thread';
 import { threadUserList } from './thread_user_list';
@@ -32,6 +32,7 @@ export default combineReducers(Object.assign({}, {
   newReplyHash,
   createThreadError,
   thread,
+  onReplying,
   viewedThreads,
   blacklist,
   threadUserList
