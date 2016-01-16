@@ -5,7 +5,7 @@ export default {
     const width = toolbarWidth(windowSize);
     let style = {
       position: 'fixed',
-      bottom: 0,
+      bottom: -5,
       width: width,
       height: 'initial',
       margin: 0,

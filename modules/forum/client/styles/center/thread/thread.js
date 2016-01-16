@@ -3,7 +3,7 @@ const {Colors} = Styles;
 
 export default {
   card: {
-    paddingBottom: 60,
+    paddingBottom: 80,
   },
   
   headerTitle: {
