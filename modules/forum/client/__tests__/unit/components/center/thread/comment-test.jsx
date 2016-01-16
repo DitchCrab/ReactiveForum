@@ -14,13 +14,13 @@ describe('Comment widget', () => {
     updateReply: () => {},
     createReply: () => {},
     openReply: () => {},
-    closeReply: () => {}
+    closeReply: () => {},
+    openSnackbar: () => {},
   };
-  describe('with no reply', () => {
+  describe('with no reply when user not signin', () => {
     var component;
     beforeEach(() => {
-      spyOn(foo, 'openReply');
-      spyOn(foo, 'onLike');
+      spyOn(foo, 'openSnackbar');
       component = TestUtils.renderIntoDocument(
         <Comment comment={{_id: 1, userId: 1, username: 'Tom', createdAt: new Date(), text: "Hello"}} {...foo}/>
       )
@@ -49,6 +49,24 @@ describe('Comment widget', () => {
     it('has zero reply', () => {
       const reply = TestUtils.findRenderedDOMComponentWithClass(component, 'comment-reply');
       expect(reply.innerText).toEqual('Reply');
+    });
+
+    it('calback openSnackbar function', () => {
+      const like = TestUtils.findRenderedDOMComponentWithClass(component, 'comment-like');
+      TestUtils.Simulate.click(like);
+      expect(foo.openSnackbar.calls.count()).toEqual(1);
+    });
+  });
+
+  describe('with no replies when user signed in', () => {
+    var component;
+    beforeEach(() => {
+      spyOn(foo, 'openReply');
+      spyOn(foo, 'onLike');
+      let user = {_id: '1', username: 'Tom'};
+      component = TestUtils.renderIntoDocument(
+        <Comment currentUser={user} comment={{_id: 1, userId: 1, username: 'Tom', createdAt: new Date(), text: "Hello"}} {...foo}/>
+      )
     });
 
     it('calback onLike function', () => {

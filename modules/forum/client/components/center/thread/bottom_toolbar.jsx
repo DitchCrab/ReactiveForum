@@ -26,19 +26,15 @@ export default class BottomToolbar extends Component {
   
   constructor(props) {
     super(props);
-    this.state = {
-      comment: null,
-      defaultHeight: 56,
-      textFieldHeight: 24
-    };
-    this.typeComment = this.typeComment.bind(this);
+    this.state = { comment: null};
+    this.typing = this.typing.bind(this);
     // call server method
     this.addCommentToThread = this.addCommentToThread.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     const same_carousel = this.props.viewingCarousel === nextProps.viewingCarousel;
-    const same_messages_count = this.props.newMessages == nextProps.newMessages;
+    const same_messages_count = this.props.newMessages === nextProps.newMessages;
     const same_comment = this.state.comment === nextState.comment;
     if (same_carousel && same_messages_count && same_comment) {
       return false;
@@ -51,14 +47,14 @@ export default class BottomToolbar extends Component {
     let open_button =  <IconButton tooltip="Star" touch={true} onClick={this.props.toggleCarousel.bind(null)}><ActionViewCarousel/></IconButton>;
     let close_button = <NavigationClose />;
     return(
-      <Toolbar style={ComponentStyle.toolbar(this.props.windowSize, this.state.defaultHeight)}>
+      <Toolbar style={ComponentStyle.toolbar(this.props.windowSize)}>
         <TextField
             multiLine={true}
             ref="commentField"
             defaultValue={this.state.comment}
             style={ComponentStyle.textField(this.props.windowSize)}
             hintText="Commend"
-            onChange={this.typeComment} />
+            onChange={this.typing}/>
         <IconButton
             tooltip="Star"
             touch={true}
@@ -76,28 +72,21 @@ export default class BottomToolbar extends Component {
     )
   }
 
-  typeComment(event) {
-    event.preventDefault();
-    let comment = event.target.value;
-    this.setState({comment: comment});
-    let new_height = event.target.clientHeight;
-    let old_height = this.state.textFieldHeight;
-    // Adjust height of toolbar on line break
-    if (new_height > old_height) {
-      this.setState({textFieldHeight: new_height, defaultHeight: this.state.defaultHeight + 24});
-    } else if (new_height < old_height) {
-      this.setState({textFieldHeight: new_height, defaultHeight: this.state.defaultHeight - 24});        
-    }
+  typing(e) {
+    e.preventDefault();
+    this.setState({comment: e.target.value});
   }
 
-  addCommentToThread() {
+  addCommentToThread(e) {
+    e.preventDefault();
+    e.stopPropagation();
     let comment = this.state.comment;
+    //Reset comment toolbar
+    this.refs.commentField.clearValue();
+    this.setState({comment: null});
     if (comment && comment.length > 1) {
       this.props.createComment.bind(null, comment)();
     }
-    //Reset comment toolbar
-    this.refs.commentField.clearValue();
-    this.setState({comment: null, defaultHeight: 56, textFieldHeight: 24});
   }
 };
 

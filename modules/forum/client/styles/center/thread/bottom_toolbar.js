@@ -1,15 +1,15 @@
 import { toolbarWidth } from 'forum/client/helpers';
 
 export default {
-  toolbar: function(windowSize, height) {
+  toolbar: function(windowSize) {
     const width = toolbarWidth(windowSize);
     let style = {
       position: 'fixed',
       bottom: 0,
       width: width,
-      height: height,
+      height: 'initial',
       margin: 0,
-      padding: "0px 5px 10px 5px",
+      padding: "0px 5px 0px 5px",
       textAlign: "center"
     };
     return style;

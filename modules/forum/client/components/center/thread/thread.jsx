@@ -214,8 +214,7 @@ export class Thread extends Component {
     );
   }
 
-  likeThread(id, e) {
-    e.stopPropagation();
+  likeThread(id) {
     if (this.props.currentUser) {
       this.props.actions.likeThread(id);
     } else {

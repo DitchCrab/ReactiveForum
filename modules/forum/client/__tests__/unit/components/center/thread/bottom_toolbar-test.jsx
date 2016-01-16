@@ -12,7 +12,7 @@ describe('Bottom Toolbar', () => {
   }
   const thread = {_id: 1};
   beforeEach(() => {
-    jasmineReact.spyOnClass(BottomToolbar, 'typeComment');
+    jasmineReact.spyOnClass(BottomToolbar, 'typing');
     jasmineReact.spyOnClass(BottomToolbar, 'addCommentToThread');
     spyOn(foo, 'toggle');
     component = TestUtils.renderIntoDocument(
@@ -29,7 +29,7 @@ describe('Bottom Toolbar', () => {
     const textfield = TestUtils.findRenderedComponentWithType(component, TextField);
     expect(textfield.props.defaultValue).toEqual(null);
     TestUtils.Simulate.change(ReactDOM.findDOMNode(textfield).getElementsByTagName('textarea')[1], {target: {value: 'Haha'}});
-    expect(jasmineReact.classPrototype(BottomToolbar).typeComment.calls.count()).toEqual(1);
+    expect(jasmineReact.classPrototype(BottomToolbar).typing.calls.count()).toEqual(1);
   });
 
   it('trigger addCommendToPost when click on button', () => {
