@@ -238,6 +238,7 @@ export class Main extends Component {
 
 function mapStateToProps(state) {
   return {
+    currentUser: state.session,
     categories: state.categories,
     browsingOpened: state.browsingOpened,
     browsingThreads: state.browsingThreads,
