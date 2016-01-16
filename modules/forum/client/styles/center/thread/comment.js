@@ -37,7 +37,7 @@ export default {
     wordWrap: 'break-word',
     paddingLeft: 25,
     paddingRight: 8,
-    whiteSpace: 'pre'    
+    whiteSpace: 'pre-line'    
   },
 
   editingDiv: {

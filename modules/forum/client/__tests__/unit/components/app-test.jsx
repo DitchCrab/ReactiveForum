@@ -74,7 +74,6 @@ describe('App forum', () => {
   describe('with medium screen', () => {
     var root;
     beforeEach(() => {
-      jasmineReact.spyOnClass(App, 'openSideNav');
       foo.windowSize = 'medium';
       root = TestUtils.renderIntoDocument(
         <App params={{}} {...foo}>
@@ -88,11 +87,6 @@ describe('App forum', () => {
       expect(icons.length).toEqual(1);
     });
 
-    it('trigger openSideNav method on click on SocialPerson icon', () => {
-      const icon = TestUtils.findRenderedComponentWithType(root, App).refs.UserList;
-      TestUtils.Simulate.click(ReactDOM.findDOMNode(icon));
-      expect(jasmineReact.classPrototype(App).openSideNav).toHaveBeenCalled();
-    })
   })
 
   describe('with small screen', () => {

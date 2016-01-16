@@ -39,8 +39,7 @@ export default {
     wordWrap: 'break-word',
     paddingLeft: 55,
     paddingRight: 16,
-    whiteSpace: 'pre',
-    textOverflow: 'clip',
+    whiteSpace: 'pre-line',
   },
 
   reply: {

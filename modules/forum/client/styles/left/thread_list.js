@@ -18,7 +18,7 @@ export default {
 
   description: {
     wordWrap: 'break-word',
-    whiteSpace: 'pre'
+    whiteSpace: 'pre-line'
   }
   
 }
