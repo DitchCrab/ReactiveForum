@@ -133,6 +133,7 @@ export default class Comment extends Component {
             ref="commentInput"    
             defaultValue={text}
             multiLine={true}
+            autoFocus={true}
             style={ComponentStyle.commentEditField}
         />
         <p>
@@ -150,6 +151,7 @@ export default class Comment extends Component {
         <TextField
             ref="replyInput"    
             multiLine={true}
+            autoFocus={true}
             style={ComponentStyle.commentEditField}
         />
         <p>

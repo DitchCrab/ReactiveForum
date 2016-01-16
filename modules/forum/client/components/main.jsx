@@ -21,6 +21,7 @@ import * as ThreadActions from '../actions/thread';
 import * as UserActions from '../actions/user';
 import * as UserThreadsActions from '../actions/user_threads';
 import * as BlacklistActions from '../actions/blacklist';
+import * as SideNavActions from '../actions/side_nav';
 import { pushPath } from 'redux-simple-router';
 import { bindActionCreators } from 'redux';
 
@@ -34,8 +35,7 @@ export class Main extends Component {
     // React router params
     params: PropTypes.object,
     // SideNav state and callback
-    openSideNav: PropTypes.bool,
-    closeSideNav: PropTypes.func,
+    sideNavOpened: PropTypes.bool,
     // User signed in object
     currentUser: PropTypes.object,
     // 'small', 'medium' or 'large' size
@@ -114,9 +114,9 @@ export class Main extends Component {
     // Only show in small and medium screen
     // Include FeaturedUsers at homepage AND UserList at thread page
     const right_nav_props = {
-      open: this.props.openSideNav,
+      open: this.props.sideNavOpened,
       docked: false,
-      onRequestChange: this.props.closeSideNav,
+      onRequestChange: this.props.actions.closeSideNav,
       disableSwipeToOpen: true,
       openRight: true,
     };
@@ -245,13 +245,14 @@ function mapStateToProps(state) {
     browsingQuery: state.browsingQuery,
     hasMoreBrowsing: state.hasMoreBrowsing,
     searchError: state.searchError,
+    sideNavOpened: state.sideNavOpened,
     threadUserList: state.threadUserList,
     blacklist: state.blacklist,
     windowSize: state.windowSize
   }
 }
 
-const actions = _.extend(BrowsingActions, CategoriesActions, FeaturesActions, ThreadActions, UserActions, UserThreadsActions, BlacklistActions, {pushPath: pushPath});
+const actions = _.extend(BrowsingActions, CategoriesActions, FeaturesActions, ThreadActions, UserActions, UserThreadsActions, BlacklistActions, SideNavActions, {pushPath: pushPath});
 function mapDispatchToProps(dispatch) {
   return { actions: bindActionCreators(actions, dispatch) };
 }

@@ -13,6 +13,7 @@ const { Colors, AutoPrefix } = Styles;
 import * as sessionActions from '../actions/session';
 import * as WindowActions from '../actions/window';
 import * as BrowsingActions from '../actions/browsing';
+import * as SideNavActions from '../actions/side_nav';
 import { pushPath } from 'redux-simple-router';
 import { bindActionCreators } from 'redux';
 // Import helpers
@@ -44,9 +45,6 @@ export  class App extends Component {
     // Update popover state
     this.openPopover = this.openPopover.bind(this);
     this.closePopover = this.closePopover.bind(this);
-    // right SideNav manipulation
-    this.openSideNav = this.openSideNav.bind(this);
-    this.closeSideNav = this.closeSideNav.bind(this);
     this.handleResize = this.handleResize.bind(this);
   }
 
@@ -106,20 +104,13 @@ export  class App extends Component {
       targetOrigin: {horizontal: "right", vertical: "top"},
       onRequestClose: this.closePopover
     };
-    let child_props = {
-      section: this.state.section,
-      openSideNav: this.state.sideNavOpen,
-      closeSideNav: this.closeSideNav,
-      currentUser: this.props.session,
-      windowSize: this.props.windowSize
-    };
     return (
       <div style={ComponentStyle.body}>
         <AppBar style={ComponentStyle.appBar} {...app_bar_props}/>
         <Popover  {...pop_over_props} >
           {user ? <MiniProfile currentUser={this.props.session} updateUserAvatar={this.props.actions.updateUserAvatar} signOut={this.props.actions.signOut}/> : <LogOn authError={this.props.authError} {...this.props.actions}/> }
         </Popover>
-        {React.cloneElement(this.props.children, child_props)}
+        {this.props.children}
       </div>
     )
   }
@@ -139,7 +130,7 @@ export  class App extends Component {
     return (
       <div>
         <IconButton onClick={() => {this.props.actions.pushPath('/forum')}}><ActionHome color={Colors.white}/></IconButton>
-        { this.props.windowSize !== 'large' ? <IconButton ref="UserList" onClick={this.openSideNav}> <SocialPerson color={Colors.white}/> </IconButton> : null }
+        { this.props.windowSize !== 'large' ? <IconButton ref="UserList" onClick={this.props.actions.openSideNav}> <SocialPerson color={Colors.white}/> </IconButton> : null }
         <div style={AutoPrefix.all(ComponentStyle.rightButton(this.props.session, this.props.windowSize))}>
           {button}
         </div>
@@ -190,14 +181,6 @@ export  class App extends Component {
     }
   }
 
-  openSideNav() {
-    this.setState({sideNavOpen: true});
-  }
-
-  closeSideNav() {
-    this.setState({sideNavOpen: false});
-  }
-
 };
 
 function mapStateToProps(state) {
@@ -208,7 +191,7 @@ function mapStateToProps(state) {
     authError: state.authError,
   }
 }
-const actions = _.extend(sessionActions, WindowActions, BrowsingActions, {pushPath: pushPath});
+const actions = _.extend(sessionActions, WindowActions, BrowsingActions, SideNavActions, {pushPath: pushPath});
 
 function mapDispatchToProps(dispatch) {
   return { actions: bindActionCreators(actions, dispatch) };

@@ -94,6 +94,7 @@ export default class Reply extends Component {
             ref="replyInput"    
             defaultValue={text}
             multiLine={true}
+            autoFocus={true}
             style={ComponentStyle.replyEditField}
         />
         <p>

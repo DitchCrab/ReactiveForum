@@ -12,6 +12,7 @@ import { windowSize } from './window';
 import { viewedThreads } from './viewed_thread';
 import { threadUserList } from './thread_user_list';
 import { blacklist } from './blacklist';
+import { sideNavOpened } from './side_nav'; 
 import { routeReducer } from 'redux-simple-router';
 
 export default combineReducers(Object.assign({}, {
@@ -35,5 +36,6 @@ export default combineReducers(Object.assign({}, {
   onReplying,
   viewedThreads,
   blacklist,
+  sideNavOpened,
   threadUserList
 }, {routing: routeReducer}));

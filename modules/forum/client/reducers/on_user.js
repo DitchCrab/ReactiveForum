@@ -5,7 +5,11 @@ import {
 export default function onUser(state = null, action) {
   switch (action.type) {
     case GET_USER:
-      return action.onUser;
+      if (typeof action.onUser === 'undefined') {
+        return null;
+      } else {
+        return action.onUser;
+      }
     default:
       return state;
   }
