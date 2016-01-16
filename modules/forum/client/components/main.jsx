@@ -5,7 +5,7 @@ import LeftWrapper from './left/left_wrapper';
 import ThreadUsers from './right/thread_users';
 import FeaturedUsers from './right/featured_users';
 import Layout from '../styles/layout';
-import { FlatButton, LeftNav, Styles } from 'material-ui';
+import { FlatButton, LeftNav, Snackbar, Styles } from 'material-ui';
 import ComponentStyle from 'forum/client/styles/main';
 const { AutoPrefix } = Styles;
 // Helpers
@@ -22,6 +22,7 @@ import * as UserActions from '../actions/user';
 import * as UserThreadsActions from '../actions/user_threads';
 import * as BlacklistActions from '../actions/blacklist';
 import * as SideNavActions from '../actions/side_nav';
+import * as SnackbarActions from '../actions/snackbar';
 import { pushPath } from 'redux-simple-router';
 import { bindActionCreators } from 'redux';
 
@@ -166,6 +167,12 @@ export class Main extends Component {
         <div style={ComponentStyle.mainWrapper(this.props.windowSize)}>
           {this.props.children}
         </div>
+        <Snackbar
+            open={this.props.snackbarOpen}
+            message="Please sign in for more activities"
+            autoHideDuration={3000}
+            onRequestClose={this.props.actions.closeSnackbar}
+        />
       </div>
       )
   }
@@ -187,7 +194,11 @@ export class Main extends Component {
       setBrowsingQuery: this.props.actions.setBrowsingQuery,
       searchError: this.props.searchError,
       resetSearch: this.props.actions.resetSearch,
-      pushPath: path => this.props.actions.pushPath(path)
+      pushPath: path => this.props.actions.pushPath(path),
+      openSnackbar: this.props.actions.openSnackbar,
+      likeThread: this.props.actions.likeThread,
+      flagThread: this.props.actions.flagThread,
+      unflagThread: this.props.actions.unflagThread
     }
     return (
       <div style={Layout.leftNav(this.props.windowSize)}>
@@ -249,11 +260,12 @@ function mapStateToProps(state) {
     sideNavOpened: state.sideNavOpened,
     threadUserList: state.threadUserList,
     blacklist: state.blacklist,
-    windowSize: state.windowSize
+    windowSize: state.windowSize,
+    snackbarOpen: state.snackbarOpen
   }
 }
 
-const actions = _.extend(BrowsingActions, CategoriesActions, FeaturesActions, ThreadActions, UserActions, UserThreadsActions, BlacklistActions, SideNavActions, {pushPath: pushPath});
+const actions = _.extend(BrowsingActions, CategoriesActions, FeaturesActions, ThreadActions, UserActions, UserThreadsActions, BlacklistActions, SideNavActions, SnackbarActions, {pushPath: pushPath});
 function mapDispatchToProps(dispatch) {
   return { actions: bindActionCreators(actions, dispatch) };
 }

@@ -18,6 +18,7 @@ import Threads from 'forum/collections/threads';
 import * as ThreadActions from 'forum/client/actions/thread';
 import * as ViewedThreadActions from 'forum/client/actions/viewed_thread';
 import * as ThreadUserListActions from 'forum/client/actions/thread_user_list';
+import * as SnackbarActions from 'forum/client/actions/snackbar';
 import { pushPath } from 'redux-simple-router';
 import { bindActionCreators } from 'redux';
 // Helpers
@@ -106,6 +107,7 @@ export class Thread extends Component {
     this.toggleCarousel = this.toggleCarousel.bind(this);
     this.closeCarousel = this.closeCarousel.bind(this);
     this.viewThread = this.viewThread.bind(this);
+    this.likeThread = this.likeThread.bind(this);
   }
 
   render() {
@@ -138,7 +140,7 @@ export class Thread extends Component {
             <img src={thread.imgUrl} style={ComponentStyle.img}/>
           </CardMedia>
           <div style={ComponentStyle.cardContainer}>
-            <IconButton touch={true}  onClick={() => this.props.actions.likeThread(this.props.thread._id)}>
+            <IconButton touch={true}  onClick={this.likeThread.bind(null, this.props.thread._id)}>
               <ToggleStar color={Colors.grey700}/>
             </IconButton>
             <div style={ComponentStyle.subNote}>{thread.likes}</div>                
@@ -192,7 +194,8 @@ export class Thread extends Component {
       createReply: this.props.actions.createReply.bind(null, this.props.thread._id),
       onReplying: this.props.onReplying,
       closeReply: this.props.actions.closeReply,
-      openReply: this.props.actions.openReply
+      openReply: this.props.actions.openReply,
+      openSnackbar: this.props.actions.openSnackbar
     };
     return (
       <CommentList {...comment_list_props}/>      
@@ -209,6 +212,15 @@ export class Thread extends Component {
     return (
         <ThreadCarousel {...thread_carousel_props}/>
     );
+  }
+
+  likeThread(id, e) {
+    e.stopPropagation();
+    if (this.props.currentUser) {
+      this.props.actions.likeThread(id);
+    } else {
+      this.props.actions.openSnackbar();
+    }
   }
 
   share(vendor) {
@@ -257,7 +269,7 @@ function mapStateToProps(state) {
   }
 }
 
-const actions = _.extend(ThreadActions, ViewedThreadActions, ThreadUserListActions, {pushPath: pushPath});
+const actions = _.extend(ThreadActions, ViewedThreadActions, ThreadUserListActions, SnackbarActions, {pushPath: pushPath});
 function mapDispatchToProps(dispatch) {
   return { actions: bindActionCreators(actions, dispatch) };
 }

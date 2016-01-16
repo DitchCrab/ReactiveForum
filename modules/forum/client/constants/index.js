@@ -2,6 +2,10 @@ export const WINDOW_SIZE = 'WINDOW_SIZE';
 // User 'sign in', 'sign out' & 'edit profile'
 export const USER_SESSION = 'USER_SESSION';
 
+// Snackbar call to actions
+export const OPEN_SNACKBAR = 'OPEN_SNACKBAR';
+export const CLOSE_SNACKBAR = 'CLOSE_SNACKBAR';
+
 // Clear error
 export const AUTH_ERROR = 'AUTH_ERROR';
 export const CLEAR_AUTH_ERROR = 'CLEAR_AUTH_ERROR';

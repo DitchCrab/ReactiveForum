@@ -11,6 +11,10 @@ describe('Thread list', () => {
   var component;
   var foo = {
     viewThread: () => {},
+    openSnackbar: () => {},
+    closeSnackbar: () => {},
+    flagThread: () => {},
+    unflagThread: () => {}
   };
   describe('with no thread', () => {
     beforeEach(() => {
@@ -98,7 +102,7 @@ describe('Thread list', () => {
   describe('when user sign in', () => {
     var threads;
     beforeEach(() => {
-      spyOn(Meteor, 'call');
+      spyOn(foo, 'flagThread');
       const threads = [
         {user: {_id: 1, username: 'Tom'}, category: 1, title: 'None', description: 'None', tags: ['hi', 'there'], comments: [], createdAt: moment.utc().format(), updatedAt: moment.utc().format()}
       ];
@@ -119,7 +123,7 @@ describe('Thread list', () => {
     it('has effect on flag click', () => {
       const buttons = TestUtils.scryRenderedComponentsWithType(component, IconButton);
       TestUtils.Simulate.click(ReactDOM.findDOMNode(buttons[2]));
-      expect(Meteor.call).toHaveBeenCalled();
+      expect(foo.flagThread).toHaveBeenCalled();
     })
   })
 })

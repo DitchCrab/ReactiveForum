@@ -28,7 +28,7 @@ export default class FeaturedUsers extends Component {
 
   getMeteorData() {
     //Users with most contributions (right nav)
-    let featured_users = Meteor.users.find({}, {sort: {contribution: -1}, limit: 20}).fetch();
+    let featured_users = Meteor.users.find({contribution: {$gt: 0}}, {sort: {contribution: -1}, limit: 20}).fetch();
     return {
       featuredUsers: featured_users
     }

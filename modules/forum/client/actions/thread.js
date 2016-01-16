@@ -123,10 +123,16 @@ export function likeReply(threadId, commentId, replyIndex) {
 
 export function flagThread(threadId) {
   Meteor.call('flagThread', threadId);
+  return {
+    type: FLAG_THREAD
+  }
 };
 
 export function unflagThread(threadId) {
   Meteor.call('unflagThread', threadId);
+  return {
+    type: UNFLAG_THREAD
+  }
 };
 
 export function openReply(id) {

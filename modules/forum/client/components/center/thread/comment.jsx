@@ -27,7 +27,8 @@ export default class Comment extends Component {
     createReply: PropTypes.func,
     closeReply: PropTypes.func,
     openReply: PropTypes.func,
-    onReplying: PropTypes.string
+    onReplying: PropTypes.string,
+    openSnackbar: PropTypes.func
   };
 
   constructor(props) {
@@ -86,7 +87,8 @@ export default class Comment extends Component {
           ref: reply._id,
           reply: reply,
           onLikeReply: this.props.onLikeReply.bind(null, index),
-          updateReply: this.props.updateReply.bind(null, index)
+          updateReply: this.props.updateReply.bind(null, index),
+          openSnackbar: this.props.openSnackbar
         };
         if (this.props.newReplyId === reply._id) {
           reply_props.newReplyId = this.props.newReplyId;
@@ -106,9 +108,23 @@ export default class Comment extends Component {
               <span className="comment-username" style={ComponentStyle.username}>{comment.username}</span>
             </p>
             <p style={ComponentStyle.actions}>
-              <span className="comment-time" style={ComponentStyle.subAction}>{moment(comment.createdAt).fromNow()}</span>
-              <span className="comment-like" style={ComponentStyle.subAction} onClick={this.props.onLike.bind(null, comment._id)}>Like: {comment.likes}</span>
-              <span className="comment-reply" style={ComponentStyle.subAction} onClick={this.props.openReply}>Reply</span>
+              <span
+                  className="comment-time"
+                  style={ComponentStyle.subAction}>
+                {moment(comment.createdAt).fromNow()}
+              </span>
+              <span
+                  className="comment-like"
+                  style={ComponentStyle.subAction}
+                  onClick={this.props.currentUser ? this.props.onLike.bind(null, comment._id) : this.props.openSnackbar}>
+                Like: {comment.likes}
+              </span>
+              <span
+                  className="comment-reply"
+                  style={ComponentStyle.subAction}
+                  onClick={this.props.currentUser ? this.props.openReply : this.props.openSnackbar}>
+                Reply
+              </span>
               { comment.userId === currentUserId && !this.state.editing ? <span className="comment-edit" onClick={this.editComment}>Edit</span> : null }
             </p>
           </div>
@@ -145,6 +161,9 @@ export default class Comment extends Component {
   }
 
   renderReply() {
+    if (!this.props.currentUser) {
+      return;
+    }
     return (
       <div style={ComponentStyle.editingDiv}>
         <h4 style={ComponentStyle.replyHeader}>Reply to {this.props.comment.username}:</h4>

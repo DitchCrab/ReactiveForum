@@ -29,7 +29,8 @@ export default class CommentList extends Component {
     createReply: PropTypes.func,
     closeReply: PropTypes.func,
     openReply: PropTypes.func,
-    onReplying: PropTypes.string
+    onReplying: PropTypes.string,
+    openSnackbar: PropTypes.func
   };
 
   static defaultProps = {
@@ -93,7 +94,8 @@ export default class CommentList extends Component {
         createReply: this.props.createReply.bind(null, comment._id),
         onReplying: this.props.onReplying,
         closeReply: this.props.closeReply,
-        openReply: this.props.openReply.bind(null, comment._id)
+        openReply: this.props.openReply.bind(null, comment._id),
+        openSnackbar: this.props.openSnackbar
       };
       if (comment._id === this.props.newReplyHash.commentId) {
         comment_props.newReplyId = this.props.newReplyHash.replyIndex;

@@ -23,7 +23,9 @@ describe('main', () => {
       blacklistUser: () => {},
       whitelistUser: () => {},
       blacklistAll: () => {},
-      whitelistAll: () => {}
+      whitelistAll: () => {},
+      openSnackbar: () => {},
+      closeSnackbar: () => {}
     },
     closeSideNav: () => {},
     windowSize: 'large',

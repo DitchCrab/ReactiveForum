@@ -13,6 +13,10 @@ export default  class ThreadList extends Component {
     currentUser: PropTypes.object,
     // Callback on click on thread card
     viewThread: PropTypes.func.isRequired,
+    openSnackbar: PropTypes.func,
+    likeThread: PropTypes.func,
+    flagThread: PropTypes.func,
+    unflagThread: PropTypes.func
   };
 
   static defaultProps = {
@@ -69,11 +73,12 @@ export default  class ThreadList extends Component {
             <ToggleStar/>
           </IconButton>
           <div className="thread-like" style={ComponentStyle.textDiv}>{thread.likes}</div>                              
-          <IconButton touch={true} >
+          <IconButton touch={true}>
             <CommunicationComment/>
           </IconButton>
           <div className="thread-comment" style={ComponentStyle.textDiv}>{thread.comments ? thread.comments.length: null }</div>
           {this.renderFlag(user, thread._id)}
+          <div style={ComponentStyle.noDiv} />
         </div>
       </Card>          
     )
@@ -81,7 +86,7 @@ export default  class ThreadList extends Component {
   
   renderFlag(user, id) {
     if (!user) {
-      return <div/>
+      return;
     }
     if (user.profile) {
       if (user.profile.flags) {
@@ -101,20 +106,29 @@ export default  class ThreadList extends Component {
 
   likeThread(id, e) {
     e.stopPropagation();
-    Meteor.call('likeThread', id, (err, result) => {
-    })
+    if (this.props.currentUser) {
+      this.props.likeThread(id);
+    } else {
+      this.props.openSnackbar();
+    }
   }
 
   flagThread(id, e) {
     e.stopPropagation();
-    Meteor.call('flagThread', id, (err, result) => {
-    })
+    if (this.props.currentUser) {
+      this.props.flagThread(id);
+    } else {
+      this.props.openSnackbar();
+    }
   }
 
   unflagThread(id, e) {
     e.stopPropagation();
-    Meteor.call('unflagThread', id, (err, result) => {
-    })
+    if (this.props.currentUser) {
+      this.props.unflagThread(id);
+    } else {
+      this.props.openSnackbar();
+    }
   }
 
 };

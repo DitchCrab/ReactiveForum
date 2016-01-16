@@ -34,7 +34,11 @@ export default class LeftWrapper extends Component {
     setBrowsingQuery: PropTypes.func,
     // If there is search error, reset search
     resetSearch: PropTypes.func,
-    pushPath: PropTypes.func
+    pushPath: PropTypes.func,
+    openSnackbar: PropTypes.func,
+    likeThread: PropTypes.func,
+    flagThread: PropTypes.func,
+    unflagThread: PropTypes.func
   };
 
   static defaultProps = {
@@ -109,6 +113,10 @@ export default class LeftWrapper extends Component {
         <ThreadList
             currentUser={this.props.currentUser}
             threads={this.props.threads}
+            openSnackbar={this.props.openSnackbar}
+            likeThread={this.props.likeThread}
+            flagThread={this.props.flagThread}
+            unflagThread={this.props.unflagThread}
             viewThread={this.props.viewThread.bind(null)}/>
       </InfiniteScroll>
     )

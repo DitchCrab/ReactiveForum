@@ -14,7 +14,8 @@ export default class Reply extends Component {
     // Callbacks for server methods
     onLikeReply: PropTypes.func,
     newReplyId: PropTypes.string,
-    updateReply: PropTypes.func
+    updateReply: PropTypes.func,
+    openSnackbar: PropTypes.func
   };
 
   static defaultProps = {
@@ -72,11 +73,24 @@ export default class Reply extends Component {
         </div>
         <div style={ComponentStyle.header}>
           <p>
-            <span className="reply-username" style={ComponentStyle.username}>{reply.username}</span>
+            <span
+                className="reply-username"
+                style={ComponentStyle.username}>
+              {reply.username}
+            </span>
           </p>
           <p style={ComponentStyle.actions}>
-            <span className="reply-createdAt" style={ComponentStyle.subAction}>{moment(reply.createdAt).fromNow()}</span>
-            <span className="reply-like" onClick={this.props.onLikeReply.bind(null)} style={ComponentStyle.subAction}>Like: {reply.likes}</span>
+            <span
+                className="reply-createdAt"
+                style={ComponentStyle.subAction}>
+              {moment(reply.createdAt).fromNow()}
+            </span>
+            <span
+                className="reply-like"
+                onClick={this.props.currentUser ? this.props.onLikeReply.bind(null) : this.props.openSnackbar}
+                style={ComponentStyle.subAction}>
+              Like: {reply.likes}
+            </span>
             { reply.userId === currentUserId && !this.state.editing ? <span className="reply-edit" onClick={this.editReply}>Edit</span> : null }
           </p>
         </div>
