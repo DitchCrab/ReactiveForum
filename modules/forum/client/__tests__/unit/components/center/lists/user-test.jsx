@@ -1,30 +1,43 @@
 import TestUtils from 'react-addons-test-utils';
 import jasmineReact from 'jasmine-react-helpers-hotfix-0.14';
 import ReactDOM from 'react-dom';
-import { Featured } from 'forum/client/components/center/lists/featured';
+import { User } from 'forum/client/components/center/lists/user';
 import ThreadList from 'forum/client/components/center/lists/thread_list';
 import Threads from 'forum/collections/threads';
 
-describe('Featured', () => {
+describe('User threads', () => {
   var component;
   var foo = {
+    params: {_id: '1'},
     actions: {
-      getFeaturedThreads: () => {},
+      getUser: () => {},
+      getUserThreads: () => {},
       pushPath: () => {},
     },
-    featuredThreads: [
+    onUser: {},
+    userThreads: [
       {_id: 1, title: 'None', description: 'None', imgUrl: 'None', user: {username: 'Tom'}}
     ]
   }
   beforeEach(() => {
-    spyOn(Threads, 'find').and.returnValue({fetch: () => {}});
-    jasmineReact.spyOnClass(Featured, 'viewThread');
+    spyOn(Meteor.users, 'findOne');
+    spyOn(Threads, 'find').and.returnValue({fetch: () => {
+      return [
+        {_id: '1', title: 'zzz'},
+      ]
+    }});
+    jasmineReact.spyOnClass(User, 'viewThread');
     component = TestUtils.renderIntoDocument(
-      <Featured {...foo}/>
+      <User {...foo}/>
     );
   });
 
-  it('call Threads fetch', () => {
+  afterEach(() => {
+    delete ReactiveDict._dictsToMigrate.onUser;
+  });
+
+  it('call meteor methods', () => {
+    expect(Meteor.users.findOne).toHaveBeenCalled();
     expect(Threads.find).toHaveBeenCalled();
   });
 
@@ -36,7 +49,7 @@ describe('Featured', () => {
   it('trigger action on callback from threadList', () => {
     const list = TestUtils.findRenderedComponentWithType(component, ThreadList);
     list.props.viewThread();
-    expect(jasmineReact.classPrototype(Featured).viewThread).toHaveBeenCalled();
+    expect(jasmineReact.classPrototype(User).viewThread).toHaveBeenCalled();
   })
 
 })

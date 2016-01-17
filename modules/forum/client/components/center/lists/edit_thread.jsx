@@ -38,9 +38,11 @@ export class EditThread extends Component {
   render() {
     return (
       <ThreadForm
+          header="Edit thread"
           thread={this.state.thread}
           categories={this.props.categories}
           error={this.props.createThreadError}
+          pushPath={this.props.actions.pushPath}
           submitThread={this.props.actions.editThread.bind(null, this.state.thread._id)} />
     )
   }

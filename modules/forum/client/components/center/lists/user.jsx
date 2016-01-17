@@ -11,7 +11,7 @@ import * as UserActions from 'forum/client/actions/user';
 import { bindActionCreators } from 'redux';
 import { pushPath } from 'redux-simple-router';
 
-export default class User extends Component {
+export class User extends Component {
   static propTypes = {
     // List of threads contributed by user
     userThreads: PropTypes.arrayOf(PropTypes.object),

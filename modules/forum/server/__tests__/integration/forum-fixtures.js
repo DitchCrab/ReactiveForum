@@ -21,6 +21,15 @@ Meteor.methods({
     }
   },
 
+  'fixtures/remove_user': function(username) {
+    const user = Meteor.users.findOne({username: username});
+    if (user) {
+      return Meteor.users.remove({_id: user._id});
+    } else {
+      return 1;
+    }
+  },
+
   'fixtures/create_categories': function() {
     if (Categories.find().count() === 0) {
       var categories = [

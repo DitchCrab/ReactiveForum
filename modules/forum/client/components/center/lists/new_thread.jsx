@@ -25,9 +25,11 @@ export class NewThread extends Component {
   render() {
     return (
       <ThreadForm
+          header="New thread"
           thread={{}}
           categories={this.props.categories}
           error={this.props.createThreadError}
+          pushPath={this.props.actions.pushPath}
           submitThread={this.props.actions.createThread} />
     )
   }

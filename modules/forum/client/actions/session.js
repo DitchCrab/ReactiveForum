@@ -9,9 +9,9 @@ import {
 
 export function signUp(username, password) {
   return dispatch => {
-    Accounts.createUser({username: username, password: password, profile: {}}, function() {
+    Accounts.createUser({username: username, password: password, profile: {}}, function(err) {
       if (typeof err === 'undefined') {
-        return dispatch(getCurrentUser());
+        return dispatch(authErr({reason: null}));
       }
       return dispatch(authErr(err));
     });
@@ -22,18 +22,18 @@ export function signIn(username, password) {
   return dispatch => {
     Meteor.loginWithPassword(username, password, function(err) {
       if (typeof err === 'undefined') {
-        return dispatch(getCurrentUser());
+        return dispatch(authErr({reason: null}));
       }
       return dispatch(authErr(err));
     });
   }
 };
 
-export function signOut(username, password) {
+export function signOut() {
   return dispatch => {
     Meteor.logout(function(err) {
       if (typeof err === 'undefined') {
-        return dispatch(getCurrentUser());
+        return dispatch(authErr({reason: null}));
       }
       return dispatch(authErr(err));
     });

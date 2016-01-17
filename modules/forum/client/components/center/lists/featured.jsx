@@ -10,7 +10,7 @@ import * as FeaturesActions from 'forum/client/actions/features';
 import { bindActionCreators } from 'redux';
 import { pushPath } from 'redux-simple-router';
 
-export default class Featured extends Component {
+export class Featured extends Component {
   static propTypes = {
     // List of threads queried
     featuredThreads: PropTypes.arrayOf(PropTypes.object),

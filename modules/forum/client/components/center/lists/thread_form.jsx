@@ -8,9 +8,11 @@ import ThreadImgs from 'forum/collections/thread_imgs';
 export default class ThreadForm extends Component {
   static propTypes = {
     // Thread categories from db
+    header: PropTypes.string,
     categories: PropTypes.arrayOf(PropTypes.object),
     error: PropTypes.string,
-    submitThread: PropTypes.func
+    submitThread: PropTypes.func,
+    pushPath: PropTypes.func
   };
 
   static defaultProps = {
@@ -52,7 +54,7 @@ export default class ThreadForm extends Component {
   render() {
     return (
       <div style={ComponentStyle.wrapper}>
-        <h1 style={ComponentStyle.header}>Create new thread:</h1>
+        <h1 style={ComponentStyle.header}>{this.props.header}</h1>
         <p style={ComponentStyle.error}>{this.state.error}</p>
         <SelectField hintText="Select category" value={this.state.category} onChange={this._editCategory} style={ComponentStyle.div}>
           {this.props.categories.map((category) => {
@@ -88,7 +90,7 @@ export default class ThreadForm extends Component {
         <div style={ComponentStyle.buttonDiv}>
           <RaisedButton label="Submit" secondary={true} onTouchTap={this._submit}/>
           <br/><br/>
-          <FlatButton label="Cancel" onTouchTap={() => this.props.actions.pushPath('/forum')}/>
+          <FlatButton label="Cancel" onTouchTap={() => this.props.pushPath('/forum')}/>
         </div>
       </div>
     )
