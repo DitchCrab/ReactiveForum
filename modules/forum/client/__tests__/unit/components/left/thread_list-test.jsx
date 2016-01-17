@@ -33,8 +33,8 @@ describe('Thread list', () => {
     var threads;
     beforeEach(() => {
       threads = [
-        {_id: 1, imgUrl: '123', title: 'none', description: 'none'},
-        {_id: 2, imgUrl: '1234', title: 'none4', description: 'none4'}        
+        {_id: 1, imgUrl: '123', title: 'none', description: 'none', user: {_id: 1}},
+        {_id: 2, imgUrl: '1234', title: 'none4', description: 'none4', user: {_id: 2}}        
       ];
       spyOn(foo, 'viewThread');
       component = TestUtils.renderIntoDocument(

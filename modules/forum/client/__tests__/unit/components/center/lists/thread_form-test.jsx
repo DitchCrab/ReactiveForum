@@ -1,25 +1,25 @@
 import TestUtils from 'react-addons-test-utils';
 import ReactDOM from 'react-dom';
 import jasmineReact from 'jasmine-react-helpers-hotfix-0.14';
-import {ThreadForm} from 'forum/client/components/center/lists/thread_form';
+import ThreadForm from 'forum/client/components/center/lists/thread_form';
 import { TextField, SelectField, FlatButton, MenuItem } from 'material-ui';
 
 describe('Thread form widget', () => {
   var component;
   var foo = {
-    edit: (key, value) => { return {key: key, value: value}},
-  };
-  beforeEach(() => {
-    const categories = [
+    categories: [
       { _id: 1, name: "General"},
       { _id: 2, name: "Hot"},
-    ];
+    ],
+    submitThread: () => {},
+  };
+  beforeEach(() => {
     jasmineReact.spyOnClass(ThreadForm, '_editTitle');
     jasmineReact.spyOnClass(ThreadForm, '_editDescription');
     jasmineReact.spyOnClass(ThreadForm, '_editTags');
     jasmineReact.spyOnClass(ThreadForm, '_editImg');
     component = TestUtils.renderIntoDocument(
-      <ThreadForm categories={categories} threadParams={{category: 1, title: 'Hi', description: 'Test', tags: [1, 2, 3]}} onEdit={foo.edit} />
+      <ThreadForm {...foo} />
     );
   });
 

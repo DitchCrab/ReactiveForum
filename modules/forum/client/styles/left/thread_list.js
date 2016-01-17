@@ -24,6 +24,11 @@ export default {
   noDiv: {
     display: 'inline-block',
     marginRight: 16
+  },
+
+  button: {
+    position: 'relative',
+    top: -4
   }
   
 }

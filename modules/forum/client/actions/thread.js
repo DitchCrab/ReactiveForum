@@ -25,7 +25,19 @@ export function createThread(params) {
     Meteor.call('createThread', params, (err, res) => {
       if (typeof err === 'undefined') {
         dispatch(clearThreadErr());
-        return dispatch(pushPath(`forum/thread/${res}`));
+        return dispatch(pushPath(`/forum/thread/${res}`));
+      };
+      return dispatch(createThreadErr(err));
+    });
+  }
+};
+
+export function editThread(id, params) {
+  return dispatch => {
+    Meteor.call('editThread', id, params, (err, res) => {
+      if (typeof err === 'undefined') {
+        dispatch(clearThreadErr());
+        return dispatch(pushPath(`/forum/thread/${res}`));
       };
       return dispatch(createThreadErr(err));
     });

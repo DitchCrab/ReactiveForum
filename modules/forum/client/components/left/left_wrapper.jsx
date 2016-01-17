@@ -117,7 +117,8 @@ export default class LeftWrapper extends Component {
             likeThread={this.props.likeThread}
             flagThread={this.props.flagThread}
             unflagThread={this.props.unflagThread}
-            viewThread={this.props.viewThread.bind(null)}/>
+            viewThread={this.props.viewThread.bind(null)}
+            pushPath={this.props.pushPath}/>
       </InfiniteScroll>
     )
   }
@@ -139,6 +140,7 @@ export default class LeftWrapper extends Component {
             onChange={this.handleSelectCategory} style={ComponentStyle.dropDownCategory}>
           <MenuItem key={1} value={1} primaryText="All" />
           <MenuItem key={2} value={2} primaryText="Flagged" />
+          <MenuItem key={3} value={3} primaryText="My threads" />
           {categories}
         </DropDownMenu>
       )
@@ -191,6 +193,9 @@ export default class LeftWrapper extends Component {
      // Hardcode id as 2. Search flag threads stored in user profile
       case 2:
         query = {_id: {$in: this.props.currentUser.profile ? this.props.currentUser.profile.flags : []}};
+        break;
+      case 3:
+        query = {"user._id": this.props.currentUser._id};
         break;
       default:
         query = {category: value};

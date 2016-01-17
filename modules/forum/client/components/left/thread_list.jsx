@@ -1,6 +1,6 @@
 import { Component, PropTypes } from 'react';
 // Components
-import { Card, CardMedia, CardTitle, IconButton, Styles } from 'material-ui';
+import { Card, CardMedia, CardTitle, IconButton, FlatButton, Styles } from 'material-ui';
 import { ContentFlag, ToggleStar, CommunicationComment } from 'material-ui/lib/svg-icons';
 import ComponentStyle from '../../styles/left/thread_list';
 const { Colors } = Styles;
@@ -32,6 +32,7 @@ export default  class ThreadList extends Component {
     this.flagThread = this.flagThread.bind(this);
     this.unflagThread = this.unflagThread.bind(this);
     this.renderFlag = this.renderFlag.bind(this);
+    this.editThread = this.editThread.bind(this);
   }
 
   shouldComponentUpdate(nextProps) {
@@ -62,6 +63,10 @@ export default  class ThreadList extends Component {
     } else {
       des = thread.description;
     }
+    let button = null;
+    if (user) {
+      button = thread.user._id === this.props.currentUser._id ? <FlatButton style={ComponentStyle.button} label="Edit" onClick={this.editThread.bind(null, thread._id)}/> : null;
+    }
     return (
       <Card key={thread._id} style={ComponentStyle.card}  onClick={this.props.viewThread.bind(null, thread._id)}>
         <CardMedia>
@@ -69,6 +74,7 @@ export default  class ThreadList extends Component {
         </CardMedia>
         <CardTitle title={thread.title} subtitle={<p style={ComponentStyle.description}>{des}</p>}/>
         <div style={ComponentStyle.cardAction}>
+          { button }
           <IconButton touch={true} onClick={this.likeThread.bind(null, thread._id)} >
             <ToggleStar/>
           </IconButton>
@@ -129,6 +135,11 @@ export default  class ThreadList extends Component {
     } else {
       this.props.openSnackbar();
     }
+  }
+
+  editThread(id, e) {
+    e.stopPropagation();
+    this.props.pushPath(`/forum/edit_thread/${id}`);
   }
 
 };

@@ -1,30 +1,31 @@
-import { connect } from 'react-redux';
 import { Component, PropTypes } from 'react';
 // Components
 import { FlatButton, RaisedButton, MenuItem, SelectField, TextField } from 'material-ui';
 import ComponentStyle from 'forum/client/styles/center/lists/thread_form';
 // Colelctions
 import ThreadImgs from 'forum/collections/thread_imgs';
-import Threads from 'forum/collections/threads';
-// Redux actions
-import * as ThreadActions from 'forum/client/actions/thread';
-import { pushPath } from 'redux-simple-router';
-import { bindActionCreators } from 'redux';
 
-export class ThreadForm extends Component {
+export default class ThreadForm extends Component {
   static propTypes = {
     // Thread categories from db
     categories: PropTypes.arrayOf(PropTypes.object),
-    createThreadError: PropTypes.string
+    error: PropTypes.string,
+    submitThread: PropTypes.func
   };
 
   static defaultProps = {
     categories: [],
+    thread: {}
   };
 
   constructor(props, context) {
     super(props);
-    this.state = {};
+    this.state = {
+      category: props.thread.category,
+      title: props.thread.title,
+      description: props.thread.description,
+      tags: props.thread.tags
+    };
     this._editCategory = this._editCategory.bind(this);
     this._editTitle = this._editTitle.bind(this);
     this._editDescription = this._editDescription.bind(this);
@@ -35,22 +36,17 @@ export class ThreadForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.createThreadError !== nextProps.createThreadError) {
-      this.setState({error: nextProps.createThreadError});
+    if (this.props.error !== nextProps.error) {
+      this.setState({error: nextProps.error});
     }
-  }
-
-  componentDidUpdate(prevProps) {
-    // If parent component call cancel, close form and clear child state
-    if (this.props.onCancel && !prevProps.onCancel) {
-      this._cancel();
-      return;
-    }
-    // If parent component call submit, submit form, clear state and close
-    if (this.props.onSubmit && !prevProps.onSubmit) {
-      this._submit();
-      return
-    }
+    if (this.props.thread._id !== nextProps.thread._id) {
+      this.setState({
+        category: nextProps.thread.category,
+        title: nextProps.thread.title,
+        description: nextProps.thread.description,
+        tags: nextProps.thread.tags
+      })
+    } 
   }
 
   render() {
@@ -158,25 +154,11 @@ export class ThreadForm extends Component {
       if (_.has(this.state, 'img')) {
         ThreadImgs.insert(this.state.img, (err, imgObj) => {
           params['imgId'] = imgObj._id;
-          this.props.actions.createThread(params);
+          this.props.submitThread(params);
         });
       } else {
-        this.props.actions.createThread(params);
+        this.props.submitThread(params);
       }
     }
   }
 };
-
-function mapStateToProps(state) {
-  return {
-    categories: state.categories,
-    createThreadError: state.createThreadError,
-  }
-}
-
-const actions = _.extend(ThreadActions, {pushPath: pushPath});
-
-function mapDispatchToProps(dispatch) {
-  return { actions: bindActionCreators(actions, dispatch) };
-}
-export default connect(mapStateToProps, mapDispatchToProps)(ThreadForm);

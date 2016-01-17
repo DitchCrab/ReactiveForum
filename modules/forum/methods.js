@@ -59,6 +59,28 @@ Meteor.methods({
     }
     return thread;
   },
+  
+  editThread: function(id, params) {
+    Helper.checkUser();
+    let thread = Threads.update({_id: id}, {$set: params});
+    if (params.imgId) {
+      let img = ThreadImgs.find({_id: params.imgId});
+      let observe = img.observe({
+        changed: function(newImg, oldImg) {
+          if (newImg.url()) {
+            observe.stop();
+            let imgUrl = newImg.url();
+            Threads.update({_id: id}, {$set: {imgUrl: imgUrl}});
+          }
+        }
+      })
+    }
+    if (typeof thread === 'number') {
+      return id;
+    } else {
+      return thread;
+    }
+  },
 
   likeThread: function(threadId) {
     Helper.checkUser();

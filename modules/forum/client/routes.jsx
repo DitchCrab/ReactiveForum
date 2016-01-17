@@ -5,7 +5,8 @@ import Landing from './components/landing';
 import Features from './components/center/lists/featured';
 import User from './components/center/lists/user';
 import Thread from './components/center/thread/thread';
-import ThreadForm from './components/center/lists/thread_form';
+import NewThread from './components/center/lists/new_thread';
+import EditThread from './components/center/lists/edit_thread';
 import Root from './containers/root';
   
 /* export default (
@@ -24,7 +25,8 @@ export default (
     <Route path="/" component={App}>
       <Route path="forum" component={Main} >
         <IndexRoute component={Features}/>
-        <Route path="create_thread" component={ThreadForm} />
+        <Route path="create_thread" component={NewThread} />
+        <Route path="edit_thread/:id" component={EditThread} />
         <Route path="user/:id" component={User}/>
         <Route path="thread/:id" component={Thread} />
       </Route>
