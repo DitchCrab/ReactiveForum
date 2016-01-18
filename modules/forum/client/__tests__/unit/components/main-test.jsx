@@ -11,6 +11,9 @@ import Categories from 'forum/collections/categories';
 import Threads from 'forum/collections/threads';
 
 describe('main', () => {
+  beforeEach(() => {
+    delete ReactiveDict._dictsToMigrate.browsing;
+  });
   var foo = {
     actions: {
       getInitialCategories: () => {},

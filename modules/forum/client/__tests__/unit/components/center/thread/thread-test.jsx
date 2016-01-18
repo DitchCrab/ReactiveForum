@@ -33,6 +33,11 @@ describe('Thread', () => {
     thread: {_id: 1, title: 'None', imgUrl: 'None', description: 'None', user: {_id: 1, username: 'Tom', avatar: null}, comments: []},
     params: {}
   };
+  
+  beforeEach(() => {
+    delete ReactiveDict._dictsToMigrate.thread;
+  });
+  
   describe('when user sign in', () => {
     beforeEach(() => {
       const currentUser = {_id: 1, username: 'Tom'};

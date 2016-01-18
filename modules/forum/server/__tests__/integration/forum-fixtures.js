@@ -15,9 +15,9 @@ Meteor.methods({
     return Threads.remove({});
   },
 
-  'fixtures/create_user': function() {
-    if (Meteor.users.find({username: 'MockUser'}).count() === 0) {
-      Accounts.createUser({username: 'MockUser', password: '12345'});
+  'fixtures/create_user': function(username) {
+    if (Meteor.users.find({username:username}).count() === 0) {
+      Accounts.createUser({username: username, password: '12345'});
     }
   },
 
@@ -77,6 +77,15 @@ Meteor.methods({
       description: 'Mock text',
       tags: ['hi', 'there'],
     };
-    Threads.insert(params);
+    return Threads.insert(params);
+  },
+
+  'fixtures/delete_thread': function() {
+    const thread = Threads.findOne({title: 'Mock'});
+    if (thread) {
+      return Threads.remove({_id: thread._id});
+    } else {
+      return 1;
+    }
   }
 })

@@ -23,7 +23,7 @@ import {
 export function createThread(params) {
   return dispatch => {
     Meteor.call('createThread', params, (err, res) => {
-      if (typeof err === 'undefined') {
+      if ((typeof err === 'undefined') && res) {
         dispatch(clearThreadErr());
         return dispatch(pushPath(`/forum/thread/${res}`));
       };

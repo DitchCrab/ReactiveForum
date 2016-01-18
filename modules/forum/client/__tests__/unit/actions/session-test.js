@@ -5,87 +5,103 @@ import {
   authErr,
   clearAuthErr,
   getCurrentUser,
-  updateAvatar
+  updateUserAvatar
 } from 'forum/client/actions/session';
 import store from 'forum/client/store/create_store';
+import UserAvatars from 'forum/collections/user_avatars';
 
 describe('session actions', () => {
-  beforeEach(() => {
-    window.jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+  var unsubscribe;
+  afterEach(() => {
+    unsubscribe();
   });
 
-  describe('when user not exist', () => {
-    var unsubscribe;
-    beforeEach(done => {
-      Meteor.call('fixtures/remove_user', 'test_user', (err, res) => {
-        done();
-      })
-    });
-    
-    afterEach(done => {
-      unsubscribe();
-      Meteor.call('fixtures/remove_user', 'test_user', (err, res) => {
-        done();
-      })
-    });
-
-    it('sign up return no auth error', done => {
-      unsubscribe = store.subscribe(function() {
+  describe('sign up', () => {
+    it('failed to signup', done => {
+      spyOn(Accounts, 'createUser').and.callFake((params, cb) => {
+        cb(undefined);
+      });
+      unsubscribe = store.subscribe(() => {
         expect(store.getState().authError).toEqual(null);
         done();
       });
-      store.dispatch(signUp('test_user', '12345'));
+      store.dispatch(signUp('Mock', '123'));
     });
 
-    it('sign in return auth error', done => {
-      unsubscribe = store.subscribe(function() {
-        expect(store.getState().authError).toEqual('User not found');
+    it('successfully sign up', done => {
+      spyOn(Accounts, 'createUser').and.callFake((params, cb) => {
+        cb({reason: 'Access denied'});
+      });
+      unsubscribe = store.subscribe(() => {
+        expect(store.getState().authError).toEqual('Access denied');
         done();
       });
-      store.dispatch(signIn('test_user', '12345'));
+      store.dispatch(signUp('Mock', '123'));
     })
   });
 
-  describe('when user exist', () => {
-    var unsubscribe;
-    beforeEach(done => {
-      Accounts.createUser({username: 'test_user', password: '12345'}, (err) => {
-        done();
-      })
-    });
-
-    afterEach(done => {
-      unsubscribe();
-      Meteor.call('fixtures/remove_user', 'test_user', (err, res) => {
-        done();
-      })
-    });
-
-    it('sign up has auth error', done => {
-      unsubscribe = store.subscribe(function() {
-        expect(store.getState().authError).toEqual('Username already exists.');
-        done();
+  describe('sign in', () => {
+    it('failed to sign in', done => {
+      spyOn(Meteor, 'loginWithPassword').and.callFake((username, password, cb) => {
+        cb(undefined);
       });
-      store.dispatch(signUp('test_user', '12345'));
-    });
-
-    it('sign in return auth error', done => {
-      unsubscribe = store.subscribe(function() {
+      unsubscribe = store.subscribe(() => {
         expect(store.getState().authError).toEqual(null);
         done();
       });
-      store.dispatch(signIn('test_user', '12345'));
+      store.dispatch(signIn('Mock', '123'));
     });
 
-    it('signout user successfully', done => {
-      unsubscribe = store.subscribe(function() {
+    it('successfully sign in', done => {
+      spyOn(Meteor, 'loginWithPassword').and.callFake((username, password, cb) => {
+        cb({reason: 'Access denied'});
+      });
+      unsubscribe = store.subscribe(() => {
+        expect(store.getState().authError).toEqual('Access denied');
+        done();
+      });
+      store.dispatch(signIn('Mock', '123'));
+    })
+  });
+
+  describe('sign out', () => {
+    it('failed to sign out', done => {
+      spyOn(Meteor, 'logout').and.callFake((cb) => {
+        cb(undefined);
+      });
+      unsubscribe = store.subscribe(() => {
         expect(store.getState().authError).toEqual(null);
         done();
       });
-      store.dispatch(signIn('test_user', '12345'));
-      store.dispatch(signOut());
+      store.dispatch(signOut('Mock', '123'));
     });
 
+    it('successfully sign out', done => {
+      spyOn(Meteor, 'logout').and.callFake((cb) => {
+        cb({reason: 'Not signed out'});
+      });
+      unsubscribe = store.subscribe(() => {
+        expect(store.getState().authError).toEqual('Not signed out');
+        done();
+      });
+      store.dispatch(signOut('Mock', '123'));
+    })
+  });
+
+  describe('update user avatar', done => {
+    it('call meteor method on upload success', () => {
+      spyOn(Meteor, 'call').and.callFake((name, id, cb) => {
+        cb(undefined);
+      });
+      spyOn(UserAvatars, 'insert').and.returnValue((img, cb) => {
+        cb(undefined, {_id: '123'});
+      });
+      unsubscribe = store.subscribe(() => {
+        expect(Meteor.call).toHaveBeenCalled();
+        done();        
+      })
+      store.dispatch(updateUserAvatar({}));
+    })
   })
 });
 

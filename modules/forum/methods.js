@@ -43,8 +43,8 @@ Meteor.methods({
     params['comments'] = [];
     params['createdAt'] = moment.utc().format();
     params['updatedAt'] = moment.utc().format();
-    Meteor.users.update({_id: current_user._id}, {$inc: {'threads': 1, 'contribution': 1}});
     let thread = Threads.insert(params);
+    Meteor.users.update({_id: current_user._id}, {$inc: {'threads': 1, 'contribution': 1}});
     if (params.imgId) {
       let img = ThreadImgs.find({_id: params.imgId});
       let observe = img.observe({
