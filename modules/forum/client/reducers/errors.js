@@ -33,8 +33,9 @@ export function createThreadError(state = null, action) {
 export function searchError(state = null, action) {
   switch (action.type) {
     case SEARCH_ERROR:
-    case RESET_SEARCH:
       return action.searchError;
+    case RESET_SEARCH:
+      return null;
     case BROWSING_THREADS:
       if (action.browsingThreads.length > 0) {
         return null;

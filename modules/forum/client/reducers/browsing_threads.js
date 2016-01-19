@@ -36,7 +36,7 @@ export function browsingLimit(state = 10, action) {
     case SET_BROWSING_LIMIT:
       return action.browsingLimit;
     case RESET_SEARCH:
-      return action.browsingLimit;
+      return 10;
     default:
       return state;
   }
@@ -47,7 +47,7 @@ export function browsingQuery(state = {}, action) {
     case SET_BROWSING_QUERY:
       return action.browsingQuery;
     case RESET_SEARCH:
-      return action.browsingQuery;
+      return {};
     default:
       return state;
   }

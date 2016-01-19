@@ -60,9 +60,6 @@ export function setSearchErr(err) {
 export function resetSearch() {
   return {
     type: RESET_SEARCH,
-    browsingQuery: {},
-    browsingLimit: 10,
-    searchError: null
   }
 }
 

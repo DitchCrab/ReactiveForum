@@ -2,7 +2,7 @@ import {
   GET_USER
 } from '../constants';
 
-export function getUser(user) {
+export function getUser(user = null) {
   return {
     type: GET_USER,
     onUser: user

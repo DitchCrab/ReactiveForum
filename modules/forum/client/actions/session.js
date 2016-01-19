@@ -54,7 +54,7 @@ export function clearAuthErr() {
   }
 };
 
-export function getCurrentUser(user) {
+export function getCurrentUser(user = null) {
   return {
     type: USER_SESSION,
     currentUser: user
