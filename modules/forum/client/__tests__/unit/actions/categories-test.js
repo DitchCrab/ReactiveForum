@@ -1,8 +1,9 @@
 import { getInitialCategories, getCategories } from 'forum/client/actions/categories';
 import Categories from 'forum/collections/categories';
-import store from 'forum/client/store/create_store';
+import Store from 'forum/client/store/create_store';
 
 describe('Categories actions', () => {
+  let store = Store.getStore();
   var unsubscribe;
   afterEach(() => {
     unsubscribe();

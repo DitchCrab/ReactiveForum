@@ -2,6 +2,16 @@ import configureStore from './configureStore';
 import { createHistory } from 'history';
 import { syncReduxAndRouter } from 'redux-simple-router';
 
-const store = configureStore();
+const Store = (function() {
+  var store;
+  return {
+    getStore: function() {
+      if (!store) {
+         store = configureStore();
+      }
+      return store;
+    }
+  }
+})();
 
-export default store;
+export default Store;

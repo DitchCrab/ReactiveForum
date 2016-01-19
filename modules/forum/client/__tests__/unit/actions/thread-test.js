@@ -18,9 +18,10 @@ import {
   openReply,
   closeReply
 } from 'forum/client/actions/thread';
-import store from 'forum/client/store/create_store';
+import Store from 'forum/client/store/create_store';
 
 describe('thread actions', () => {
+  let store = Store.getStore();
   var unsubscribe;
   beforeEach(() => {
     window.jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;

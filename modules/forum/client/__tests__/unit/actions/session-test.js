@@ -7,10 +7,11 @@ import {
   getCurrentUser,
   updateUserAvatar
 } from 'forum/client/actions/session';
-import store from 'forum/client/store/create_store';
+import Store from 'forum/client/store/create_store';
 import UserAvatars from 'forum/collections/user_avatars';
 
 describe('session actions', () => {
+  let store = Store.getStore();
   var unsubscribe;
   afterEach(() => {
     unsubscribe();
