@@ -70,7 +70,30 @@ Meteor.methods({
     var params = {
       category: category._id,
       user: user,
-      comments: [],
+      comments: [
+        {
+          _id: '123',
+          userId: '1',
+          username: 'TestUser',
+          avatar: undefined,
+          text: 'Hello',
+          createdAt: moment.utc().format(),
+          likes: 0,
+          likeIds: [],
+          replies: [
+            {
+              _id: '321',
+              userId: '1',
+              username: 'TestUser',
+              avatar: undefined,
+              text: 'Yo',
+              createdAt: moment.utc().format(),
+              like: 0,
+              likeIds: []
+            }
+          ]
+        }
+      ],
       createdAt: moment.utc().format(),
       updatedAt: moment.utc().format(),
       title: 'Mock',

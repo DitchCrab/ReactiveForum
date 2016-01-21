@@ -62,6 +62,7 @@ Meteor.methods({
   
   editThread: function(id, params) {
     Helper.checkUser();
+    Helper.checkOwner(Threads.findOne({_id: id}).user._id);
     let thread = Threads.update({_id: id}, {$set: params});
     if (params.imgId) {
       let img = ThreadImgs.find({_id: params.imgId});
@@ -111,6 +112,7 @@ Meteor.methods({
 
   updateComment: function(threadId, commentId, text) {
     Helper.checkUser();
+    Helper.checkOwner(_.find(Threads.findOne({_id: threadId}).comments, comment => comment._id === commentId).userId);
     return Threads.update({_id: threadId, comments: {$elemMatch: {_id: commentId}}}, {$set: {"comments.$.text": text}});
   },
 
@@ -132,6 +134,7 @@ Meteor.methods({
 
   updateReply: function(threadId, commentId, replyIndex, text) {
     Helper.checkUser();
+    Helper.checkOwner(_.find(Threads.findOne({_id: threadId}).comments, comment => comment._id === commentId).replies[replyIndex].userId);
     let params = {};
     params["comments.$.replies." + replyIndex + ".text"] = text;
     return Threads.update({_id: threadId, comments: {$elemMatch: {_id: commentId}}}, {$set: params});
