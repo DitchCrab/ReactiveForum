@@ -15,10 +15,12 @@ import ComponentStyle from 'forum/client/styles/center/thread/thread';
 // Collections
 import Threads from 'forum/collections/threads';
 // Redux actions
-import * as ThreadActions from 'forum/client/actions/thread';
-import * as ViewedThreadActions from 'forum/client/actions/viewed_thread';
-import * as ThreadUserListActions from 'forum/client/actions/thread_user_list';
-import * as SnackbarActions from 'forum/client/actions/snackbar';
+import {
+  ThreadActions,
+  ViewedThreadActions,
+  ThreadUserListActions,
+  SnackbarActions
+} from 'forum/client/actions';
 import { pushPath } from 'redux-simple-router';
 import { bindActionCreators } from 'redux';
 // Helpers

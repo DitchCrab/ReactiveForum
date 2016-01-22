@@ -10,10 +10,12 @@ import { ActionHome, ActionViewList, ActionHistory, SocialPerson, ContentClear }
 import ComponentStyle from '../styles/app';
 const { Colors, AutoPrefix } = Styles;
 // Import redux actions
-import * as sessionActions from '../actions/session';
-import * as WindowActions from '../actions/window';
-import * as BrowsingActions from '../actions/browsing';
-import * as SideNavActions from '../actions/side_nav';
+import {
+  SessionActions,
+  WindowActions,
+  BrowsingActions,
+  SideNavActions
+} from '../actions';
 import { pushPath } from 'redux-simple-router';
 import { bindActionCreators } from 'redux';
 // Import helpers
@@ -190,7 +192,7 @@ function mapStateToProps(state) {
     authError: state.authError,
   }
 }
-const actions = _.extend(sessionActions, WindowActions, BrowsingActions, SideNavActions, {pushPath: pushPath});
+const actions = _.extend(SessionActions, WindowActions, BrowsingActions, SideNavActions, {pushPath: pushPath});
 
 function mapDispatchToProps(dispatch) {
   return { actions: bindActionCreators(actions, dispatch) };

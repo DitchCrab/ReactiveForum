@@ -6,8 +6,10 @@ import ComponentStyle from 'forum/client/styles/center/lists/user';
 // Collections
 import Threads from 'forum/collections/threads';
 // Redux actions
-import * as UserThreadsActions from 'forum/client/actions/user_threads';
-import * as UserActions from 'forum/client/actions/user';
+import {
+  UserThreadsActions,
+  UserActions
+} from 'forum/client/actions';
 import { bindActionCreators } from 'redux';
 import { pushPath } from 'redux-simple-router';
 

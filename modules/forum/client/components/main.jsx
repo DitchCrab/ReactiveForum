@@ -14,15 +14,17 @@ import moment from 'moment';
 import Categories from '../../collections/categories';
 import Threads from '../../collections/threads';
 // Redux actions
-import * as BrowsingActions from '../actions/browsing';
-import * as CategoriesActions from '../actions/categories';
-import * as FeaturesActions from '../actions/features';
-import * as ThreadActions from '../actions/thread';
-import * as UserActions from '../actions/user';
-import * as UserThreadsActions from '../actions/user_threads';
-import * as BlacklistActions from '../actions/blacklist';
-import * as SideNavActions from '../actions/side_nav';
-import * as SnackbarActions from '../actions/snackbar';
+import {
+  BrowsingActions,
+  CategoriesActions,
+  FeaturesActions,
+  ThreadActions,
+  UserActions,
+  UserThreadsActions,
+  BlacklistActions,
+  SideNavActions,
+  SnackbarActions
+} from '../actions';
 import { pushPath } from 'redux-simple-router';
 import { bindActionCreators } from 'redux';
 

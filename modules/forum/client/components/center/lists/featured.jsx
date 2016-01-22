@@ -6,7 +6,7 @@ import ThreadList from './thread_list';
 // Collections
 import Threads from 'forum/collections/threads';
 // Redux actions
-import * as FeaturesActions from 'forum/client/actions/features';
+import { FeaturesActions } from 'forum/client/actions';
 import { bindActionCreators } from 'redux';
 import { pushPath } from 'redux-simple-router';
 
