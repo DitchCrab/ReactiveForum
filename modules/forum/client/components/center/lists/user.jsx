@@ -1,6 +1,7 @@
 import { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 //Components
+import Helmet from 'react-helmet';
 import ThreadList from './thread_list';
 import ComponentStyle from 'forum/client/styles/center/lists/user';
 // Collections
@@ -65,9 +66,38 @@ export class User extends Component {
   }
 
   render() {
+    const username = this.props.onUser ? this.props.onUser.username : null;
+    const description = `Forum - Threads ${username} contributed to`;
+    const img = this.props.userThreads[0] ? this.props.userThreads[0].imgUrl : 'bg_img';
+    const meta = [
+      {name: 'description', content: description},
+      {name: 'keywords', content: 'crab, user'},
+      {charset: 'UFT-8'},
+      //Open graph
+      {property: 'og:title', content: 'Forum'},
+      {property: 'og:type', content: 'lists'},
+      {property: 'og:url', content: 'my url'},
+      {property: 'og:image', content: img},
+      {property: 'og:description', content: description},
+      {property: 'og:site_name', content: 'My website'},
+      //Twitter
+      {name: 'twitter:card', content: img},
+      {name: 'twitter:site', content: '@twitter_url'},
+      {name: 'twitter:title', content: 'Forum'},
+      {name: 'twitter:description', content: description},
+      {name: 'twitter:image:src', content: img},
+      // Google plus
+      {itemprop: 'name', content: 'Forum'},
+      {itemprop: 'description', content: description},
+      {itemprop: 'image', content: img}
+    ];
     return (
       <div style={ComponentStyle.wrapper}>
-        <h1 style={ComponentStyle.header}>{this.props.onUser ? this.props.onUser.username : null} contributed to: </h1>
+        <Helmet
+            title={description}
+            meta={meta}
+        />
+        <h1 style={ComponentStyle.header}>{username} contributed to: </h1>
         <ThreadList threads={this.props.userThreads} viewThread={this.viewThread} />
       </div>
     )

@@ -9,16 +9,6 @@ import NewThread from './components/center/lists/new_thread';
 import EditThread from './components/center/lists/edit_thread';
 import Root from './containers/root';
   
-/* export default (
-   <Route component={Root} >
-   <Route path="/" component={Landing}/>
-   <Route path="/" component={App}>
-   <Route path="forum" component={Main} />
-   <Route path="forum/:thread" component={Main} />
-   </Route>
-   </Route>
-   ); */
-
 export default (
   <Route component={Root} >
     <Route path="/" component={Landing}/>

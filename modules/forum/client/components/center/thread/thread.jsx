@@ -1,6 +1,7 @@
 import { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 // Components
+import Helmet from 'react-helmet';
 import BottomToolbar from './bottom_toolbar';
 import CommentList from './comment_list';
 import ThreadCarousel from './thread_carousel';
@@ -137,8 +138,36 @@ export class Thread extends Component {
     if (thread.user.avatar) {
       avatar = thread.user.avatar;
     };
+    const description = `Forum - ${thread.title}`;
+    const img = thread.imgUrl;
+    const meta = [
+      {name: 'description', content: description},
+      {name: 'keywords', content: 'crab, user'},
+      {charset: 'UFT-8'},
+      //Open graph
+      {property: 'og:title', content: 'Forum'},
+      {property: 'og:type', content: 'lists'},
+      {property: 'og:url', content: 'my url'},
+      {property: 'og:image', content: img},
+      {property: 'og:description', content: description},
+      {property: 'og:site_name', content: 'My website'},
+      //Twitter
+      {name: 'twitter:card', content: img},
+      {name: 'twitter:site', content: '@twitter_url'},
+      {name: 'twitter:title', content: 'Forum'},
+      {name: 'twitter:description', content: description},
+      {name: 'twitter:image:src', content: img},
+      // Google plus
+      {itemprop: 'name', content: 'Forum'},
+      {itemprop: 'description', content: description},
+      {itemprop: 'image', content: img}
+    ];
     return (
       <div>
+        <Helmet
+            title={description}
+            meta={meta}
+        />
         <Card style={ComponentStyle.card}>
           <CardHeader
               title={<span className="thread-main-user" style={ComponentStyle.headerTitle}>{thread.user.username}</span>}
