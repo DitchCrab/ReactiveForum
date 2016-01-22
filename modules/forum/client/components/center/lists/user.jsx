@@ -22,7 +22,8 @@ export class User extends Component {
   };
 
   static defaultProps = {
-    userThreads: []
+    userThreads: [],
+    onUser: {}
   };
 
   constructor(props, context) {
@@ -67,8 +68,11 @@ export class User extends Component {
 
   render() {
     const username = this.props.onUser ? this.props.onUser.username : null;
+    const userId = this.props.onUser ? this.props.onUser._id : null;
     const description = `Forum - Threads ${username} contributed to`;
     const img = this.props.userThreads[0] ? this.props.userThreads[0].imgUrl : 'bg_img';
+    const domain = 'http://mydomain.com';
+    const url = `${domain}/forum/user/${userId}`;
     const meta = [
       {name: 'description', content: description},
       {name: 'keywords', content: 'crab, user'},
@@ -76,13 +80,13 @@ export class User extends Component {
       //Open graph
       {property: 'og:title', content: 'Forum'},
       {property: 'og:type', content: 'lists'},
-      {property: 'og:url', content: 'my url'},
+      {property: 'og:url', content: url},
       {property: 'og:image', content: img},
       {property: 'og:description', content: description},
       {property: 'og:site_name', content: 'My website'},
       //Twitter
       {name: 'twitter:card', content: img},
-      {name: 'twitter:site', content: '@twitter_url'},
+      {name: 'twitter:site', content: url},
       {name: 'twitter:title', content: 'Forum'},
       {name: 'twitter:description', content: description},
       {name: 'twitter:image:src', content: img},

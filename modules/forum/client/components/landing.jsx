@@ -19,27 +19,31 @@ export default class Landing extends Component {
   }
 
   render() {
+    const description = 'Open forum';
+    const image = require('forum/client/img/bgM.jpg');
+    const domain = 'http://mydomain.com';
+    const url = `${domain}`;
     const meta = [
-      {name: 'description', content: 'Open forum'},
+      {name: 'description', content: description},
       {name: 'keywords', content: 'crab'},
       {charset: 'UFT-8'},
       //Open graph
       {property: 'og:title', content: 'Forum'},
       {property: 'og:type', content: 'landing page'},
-      {property: 'og:url', content: 'my url'},
-      {property: 'og:image', content: 'bg_img'},
-      {property: 'og:description', content: 'Open forum'},
+      {property: 'og:url', content: url},
+      {property: 'og:image', content: image},
+      {property: 'og:description', content: description},
       {property: 'og:site_name', content: 'My website'},
       //Twitter
-      {name: 'twitter:card', content: 'bg_img'},
-      {name: 'twitter:site', content: '@twitter_url'},
+      {name: 'twitter:card', content: image},
+      {name: 'twitter:site', content: url},
       {name: 'twitter:title', content: 'Forum'},
-      {name: 'twitter:description', content: 'Open forum'},
-      {name: 'twitter:image:src', content: 'bg_img'},
+      {name: 'twitter:description', content: description},
+      {name: 'twitter:image:src', content: image},
       // Google plus
       {itemprop: 'name', content: 'Forum'},
-      {itemprop: 'description', content: 'Open forum'},
-      {itemprop: 'image', content: 'bg_img'}
+      {itemprop: 'description', content: description},
+      {itemprop: 'image', content: image}
     ];
     return (
       <div style={AutoPrefix.all(ComponentStyle.wrapper)}>
