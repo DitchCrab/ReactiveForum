@@ -11,6 +11,8 @@ const { Colors, AutoPrefix } = Styles;
 
 export default class LeftWrapper extends Component {
   static propTypes = {
+    browsingOpened: PropTypes.bool,
+    thread: PropTypes.object,
     // If user signed in
     currentUser: PropTypes.object,
     // If there's no search result
@@ -111,6 +113,8 @@ export default class LeftWrapper extends Component {
           { this.renderCategory() }
         </div>
         <ThreadList
+            browsingOpened={this.props.browsingOpened}
+            thread={this.props.thread}
             currentUser={this.props.currentUser}
             threads={this.props.threads}
             openSnackbar={this.props.openSnackbar}
@@ -118,6 +122,7 @@ export default class LeftWrapper extends Component {
             flagThread={this.props.flagThread}
             unflagThread={this.props.unflagThread}
             viewThread={this.props.viewThread.bind(null)}
+            windowSize={this.props.windowSize}
             pushPath={this.props.pushPath}/>
       </InfiniteScroll>
     )

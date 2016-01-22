@@ -1,4 +1,5 @@
 import { Component, PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 // Components
 import { Card, CardMedia, CardTitle, IconButton, FlatButton, Styles } from 'material-ui';
 import { ContentFlag, ToggleStar, CommunicationComment } from 'material-ui/lib/svg-icons';
@@ -7,6 +8,8 @@ const { Colors } = Styles;
 
 export default  class ThreadList extends Component {
   static propTypes = {
+    browsingOpened: PropTypes.bool,
+    thread: PropTypes.object,
     // List of thread queried
     threads: PropTypes.arrayOf(PropTypes.object),
     // When user signed in
@@ -36,12 +39,22 @@ export default  class ThreadList extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
+    const same_view = this.props.browsingOpened === nextProps.browsingOpened;
     const same_user = _.isEqual(this.props.currentUser, nextProps.currentUser);    
     const same_threads = _.isEqual(this.props.threads, nextProps.threads);
-    if (same_user && same_threads) {
+    if (same_view && same_user && same_threads) {
       return false;
     } else {
       return true;
+    }
+  }
+
+  componentDidUpdate(preProps) {
+    if (this.props.windowSize === 'small' && this.props.thread) {
+      if (!preProps.browsingOpened && this.props.browsingOpened) {
+        const thread = ReactDOM.findDOMNode(this.refs[this.props.thread._id]);
+        thread.scrollIntoView();
+      }
     }
   }
 
@@ -68,7 +81,7 @@ export default  class ThreadList extends Component {
       button = thread.user._id === this.props.currentUser._id ? <FlatButton style={ComponentStyle.button} label="Edit" onClick={this.editThread.bind(null, thread._id)}/> : null;
     }
     return (
-      <Card key={thread._id} style={ComponentStyle.card}  onClick={this.props.viewThread.bind(null, thread._id)}>
+      <Card key={thread._id} ref={thread._id} style={ComponentStyle.card}  onClick={this.props.viewThread.bind(null, thread._id)}>
         <CardMedia>
           <img src={(thread.imgUrl)} style={thread.imgUrl ? ComponentStyle.img : null }/>
         </CardMedia>

@@ -69,6 +69,7 @@ export class Main extends Component {
     this.renderMain = this.renderMain.bind(this);
     this.renderBrowsing = this.renderBrowsing.bind(this);
     this.renderUserList = this.renderUserList.bind(this);
+    this.renderSnackbar = this.renderSnackbar.bind(this);
     // Fire when click on particular user avatar.
     // Result in querying and rendering list of threads which user contributed to
     this.setUser = this.setUser.bind(this);
@@ -115,7 +116,6 @@ export class Main extends Component {
   }
 
   render() {
-    let browsing = this.renderBrowsing();
     let filter_user = this.renderUserList();
     // As defined in MaterialUI as LeftNav
     // Only show in small and medium screen
@@ -132,31 +132,34 @@ export class Main extends Component {
       case 'small':
         return (
           <section style={AutoPrefix.all(Layout.section)}>        
-            { this.props.browsingOpened ? browsing : null }
+            {this.renderBrowsing()}
             { !this.props.browsingOpened ? this.renderMain() : null }
             <LeftNav ref="rightNav" {...right_nav_props}>
               {filter_user}
             </LeftNav>
+            {this.renderSnackbar()}
           </section>
         );
         break;
       case 'medium':
         return (
           <section style={Layout.section}>        
-            {browsing}
+            {this.renderBrowsing()}
             {this.renderMain()}
             <LeftNav ref="rightNav" {...right_nav_props}>
               {filter_user}
             </LeftNav>
+            {this.renderSnackbar()}
           </section>
         );
         break;
       case 'large':
         return (
           <section style={Layout.section}>
-            { browsing }
+            { this.renderBrowsing() }
             {this.renderMain()}
             {filter_user}
+            {this.renderSnackbar()}
           </section>
         );
         break;
@@ -173,12 +176,6 @@ export class Main extends Component {
         <div style={ComponentStyle.mainWrapper(this.props.windowSize)}>
           {this.props.children}
         </div>
-        <Snackbar
-            open={this.props.snackbarOpen}
-            message="Please sign in for more activities"
-            autoHideDuration={3000}
-            onRequestClose={this.props.actions.closeSnackbar}
-        />
       </div>
       )
   }
@@ -187,7 +184,10 @@ export class Main extends Component {
   // On small screen: render if 'section' is 'browsing'
   // On medium and large screen: render as right nav
   renderBrowsing() {
+    const display = this.props.browsingOpened ? 'initial' : 'none';
     const left_wrapper_props = {
+      browsingOpened: this.props.browsingOpened,
+      thread: this.props.thread,
       threads: this.props.browsingThreads,
       categories: this.props.categories,
       currentUser: this.props.currentUser,
@@ -204,10 +204,10 @@ export class Main extends Component {
       openSnackbar: this.props.actions.openSnackbar,
       likeThread: this.props.actions.likeThread,
       flagThread: this.props.actions.flagThread,
-      unflagThread: this.props.actions.unflagThread
+      unflagThread: this.props.actions.unflagThread,
     }
     return (
-      <div style={Layout.leftNav(this.props.windowSize)}>
+      <div style={Layout.leftNav(this.props.windowSize, display)}>
         <LeftWrapper {...left_wrapper_props}/>
       </div>
     )
@@ -243,6 +243,17 @@ export class Main extends Component {
     )
   }
 
+  renderSnackbar() {
+    return (
+      <Snackbar
+          open={this.props.snackbarOpen}
+          message="Please sign in for more activities"
+          autoHideDuration={3000}
+          onRequestClose={this.props.actions.closeSnackbar}
+      />
+    )    
+  }
+
   viewThread(id) {
     this.props.actions.pushPath(`/forum/thread/${id}`);
   }
@@ -267,7 +278,8 @@ function mapStateToProps(state) {
     threadUserList: state.threadUserList,
     blacklist: state.blacklist,
     windowSize: state.windowSize,
-    snackbarOpen: state.snackbarOpen
+    snackbarOpen: state.snackbarOpen,
+    thread: state.thread
   }
 }
 

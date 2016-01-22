@@ -10,12 +10,15 @@ export default {
     margin: '0rem 0.625rem',
     paddingTop: '4.8rem',
   },
-  leftNav: (windowSize) => {
+  leftNav: (windowSize, display) => {
     let style = {
       width: '100%',
       backgroundColor: Colors.white
     };
     switch (windowSize) {
+      case 'small':
+        style.display = display;
+        break;
       case 'medium':
         style.width = '33.33%';
 //        style.padding = '0.625rem';
