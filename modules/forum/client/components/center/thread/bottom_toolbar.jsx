@@ -46,13 +46,14 @@ export default class BottomToolbar extends Component {
   render() {
     let open_button =  <IconButton tooltip="Star" touch={true} onClick={this.props.toggleCarousel.bind(null)}><ActionViewCarousel/></IconButton>;
     let close_button = <NavigationClose />;
+    let commending = this.state.comment ? true : false;
     return(
-      <Toolbar style={ComponentStyle.toolbar(this.props.windowSize)}>
+      <Toolbar style={ComponentStyle.toolbar(this.props.windowSize, commending)}>
         <TextField
             multiLine={true}
             ref="commentField"
             defaultValue={this.state.comment}
-            style={ComponentStyle.textField(this.props.windowSize)}
+            style={ComponentStyle.textField(this.props.windowSize, commending)}
             hintText="Commend"
             onChange={this.typing}/>
         <IconButton
