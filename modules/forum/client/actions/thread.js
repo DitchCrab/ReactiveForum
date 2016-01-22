@@ -57,7 +57,7 @@ export function clearThreadErr(err) {
   }
 };
 
-export function getThread(thread) {
+export function getThread(thread = null) {
   return {
     type: GET_THREAD,
     thread: thread,

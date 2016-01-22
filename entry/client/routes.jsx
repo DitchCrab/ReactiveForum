@@ -9,11 +9,19 @@ var history;
 if (Meteor.isClient) {
   history = createHistory();
   syncReduxAndRouter(history, Store.getStore());
+  injectTapEventPlugin();
+}
+
+if (Meteor.isServer) {
+  Meteor.onConnection(function(obj) {
+    global.navigator = {
+      userAgent: obj.httpHeaders['user-agent']
+    }
+  })
 }
 
 ReactRouterSSR.Run(
   forumRoutes,
   {props: {history: history}},
-  injectTapEventPlugin()
 );
 

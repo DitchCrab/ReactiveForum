@@ -72,14 +72,9 @@ export class Main extends Component {
     this.setUser = this.setUser.bind(this);
   }
 
-
-  componentWillReceiveProps(nextProps, nextState) {
-    if (this.props.browsingLimit !== nextProps.browsingLimit) {
-      this.browsingDict.set('limit', nextProps.browsingLimit);
-    }
-    if (this.props.browsingQuery !== nextProps.browsingQuery) {
-      this.browsingDict.set('query', nextProps.browsingQuery);
-    }
+  componentWillMount() {
+    let threads = Threads.find({}, {sort: {createdAt: -1}, limit: 10}).fetch();
+    this.props.actions.getBrowsingThreads(threads);
   }
 
   componentDidMount() {
@@ -106,6 +101,15 @@ export class Main extends Component {
   componentWillUnmount() {
     this.browsingTracker.stop();
     delete ReactiveDict._dictsToMigrate.browsing;
+  }
+
+  componentWillReceiveProps(nextProps, nextState) {
+    if (this.props.browsingLimit !== nextProps.browsingLimit) {
+      this.browsingDict.set('limit', nextProps.browsingLimit);
+    }
+    if (this.props.browsingQuery !== nextProps.browsingQuery) {
+      this.browsingDict.set('query', nextProps.browsingQuery);
+    }
   }
 
   render() {

@@ -48,16 +48,6 @@ export  class App extends Component {
     this.handleResize = this.handleResize.bind(this);
   }
 
-  componentDidUpdate(preProps) {
-    // Track Sign In and Sign Out event
-    // Anchor to the right DOM element for Popover component
-    if ((preProps.session === null && this.props.session) || (preProps.session && this.props.session === null)) {
-      if (this.refs.signInButton) {
-        this.setState({signinButton: ReactDOM.findDOMNode(this.refs.signInButton), activePopover: false});
-      }
-    }
-  }
-
   componentDidMount() {
     this.props.actions.setWindowSize(windowSize());
     this.setState({signinButton: ReactDOM.findDOMNode(this.refs.signInButton)});
@@ -68,7 +58,6 @@ export  class App extends Component {
       let user = Meteor.user();
       this.props.actions.getCurrentUser(user);
     })
-
   }
 
   componentWillUnmount() {
@@ -76,9 +65,14 @@ export  class App extends Component {
     this.sessionTracker.stop();
   }
 
-  handleResize() {
-    // WindowSize as 'small', 'medium', 'large'
-    this.props.actions.setWindowSize(windowSize());
+  componentDidUpdate(preProps) {
+    // Track Sign In and Sign Out event
+    // Anchor to the right DOM element for Popover component
+    if ((preProps.session === null && this.props.session) || (preProps.session && this.props.session === null)) {
+      if (this.refs.signInButton) {
+        this.setState({signinButton: ReactDOM.findDOMNode(this.refs.signInButton), activePopover: false});
+      }
+    }
   }
 
   render() {
@@ -167,6 +161,11 @@ export  class App extends Component {
       }
     }
     return avatar;
+  }
+
+  handleResize() {
+    // WindowSize as 'small', 'medium', 'large'
+    this.props.actions.setWindowSize(windowSize());
   }
 
   openPopover() {

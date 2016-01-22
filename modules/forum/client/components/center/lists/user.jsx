@@ -27,10 +27,13 @@ export class User extends Component {
     this.viewThread = this.viewThread.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.params.id !== nextProps.params.id) {
-      this.onUserDict.set('id', nextProps.params.id);
-    }
+  componentWillMount() {
+    let user = Meteor.users.findOne({_id: this.props.params.id});
+    this.props.actions.getUser(user);
+    let own_threads = Threads.find({'user._id': this.props.params.id}).fetch();
+    let in_threads = Threads.find({comments: {$elemMatch: {userId: this.props.params.id}}}).fetch();
+    let threads = _.uniq(_.union(own_threads, in_threads), thread => thread._id);
+    this.props.actions.getUserThreads(threads);
   }
 
   componentDidMount() {
@@ -51,6 +54,12 @@ export class User extends Component {
   componentWillUnmount() {
     this.threadsTracker.stop();
     delete ReactiveDict._dictsToMigrate.onUser;
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.params.id !== nextProps.params.id) {
+      this.onUserDict.set('id', nextProps.params.id);
+    }
   }
 
   render() {

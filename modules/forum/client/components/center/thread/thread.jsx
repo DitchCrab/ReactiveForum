@@ -52,6 +52,11 @@ export class Thread extends Component {
     }
   }
 
+  componentWillMount() {
+    let thread = Threads.findOne({_id: this.props.params.id});
+    this.props.actions.getThread(thread);
+  }
+
   // Update threadList if current thread is not in it
   componentDidMount() {
     this.threadDict = new ReactiveDict('thread');

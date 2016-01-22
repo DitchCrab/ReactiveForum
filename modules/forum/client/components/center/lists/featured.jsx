@@ -25,6 +25,11 @@ export class Featured extends Component {
     this.viewThread = this.viewThread.bind(this);
   }
 
+  componentWillMount() {
+    let threads = Threads.find({}, {sort: {likes: -1}, limit: 20}).fetch();
+    this.props.actions.getFeaturedThreads(threads);
+  }
+
   componentDidMount() {
     this.tracker = Tracker.autorun(() => {
       let threads = Threads.find({}, {sort: {likes: -1}, limit: 20}).fetch();
