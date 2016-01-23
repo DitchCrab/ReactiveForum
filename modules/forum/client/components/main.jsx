@@ -146,7 +146,6 @@ export class Main extends Component {
             {this.renderSnackbar()}
           </section>
         );
-        break;
       case 'medium':
         return (
           <section style={Layout.section}>        
@@ -158,7 +157,6 @@ export class Main extends Component {
             {this.renderSnackbar()}
           </section>
         );
-        break;
       case 'large':
         return (
           <section style={Layout.section}>
@@ -168,7 +166,6 @@ export class Main extends Component {
             {this.renderSnackbar()}
           </section>
         );
-        break;
     }
   }
 
