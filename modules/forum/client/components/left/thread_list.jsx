@@ -6,6 +6,7 @@ import { ContentFlag, ToggleStar, CommunicationComment } from 'material-ui/lib/s
 import ComponentStyle from '../../styles/left/thread_list';
 const { Colors } = Styles;
 
+// Browsing component
 export default  class ThreadList extends Component {
   static propTypes = {
     browsingOpened: PropTypes.bool,
@@ -49,6 +50,7 @@ export default  class ThreadList extends Component {
     }
   }
 
+  // In small screen, move to previous clicked thread
   componentDidUpdate(preProps) {
     if (this.props.windowSize === 'small' && this.props.thread) {
       if (!preProps.browsingOpened && this.props.browsingOpened) {

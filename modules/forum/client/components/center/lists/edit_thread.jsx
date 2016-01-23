@@ -9,6 +9,7 @@ import * as ThreadActions from 'forum/client/actions/thread';
 import { pushPath } from 'redux-simple-router';
 import { bindActionCreators } from 'redux';
 
+// Edit thread wrapper for path 'forum/edit_thread';
 export class EditThread extends Component {
   static propTypes = {
     // Thread categories from db

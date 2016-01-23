@@ -8,6 +8,7 @@ const { Colors } = Styles;
 // Collections
 import UserAvatars from '../../../collections/user_avatars';
 
+// Small component for user to upload new avatar and signout
 export default class MiniProfile extends React.Component {
   static propTypes = {
     // if user signed in

@@ -6,6 +6,7 @@ const { Colors, AutoPrefix } = Styles;
 // Helpers
 import moment from 'moment';
 
+// Component for reply
 export default class Reply extends Component {
   static propTypes = {
     // If user signed in

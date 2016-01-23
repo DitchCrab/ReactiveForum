@@ -28,6 +28,9 @@ import {
 import { pushPath } from 'redux-simple-router';
 import { bindActionCreators } from 'redux';
 
+// Responsible for layout manipulation.
+// Includes Thread browsings wrapper and user list
+// Has children of center section which is rendered based on routing
 export class Main extends Component {
     
   static contextTypes = {
@@ -75,6 +78,7 @@ export class Main extends Component {
     this.setUser = this.setUser.bind(this);
   }
 
+  // Use for serverside rendering
   componentWillMount() {
     let threads = Threads.find({}, {sort: {createdAt: -1}, limit: 10}).fetch();
     this.props.actions.getBrowsingThreads(threads);
@@ -101,12 +105,14 @@ export class Main extends Component {
     });
   }
 
+  // Unregister memory when navigate to other section
   componentWillUnmount() {
     this.browsingTracker.stop();
     delete ReactiveDict._dictsToMigrate.browsing;
   }
 
   componentWillReceiveProps(nextProps, nextState) {
+    // Reactive var for Meteor Tracker
     if (this.props.browsingLimit !== nextProps.browsingLimit) {
       this.browsingDict.set('limit', nextProps.browsingLimit);
     }
@@ -242,7 +248,8 @@ export class Main extends Component {
       </div>
     )
   }
-
+  
+  // Display call to action message
   renderSnackbar() {
     return (
       <Snackbar

@@ -8,9 +8,11 @@ import ThreadCarousel from './thread_carousel';
 import { FlatButton, MenuItem, Card, CardHeader, CardMedia, CardTitle, CardActions, IconButton, CardText, Dialog, TextField, Styles } from 'material-ui';
 import IconMenu from 'material-ui/lib/menus/icon-menu';
 import { ToggleStar, CommunicationComment, SocialShare } from 'material-ui/lib/svg-icons';
-import FacebookShare from 'forum/client/icons/facebook_share';
-import TwitterShare from 'forum/client/icons/twitter_share';
-import RedditShare from 'forum/client/icons/reddit_share';
+import {
+  FacebookShare,
+  TwitterShare,
+  RedditShare
+} from 'forum/client/icons';
 const { Colors } = Styles;
 import ComponentStyle from 'forum/client/styles/center/thread/thread';
 // Collections
@@ -26,32 +28,46 @@ import { pushPath } from 'redux-simple-router';
 import { bindActionCreators } from 'redux';
 // Helpers
 import moment from 'moment';
+import Meta from 'forum/client/meta';
 
+// Thread wrapper for '/forum/thread/:id' path
+// Display thread, comments, replies, comment field
+// Also display carousel to navigate to previous viewed threads
 export class Thread extends Component {
   static propTypes = {
     windowSize: PropTypes.string,
     // Current viewing thread
     thread: PropTypes.object,
-    onReplying: PropTypes.string,
     // If user signed in
     currentUser: PropTypes.object,
     // Update when new comment or reply is created by user.
     // Used to scroll to the right element
     newCommentId: PropTypes.string,
     newReplyHash: PropTypes.object,
+    // Choose to view or hide user in comment section
     blacklist: PropTypes.array,
-    // List of threads which viewed
-    threadList: PropTypes.array,
-    // Number of new comments in a thread
-    newMessages: PropTypes.number,
     // List of threads that were viewed
     // Use for thread_carousel
     viewedThreads: PropTypes.arrayOf(PropTypes.object),
+    // Use to locate comment id to display reply textfield
+    onReplying: PropTypes.string,
   };
 
   componentWillReceiveProps(nextProps) {
+    // Check and switch thread id when user view another thread
     if (this.props.params.id !== nextProps.params.id) {
       this.threadDict.set('id', nextProps.params.id);
+    }
+    // Check if the viewed thread has new message and display
+    if (this.props.thread) {
+      if (this.props.thread._id !== nextProps.thread._id) {
+        const found = _.find(this.props.viewedThreads, thread => thread._id === nextProps.thread._id);
+        if (found) {
+          const count = nextProps.thread.comments.length - found.comments.length;
+          this.setState({newMessages: count});
+          setTimeout(() => {this.setState({newMessages: 0})}, 5000);
+        }
+      }
     }
   }
 
@@ -78,6 +94,7 @@ export class Thread extends Component {
     })
   };
 
+  // Remove tracker from memory when user move to other path
   componentWillUnmount() {
     this.tracker.stop();
     delete ReactiveDict._dictsToMigrate.thread;
@@ -90,7 +107,7 @@ export class Thread extends Component {
     const same_blacklist = _.isEqual(this.props.blacklist, nextProps.blacklist);
     const same_carousel = this.state.viewingCarousel === nextState.viewingCarousel;
     const view_dialog = this.state.showReplyDialog === nextState.showReplyDialog;
-    const same_messages_count = this.props.newMessages == nextProps.newMessages;
+    const same_messages_count = this.state.newMessages == nextState.newMessages;
     const same_reply_hash = this.props.newReplyHash === nextProps.newReplyHash;
     const same_reply = this.props.onReplying === nextProps.onReplying;
     if ( same_user && same_thread && same_list && same_blacklist && same_carousel && view_dialog && same_messages_count && same_reply_hash && same_reply) {
@@ -126,7 +143,7 @@ export class Thread extends Component {
     var comment_field;
     if (this.props.currentUser !== null && this.props.currentUser !== undefined) {
       const comment_field_props = {
-        newMessages: this.props.newMessages,
+        newMessages: this.state.newMessages,
         createComment: this.props.actions.createComment.bind(null, this.props.thread._id),
         toggleCarousel: this.toggleCarousel,
         viewingCarousel: this.state.viewingCarousel,
@@ -138,32 +155,11 @@ export class Thread extends Component {
     if (thread.user.avatar) {
       avatar = thread.user.avatar;
     };
+    //Meta tags
     const description = `Forum - ${thread.title}`;
     const img = thread.imgUrl;
-    const domain = 'http://mydomain.com';
-    const url = `${domain}/forum/thread/${thread._id}`;
-    const meta = [
-      {name: 'description', content: description},
-      {name: 'keywords', content: 'crab, user'},
-      {charset: 'UFT-8'},
-      //Open graph
-      {property: 'og:title', content: 'Forum'},
-      {property: 'og:type', content: 'lists'},
-      {property: 'og:url', content: url},
-      {property: 'og:image', content: img},
-      {property: 'og:description', content: description},
-      {property: 'og:site_name', content: 'My website'},
-      //Twitter
-      {name: 'twitter:card', content: img},
-      {name: 'twitter:site', content: url},
-      {name: 'twitter:title', content: 'Forum'},
-      {name: 'twitter:description', content: description},
-      {name: 'twitter:image:src', content: img},
-      // Google plus
-      {itemprop: 'name', content: 'Forum'},
-      {itemprop: 'description', content: description},
-      {itemprop: 'image', content: img}
-    ];
+    const path = `/forum/thread/${thread._id}`;
+    const meta = Meta(path, description, img);
     return (
       <div>
         <Helmet
@@ -233,13 +229,15 @@ export class Thread extends Component {
       onReplying: this.props.onReplying,
       closeReply: this.props.actions.closeReply,
       openReply: this.props.actions.openReply,
-      openSnackbar: this.props.actions.openSnackbar
+      openSnackbar: this.props.actions.openSnackbar,
+      thread: this.props.thread,
     };
     return (
       <CommentList {...comment_list_props}/>      
     )
   }
 
+  // Render viewed threads for navigation
   renderCarousel() {
     const thread_carousel_props = {
       onClickOutside: this.closeCarousel,

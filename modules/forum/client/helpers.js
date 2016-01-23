@@ -8,6 +8,7 @@ export function checkMobileDevice() {
   }
 }
 
+// Set breakpoint for window
 export function windowSize() {
   if (typeof document === 'undefined') {
     return 'large';
@@ -22,6 +23,7 @@ export function windowSize() {
   }
 }
 
+// Get window height. If in server, return default of 900
 export function windowHeight() {
   if (typeof document === 'undefined') {
     return 900;

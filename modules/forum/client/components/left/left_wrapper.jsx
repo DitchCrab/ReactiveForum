@@ -9,6 +9,8 @@ import InfiniteScroll from '../widgets/infinite_scroll';
 import ComponentStyle from '../../styles/left/left_wrapper';
 const { Colors, AutoPrefix } = Styles;
 
+// Component that wrapper browing threads
+// Include search field and categories selection
 export default class LeftWrapper extends Component {
   static propTypes = {
     browsingOpened: PropTypes.bool,

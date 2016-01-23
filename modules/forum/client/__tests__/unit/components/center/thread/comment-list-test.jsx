@@ -17,21 +17,22 @@ describe('Comment list widget', () => {
       updateReply: () => {},
       createReply: () => {},
       openReply: () => {},
-      closeReply: () => {}
+      closeReply: () => {},
     };
     beforeEach(() => {
       jasmineReact.spyOnClass(CommentList, 'getMoreComments');
       const comments = [
         {_id: 1, username: 'Tom', createdAt: moment.utc().format(), text: "hello"}
       ]
+      const thread = {_id: '1', comments: comments};
       component = TestUtils.renderIntoDocument(
-        <CommentList comments={comments} {...foo} />
+        <CommentList comments={comments} thread={thread} {...foo} />
       );
     });
 
-    it('has navigation horizontall button', () => {
-      const button = TestUtils.findRenderedComponentWithType(component, IconButton);
-      expect(button).toBeDefined();
+    it('does not have navigation horizontall button', () => {
+      const button = TestUtils.scryRenderedComponentsWithType(component, IconButton);
+      expect(button.length).toEqual(0);
     });
 
     it('has one commend', () => {
@@ -39,17 +40,9 @@ describe('Comment list widget', () => {
       expect(comments.length).toEqual(1);
     });
 
-    it('call getMoreComments func', () => {
-      const button = TestUtils.findRenderedDOMComponentWithClass(component, 'more-comments');
-
-      const mark = component.state.timeMark;
-      TestUtils.Simulate.click(button);
-      expect(jasmineReact.classPrototype(CommentList).getMoreComments.calls.count()).toEqual(1);
-      expect(component.state.timeMark).toEqual(mark);
-    });
   });
   
-  describe('with three comment', () => {
+  describe('with ten comments', () => {
     var component;
     var foo = {
       onLike: (id) => {return id;},
@@ -76,19 +69,19 @@ describe('Comment list widget', () => {
         {_id: 9, username: 'Tom', createdAt: moment.utc().add(8, 'minutes').format(), text: "hello"},       
         {_id: 10, username: 'Tom', createdAt: moment.utc().add(9, 'minutes').format(), text: "hello"}        
       ]
+      const thread = {_id: '1', comments: comments};
       component = TestUtils.renderIntoDocument(
-        <CommentList comments={comments} {...foo} />
+        <CommentList comments={comments} thread={thread} {...foo} />
       );
     });
 
-    it('has two commend', () => {
+    it('has eight commend', () => {
       const comments = TestUtils.scryRenderedComponentsWithType(component, Comment);
       expect(comments.length).toEqual(8);
     });
 
     it('call getMoreComments func', () => {
       const button = TestUtils.findRenderedDOMComponentWithClass(component, 'more-comments');
-      const mark = component.state.timeMark;
       TestUtils.Simulate.click(button);
       const comments = TestUtils.scryRenderedComponentsWithType(component, Comment);      
       expect(comments.length).toEqual(10);

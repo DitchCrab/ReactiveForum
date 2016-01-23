@@ -7,6 +7,7 @@ import * as ThreadActions from 'forum/client/actions/thread';
 import { pushPath } from 'redux-simple-router';
 import { bindActionCreators } from 'redux';
 
+// New thread wrapper for path '/forum/new_thread';
 export class NewThread extends Component {
   static propTypes = {
     // Thread categories from db

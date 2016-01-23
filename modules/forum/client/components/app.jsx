@@ -21,6 +21,9 @@ import { bindActionCreators } from 'redux';
 // Import helpers
 import { windowSize } from '../helpers';
 
+// Wrapper for forum section
+// Include app bar as shared view
+// Responsible for user authentication
 export  class App extends Component {
   static contextTypes = {
     history: PropTypes.object.isRequired,
@@ -33,6 +36,7 @@ export  class App extends Component {
     windowSize: PropTypes.string.isRequired,
     session: PropTypes.object,
     authError: PropTypes.string,
+    // User to display burgon icon
     browsingOpened: PropTypes.bool,
   };
 
@@ -62,6 +66,7 @@ export  class App extends Component {
     })
   }
 
+  // Unregister memory
   componentWillUnmount() {
     window.removeEventListener('resize', this.handleResize);
     this.sessionTracker.stop();

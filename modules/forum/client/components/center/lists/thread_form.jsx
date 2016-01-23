@@ -5,6 +5,7 @@ import ComponentStyle from 'forum/client/styles/center/lists/thread_form';
 // Colelctions
 import ThreadImgs from 'forum/collections/thread_imgs';
 
+// Form component for edit_thread and new_thread
 export default class ThreadForm extends Component {
   static propTypes = {
     // Thread categories from db
@@ -37,6 +38,7 @@ export default class ThreadForm extends Component {
     this._submit = this._submit.bind(this);
   }
 
+  // Fetching the right infor when user edit different threads
   componentWillReceiveProps(nextProps) {
     if (this.props.error !== nextProps.error) {
       this.setState({error: nextProps.error});

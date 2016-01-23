@@ -2,6 +2,7 @@ import { Component, PropTypes } from 'react';
 import { TextField, RaisedButton, FlatButton } from 'material-ui';
 import ComponentStyle from '../../styles/auth/login';
 
+// Auth component for sign in
 export default class SignIn extends Component {
   static propTypes = {
     // Switch to signup state

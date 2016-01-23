@@ -2,6 +2,7 @@ import { Component, PropTypes } from 'react';
 import SignIn from './sign_in';
 import SignUp from './sign_up';
 
+// Wrapper component for auth sections
 export default class LogOn extends Component {
   static propTypes = {
     signIn: PropTypes.func,

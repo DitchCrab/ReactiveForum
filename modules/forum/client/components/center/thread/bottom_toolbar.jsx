@@ -6,6 +6,7 @@ import ComponentStyle from 'forum/client/styles/center/thread/bottom_toolbar';
 // Helpers
 import moment from 'moment';
 
+// Component for comment text input, carousel button and new message notification
 export default class BottomToolbar extends Component {
   static propTypes = {
     // If carousel is currently open or not

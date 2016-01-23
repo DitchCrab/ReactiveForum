@@ -5,6 +5,8 @@ import { List, ListItem, Checkbox, FlatButton, Styles, Avatar } from 'material-u
 import ComponentStyle from '../../styles/right/featured_users';
 const {Colors} = Styles;
 
+// Component for featuredUsers
+// Click on user will render center component with userThreads
 @ReactMixin.decorate(ReactMeteorData)
 export default class FeaturedUsers extends Component {
   static propTypes = {

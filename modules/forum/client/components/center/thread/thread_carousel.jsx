@@ -9,8 +9,9 @@ import ComponentStyle from 'forum/client/styles/center/thread/thread_carousel';
 const { Colors, AutoPrefix } = Styles;
 // Helpers
 import { toolbarWidth, checkMobileDevice } from 'forum/client/helpers';
-import Immutable from 'immutable';
 
+// Carousel component for viewed threads
+// User to navigate back to previous threads
 @ReactMixin.decorate(OnClickOutside)
 export default class ThreadCarousel extends Component {
 
@@ -34,7 +35,7 @@ export default class ThreadCarousel extends Component {
       // Carousel helds max 3 threads
       // Use to view next or previous
       viewIndex: 0,
-      threads: Immutable.fromJS(props.threadList).slice(0, 3).toJS()
+      threads: props.threadList.slice(0, 3)
     };
     // Decoupling from main render method
     this.renderEachCarouselThread = this.renderEachCarouselThread.bind(this);
@@ -100,7 +101,7 @@ export default class ThreadCarousel extends Component {
     } else {
       var index = this.state.viewIndex + 3;
     }
-    let threads = Immutable.fromJS(this.props.threadList).slice(index, index + 3).toJS();
+    let threads = this.props.threadList.slice(index, index + 3);
     if (threads.length > 0) {
       this.setState({viewIndex: index, threads: threads});
     }
@@ -113,7 +114,7 @@ export default class ThreadCarousel extends Component {
     } else {
       var index = this.state.viewIndex -3;
     }
-    var threads = Immutable.fromJS(this.props.threadList).slice(index, index + 3).toJS();
+    var threads = this.props.threadList.slice(index, index + 3);
     if (threads.length > 0) {
       this.setState({viewIndex: index, threads: threads});        
     }

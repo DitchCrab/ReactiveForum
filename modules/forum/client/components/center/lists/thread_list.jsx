@@ -5,6 +5,7 @@ import { ToggleStarBorder, ImagePhoto } from 'material-ui/lib/svg-icons';
 import ComponentStyle from 'forum/client/styles/center/lists/thread_list';
 const { Colors } = Styles;
 
+// List component for featuredThreads and userThreads
 export default class ThreadList extends Component {
   static propTypes = {
     threads: PropTypes.arrayOf(PropTypes.object),

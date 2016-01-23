@@ -8,6 +8,7 @@ const { Colors, AutoPrefix } = Styles;
 // Helpers
 import moment from 'moment';
 
+// Comment component in thread
 export default class Comment extends Component {
 
   static propTypes = {

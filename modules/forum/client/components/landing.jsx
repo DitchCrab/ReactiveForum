@@ -6,7 +6,10 @@ import RaisedButton from 'material-ui/lib/raised-button';
 import { Styles } from 'material-ui';
 import ComponentStyle from '../styles/landing';
 const { AutoPrefix } = Styles;
+//Helpers
+import Meta from 'forum/client/meta';
 
+// Render landing page view
 export default class Landing extends Component {
   static contextTypes = {
     history: PropTypes.object
@@ -19,32 +22,11 @@ export default class Landing extends Component {
   }
 
   render() {
+    // Meta tags
     const description = 'Open forum';
     const image = require('forum/client/img/bgM.jpg');
-    const domain = 'http://mydomain.com';
-    const url = `${domain}`;
-    const meta = [
-      {name: 'description', content: description},
-      {name: 'keywords', content: 'crab'},
-      {charset: 'UFT-8'},
-      //Open graph
-      {property: 'og:title', content: 'Forum'},
-      {property: 'og:type', content: 'landing page'},
-      {property: 'og:url', content: url},
-      {property: 'og:image', content: image},
-      {property: 'og:description', content: description},
-      {property: 'og:site_name', content: 'My website'},
-      //Twitter
-      {name: 'twitter:card', content: image},
-      {name: 'twitter:site', content: url},
-      {name: 'twitter:title', content: 'Forum'},
-      {name: 'twitter:description', content: description},
-      {name: 'twitter:image:src', content: image},
-      // Google plus
-      {itemprop: 'name', content: 'Forum'},
-      {itemprop: 'description', content: description},
-      {itemprop: 'image', content: image}
-    ];
+    const path = '/';
+    const meta = Meta(path, description, image);
     return (
       <div style={AutoPrefix.all(ComponentStyle.wrapper)}>
         <Helmet

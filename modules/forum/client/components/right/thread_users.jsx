@@ -4,9 +4,9 @@ import ReactMixin from 'react-mixin';
 import { List, ListItem, Checkbox, FlatButton, Styles, Avatar } from 'material-ui';
 import ComponentStyle from '../../styles/right/thread_users';
 const {Colors} = Styles;
-// Helpers
-import Immutable from 'immutable';
 
+// Component display list of users whom commended in a thread
+// Click on user avatar will display center component of userThreads
 @ReactMixin.decorate(ReactMeteorData)
   export default class ThreadUsers extends Component {
     static propTypes = {
@@ -99,7 +99,7 @@ import Immutable from 'immutable';
         }
       }
       let checked = true;
-      if (Immutable.fromJS(this.props.blacklist).find(x => x === user._id)) {
+      if (_.find(this.props.blacklist, usr => usr === user._id)) {
         checked = false;
       }
       return (

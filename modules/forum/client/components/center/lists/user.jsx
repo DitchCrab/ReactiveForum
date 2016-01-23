@@ -13,7 +13,10 @@ import {
 } from 'forum/client/actions';
 import { bindActionCreators } from 'redux';
 import { pushPath } from 'redux-simple-router';
+//Helpers
+import Meta from 'forum/client/meta';
 
+// Wrapper for path 'forum/user/:id'
 export class User extends Component {
   static propTypes = {
     // List of threads contributed by user
@@ -31,6 +34,7 @@ export class User extends Component {
     this.viewThread = this.viewThread.bind(this);
   }
 
+  // Server side fetching
   componentWillMount() {
     let user = Meteor.users.findOne({_id: this.props.params.id});
     this.props.actions.getUser(user);
@@ -40,6 +44,7 @@ export class User extends Component {
     this.props.actions.getUserThreads(threads);
   }
 
+  // Reactive clientside fetching
   componentDidMount() {
     this.onUserDict = new ReactiveDict('onUser');
     this.onUserDict.set('id', this.props.params.id);
@@ -55,6 +60,7 @@ export class User extends Component {
     })
   }
 
+  // Unregister memory
   componentWillUnmount() {
     this.threadsTracker.stop();
     delete ReactiveDict._dictsToMigrate.onUser;
@@ -71,30 +77,8 @@ export class User extends Component {
     const userId = this.props.onUser ? this.props.onUser._id : null;
     const description = `Forum - Threads ${username} contributed to`;
     const img = this.props.userThreads[0] ? this.props.userThreads[0].imgUrl : 'bg_img';
-    const domain = 'http://mydomain.com';
-    const url = `${domain}/forum/user/${userId}`;
-    const meta = [
-      {name: 'description', content: description},
-      {name: 'keywords', content: 'crab, user'},
-      {charset: 'UFT-8'},
-      //Open graph
-      {property: 'og:title', content: 'Forum'},
-      {property: 'og:type', content: 'lists'},
-      {property: 'og:url', content: url},
-      {property: 'og:image', content: img},
-      {property: 'og:description', content: description},
-      {property: 'og:site_name', content: 'My website'},
-      //Twitter
-      {name: 'twitter:card', content: img},
-      {name: 'twitter:site', content: url},
-      {name: 'twitter:title', content: 'Forum'},
-      {name: 'twitter:description', content: description},
-      {name: 'twitter:image:src', content: img},
-      // Google plus
-      {itemprop: 'name', content: 'Forum'},
-      {itemprop: 'description', content: description},
-      {itemprop: 'image', content: img}
-    ];
+    const path = `/forum/user/${userId}`;
+    const meta = Meta(path, description, img);
     return (
       <div style={ComponentStyle.wrapper}>
         <Helmet
