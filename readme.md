@@ -28,6 +28,7 @@ For [proof of concept](http://188.166.213.121), it is built on top of Meteorjs. 
 * Add admin panel
 * Improve text editor
 * Add push notifications
+* Support view mode (focus mode) for medium and large screen
 * Interconnect forum to the other to improve user experience
 * IOS & Android support with Reactnative
 * Music & Video stream
