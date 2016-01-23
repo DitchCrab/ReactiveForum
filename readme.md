@@ -1,20 +1,18 @@
-# Modern forum by VuongNgo
-Aim to modernize forum interface using Reactjs && Material Design.   
-Proof of concept backed by Meteorjs.   
-[Demo](http://188.166.213.121).   
- 
+# Reactive open forum
+This project aims to modernize forum interface using Reactjs && Material Design. The idea is to simplify forum browsing experiences with accessible navigation. Besides, sometimes we don't want to view particular comments in a forum thread, this design enables us to hide particular user comments on our favour :v: .  
+Ultimately, the project should support Wordpress and I believe it is the right direction. As self-taught developer, I know how hard it is to materialise some ideas for none-technical people. Hence, I think this project can provide blueprint for people to make something themselves.  
+For [proof of concept](http://188.166.213.121), it is built on top of Meteorjs. The service still lacks many forum features, if you are interested, please give me a hand to make it awesome.
+
 ### Current stacks
 * Reactjs
+* Redux
 * Meteorjs
 * Webpack
 * ES2015
 * Material-ui
  
-### Development mode
-* With test:   
+### Development mode 
     meteor
-* No test:   
-    VELOCITY=0 meteor
      
 ### Production mode
     meteor --production
@@ -24,3 +22,14 @@ Proof of concept backed by Meteorjs.
 
 ### Deploy with MUP
     mup deploy
+
+# Roadmap  
+* Support nodejs
+* Add admin panel
+* Improve text editor
+* Interconnect forum to the other to improve user experience
+* IOS & Android support with Reactnative
+* Music & Video stream
+
+# Credits  
+Special credits to [thereactivestack](https://github.com/thereactivestack/kickstart-hugeapp). I would have hard time developing this service without your awesome setup.
