@@ -1,3 +1,4 @@
+// Use for responsive layout
 import { WINDOW_SIZE } from '../constants';
 
 export function setWindowSize(size) {

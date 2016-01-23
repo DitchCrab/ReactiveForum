@@ -9,6 +9,8 @@ import {
 } from '../constants';
 import { UPDATE_PATH } from 'redux-simple-router';
 
+// For small screen, if user view left browsing of not
+// Type: boolean
 export function browsingOpened(state = false, action) {
   switch (action.type) {
     case OPEN_BROWSING:
@@ -22,6 +24,8 @@ export function browsingOpened(state = false, action) {
   }
 };
 
+// List of threads on left side
+// Type: array
 export function browsingThreads(state = [], action) {
   switch (action.type) {
     case BROWSING_THREADS:
@@ -31,6 +35,8 @@ export function browsingThreads(state = [], action) {
   }
 };
 
+// Number of threads are fetch.
+// Type: integer
 export function browsingLimit(state = 10, action) {
   switch (action.type) {
     case SET_BROWSING_LIMIT:
@@ -42,6 +48,8 @@ export function browsingLimit(state = 10, action) {
   }
 };
 
+// Query used to fetch threads
+// Type: object
 export function browsingQuery(state = {}, action) {
   switch (action.type) {
     case SET_BROWSING_QUERY:
@@ -53,6 +61,8 @@ export function browsingQuery(state = {}, action) {
   }
 };
 
+// If there are more threads to fetch
+// Type: boolean
 export function hasMoreBrowsing(state = true, action) {
   switch (action.type) {
     case HAS_MORE_BROWSING:

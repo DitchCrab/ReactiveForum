@@ -1,3 +1,4 @@
+// Featured threads
 import {
   GET_FEATURED_THREADS
 } from '../constants';

@@ -1,4 +1,4 @@
-//require('babel-polyfill');
+// Authentication
 import UserAvatars from 'forum/collections/user_avatars';
 import {
   USER_SESSION,

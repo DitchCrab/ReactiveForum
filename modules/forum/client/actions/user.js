@@ -1,3 +1,4 @@
+// The owner of the thread
 import {
   GET_USER
 } from '../constants';

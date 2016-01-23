@@ -1,3 +1,5 @@
+// For small and medium screen
+// Open or close right SideNav of user list
 import {
   OPEN_SIDE_NAV,
   CLOSE_SIDE_NAV

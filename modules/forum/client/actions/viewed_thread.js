@@ -1,3 +1,5 @@
+// Threads which are viewed.
+// Use for acrousel
 import { ADD_VIEWED_THREAD } from '../constants';
 
 export function addViewedThread(thread) {

@@ -3,6 +3,9 @@ import {
   CREATE_REPLY
 } from '../constants';
 
+// When comment is created by user
+// Use to scroll to view
+// type: string
 export function newCommentId(state = null, action) {
   switch (action.type) {
     case CREATE_COMMENT:
@@ -12,6 +15,9 @@ export function newCommentId(state = null, action) {
   }
 }
 
+// When reply is created by user
+// Use to scroll to view
+// type: object(commentId, replyIndex)
 export function newReplyHash(state = {}, action) {
   switch (action.type) {
     case CREATE_REPLY:

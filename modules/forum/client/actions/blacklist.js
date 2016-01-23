@@ -1,3 +1,4 @@
+// Use to filter users from comment sections
 import {
   BLACKLIST_USER,
   WHITELIST_USER,

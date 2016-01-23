@@ -3,6 +3,8 @@ import {
   CLOSE_SNACKBAR
 } from '../constants';
 
+// Call to actions snackbar
+// Type: boolean
 export function snackbarOpen(state = false, action) {
   switch (action.type) {
     case OPEN_SNACKBAR:

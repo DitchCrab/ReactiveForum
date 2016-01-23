@@ -8,6 +8,8 @@ import {
   BROWSING_THREADS
 } from '../constants';
 
+// Authentication error of signin, signup
+// type: string
 export function authError(state = null, action) {
   switch (action.type) {
     case AUTH_ERROR:
@@ -19,6 +21,8 @@ export function authError(state = null, action) {
   }
 };
 
+// Error when thread is not created
+// type: string
 export function createThreadError(state = null, action) {
   switch (action.type) {
     case CREATE_THREAD_ERROR:
@@ -30,6 +34,8 @@ export function createThreadError(state = null, action) {
   }
 };
 
+// Error when search query return no thread
+// Type: string
 export function searchError(state = null, action) {
   switch (action.type) {
     case SEARCH_ERROR:

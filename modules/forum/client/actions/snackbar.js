@@ -1,3 +1,4 @@
+// Call to actions messages
 import {
   OPEN_SNACKBAR,
   CLOSE_SNACKBAR

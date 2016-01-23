@@ -1,3 +1,5 @@
+// Get the categories for browsing
+
 import Categories from 'forum/collections/categories';
 import {
   GET_CATEGORIES

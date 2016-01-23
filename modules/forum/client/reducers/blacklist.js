@@ -5,6 +5,8 @@ import {
   WHITELIST_ALL
 } from '../constants';
 
+// List of filtered user whom you don't want to see in thread comment section
+// Type: array of string
 export function blacklist(state = [], action) {
   switch (action.type) {
     case BLACKLIST_USER:
