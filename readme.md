@@ -10,6 +10,27 @@ For [proof of concept](http://188.166.213.121), it is built on top of Meteorjs. 
 * Webpack
 * ES2015
 * Material-ui
+
+### File structures  
+```
+/entry                    *Entry point Webpack to Meteor. See kickstart-hugeapp for  more information
+/modules
+  /forum
+    /client               *Client side codes
+      /__tests__          *Includes unit and integration tests
+      /components         *React components
+      /containters        *Root react components
+      /icons              *svg icons
+      /reducers           *Redux reducers
+      /store              *Redux store configurations
+      /actions            *Redux create actions
+      /constants          *Redux constants
+      /styles             *Inline js styles
+    /collections          *Meteor collections
+    /server
+    /methods.js           *Client & server shared code
+
+```
  
 ### Development mode 
     meteor
