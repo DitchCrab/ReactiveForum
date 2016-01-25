@@ -16,12 +16,21 @@ import { pushPath } from 'redux-simple-router';
 //Helpers
 import Meta from 'forum/client/meta';
 
-// Wrapper for path 'forum/user/:id'
+/**
+* User component
+* Wrapper for path 'forum/user/:id'
+* Responsible for fetching the right data and update redux state
+*/
 export class User extends Component {
   static propTypes = {
     // List of threads contributed by user
     userThreads: PropTypes.arrayOf(PropTypes.object),
-    onUser: PropTypes.object
+    onUser: PropTypes.object,
+    actions: PropTypes.shape({
+      getUser: PropTypes.func,
+      getUserThreads: PropTypes.func,
+      pushPath: PropTypes.func
+    })
   };
 
   static defaultProps = {
@@ -91,8 +100,9 @@ export class User extends Component {
     )
   }
 
+  // @params id {string} - threadId
   viewThread(id) {
-    this.props.actions.pushPath(`/forum/thread/${id}`)
+    this.props.actions.pushPath(`/forum/thread/${id}`);
   }
 
 }

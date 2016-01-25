@@ -1,6 +1,6 @@
 import { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
 // Import components
 import LeftWrapper from './left/left_wrapper';
 import MiniProfile from './right/mini_profile';
@@ -21,9 +21,11 @@ import { bindActionCreators } from 'redux';
 // Import helpers
 import { windowSize } from '../helpers';
 
-// Wrapper for forum section
-// Include app bar as shared view
-// Responsible for user authentication
+/** Wrapper for forum
+* All forum session share the same Appbar component
+* Responsible for handling authentication
+* Display respective icons based on windowSize
+*/
 export  class App extends Component {
   static contextTypes = {
     history: PropTypes.object.isRequired,
@@ -32,17 +34,34 @@ export  class App extends Component {
   };
 
   static propTypes = {
-    params: PropTypes.object.isRequired,
-    windowSize: PropTypes.string.isRequired,
+    // Url path
+    params: PropTypes.shape({
+      id: PropTypes.string
+    }),
+    windowSize: PropTypes.oneOf(['small', 'medium', 'large']),
+    // User session
     session: PropTypes.object,
     authError: PropTypes.string,
     // User to display burgon icon
     browsingOpened: PropTypes.bool,
+    actions: PropTypes.shape({
+      closeBrowsing: PropTypes.func,
+      openBrowsing: PropTypes.func,
+      closeSideNav: PropTypes.func,
+      openSideNav: PropTypes.func,
+      setWindowSize: PropTypes.func,
+      signIn: PropTypes.func,
+      signOut: PropTypes.func,
+      signUp: PropTypes.func,
+      getCurrentUser: PropTypes.func,
+      updateUserAvatar: PropTypes.func,
+      pushPath: PropTypes.func
+    })
   };
 
   constructor(props, context) {
     super(props);
-    this.state = {activePopover: false, windowSize: windowSize()};
+    this.state = {activePopover: false};
     this.context = context;
     // Rendering methods decoupling from main render method
     this.renderRightIcon = this.renderRightIcon.bind(this);
@@ -116,10 +135,12 @@ export  class App extends Component {
     )
   }
  
-  // Right incons includes:
-  // For small screen: SignIn button OR Avatar, SocialPerson icon, AND ActionHistory
-  // For medium screen: SignIn button OR Avatar, SocialPerson icon
-  // For large screen: SignIn button OR Avatar
+  /**
+  * Right incons includes:
+  * For small screen: SignIn button OR Avatar, SocialPerson icon, AND HomeButton
+  * For medium screen: SignIn button OR Avatar, SocialPerson icon, AND HomeButton
+  * For large screen: SignIn button OR Avatar, AND HomeButton
+  */
   renderRightIcon() {
     let user = this.props.session;
     var button;
@@ -139,8 +160,10 @@ export  class App extends Component {
     )
   }
 
-  // Burger Menu icon on the left
-  // Only render in small screen
+  /** 
+  * Burger Menu icon on the left
+  * Only render in small screen
+  */
   renderLeftIcon() {
     if (this.props.browsingOpened) {
       return (
@@ -171,7 +194,6 @@ export  class App extends Component {
   }
 
   handleResize() {
-    // WindowSize as 'small', 'medium', 'large'
     this.props.actions.setWindowSize(windowSize());
   }
 

@@ -6,7 +6,10 @@ const { Colors, AutoPrefix } = Styles;
 // Helpers
 import moment from 'moment';
 
-// Component for reply
+/**
+* Reply component
+* Responsible for view and edit reply
+*/
 export default class Reply extends Component {
   static propTypes = {
     // If user signed in
@@ -102,6 +105,7 @@ export default class Reply extends Component {
     )
   }
 
+  // @params text {string} - old reply
   renderEditing(text) {
     return (
       <div style={ComponentStyle.editingDiv}>

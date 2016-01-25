@@ -9,7 +9,11 @@ const { AutoPrefix } = Styles;
 // Helpers
 import moment from 'moment';
 
-// Comment wrapper in thread
+/**
+* CommentList component
+* Wrapper for comments and replies
+* Responsible for number of comments rendered
+*/
 export default class CommentList extends Component {
   static propTypes = {
     // If user sign in
@@ -122,7 +126,6 @@ export default class CommentList extends Component {
     )
   }
 
-  // Decrease timeMark to view more comments
   getMoreComments() {
     this.setState({viewNumber: this.state.viewNumber + 8});
   }

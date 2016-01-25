@@ -2,14 +2,16 @@ import { Component, PropTypes } from 'react';
 // Components
 import Helmet from 'react-helmet';
 import RaisedButton from 'material-ui/lib/raised-button';
-// STyles
+// Styles
 import { Styles } from 'material-ui';
 import ComponentStyle from '../styles/landing';
 const { AutoPrefix } = Styles;
 //Helpers
 import Meta from 'forum/client/meta';
 
-// Render landing page view
+/**
+* Landing page component
+*/
 export default class Landing extends Component {
   static contextTypes = {
     history: PropTypes.object

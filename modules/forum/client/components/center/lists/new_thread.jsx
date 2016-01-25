@@ -7,12 +7,20 @@ import * as ThreadActions from 'forum/client/actions/thread';
 import { pushPath } from 'redux-simple-router';
 import { bindActionCreators } from 'redux';
 
-// New thread wrapper for path '/forum/new_thread';
+/**
+ * NewThread component
+ * Wrapper for path 'forum/new_thread'
+ * Include ThreadForm to handle user inputs
+ */
 export class NewThread extends Component {
   static propTypes = {
     // Thread categories from db
     categories: PropTypes.arrayOf(PropTypes.object),
-    createThreadError: PropTypes.string
+    createThreadError: PropTypes.string,
+    actions: PropTypes.shape({
+      pushPath: PropTypes.func,
+      createThread: PropTypes.func
+    })
   };
 
   static defaultProps = {

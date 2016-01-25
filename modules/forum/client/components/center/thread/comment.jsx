@@ -8,7 +8,11 @@ const { Colors, AutoPrefix } = Styles;
 // Helpers
 import moment from 'moment';
 
-// Comment component in thread
+/**
+* Comment component
+* Children of CommentList component
+* Responsible for viewing comment, editing and repling to a comment
+*/
 export default class Comment extends Component {
 
   static propTypes = {
@@ -143,6 +147,7 @@ export default class Comment extends Component {
     )
   }
 
+  // @params text {string} - The old comment
   renderEditing(text) {
     return (
       <div style={ComponentStyle.editingDiv}>

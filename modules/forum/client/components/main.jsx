@@ -28,9 +28,13 @@ import {
 import { pushPath } from 'redux-simple-router';
 import { bindActionCreators } from 'redux';
 
-// Responsible for layout manipulation.
-// Includes Thread browsings wrapper and user list
-// Has children of center section which is rendered based on routing
+/**
+* Main component
+* Responsible for manipulating layout
+* Because Browsing component and User list are shared between pages
+* Main component also wrap Left and Right sections
+* Center section is render by React Router
+*/
 export class Main extends Component {
     
   static contextTypes = {
@@ -39,14 +43,15 @@ export class Main extends Component {
 
   static propTypes = {
     // React router params
-    params: PropTypes.object,
+    params: PropTypes.shape({
+      id: PropTypes.string
+    }),
     // SideNav state and callback
     sideNavOpened: PropTypes.bool,
     // User signed in object
     currentUser: PropTypes.object,
-    // 'small', 'medium' or 'large' size
-    windowSize: PropTypes.string,
-    // Browing attributes
+    windowSize: PropTypes.oneOf(['small', 'medium', 'large']),
+    // Browing props
     categories: PropTypes.arrayOf(PropTypes.object),
     browsingOpened: PropTypes.bool,
     browsingThreads: PropTypes.arrayOf(PropTypes.object),
@@ -57,12 +62,28 @@ export class Main extends Component {
     // List of users on the right
     threadUserList: PropTypes.array,
     blacklist: PropTypes.array,
+    actions: PropTypes.shape({
+      getBrowsingThreads: PropTypes.func,
+      getInitialCategories: PropTypes.func,
+      setSearchErr: PropTypes.func,
+      setHasMoreBrowsing: PropTypes.func,
+      setBrowsingQuery: PropTypes.func,
+      setBrowsingLimit: PropTypes.func,
+      closeSideNav: PropTypes.func,
+      resetSearch: PropTypes.func,
+      pushPath: PropTypes.func,
+      openSnackbar: PropTypes.func,
+      closeSnackbar: PropTypes.func,
+      likeThread: PropTypes.func,
+      flagThread: PropTypes.func,
+      unflagThread: PropTypes.func,
+      blacklistUser: PropTypes.func,
+      whitelistUser: PropTypes.func,
+      blacklistAll: PropTypes.func,
+      whitelistAll: PropTypes.func
+    })
   };
 
-  static defaultProps = {
-    section: 'browsing'
-  };
-  
   constructor(props, context) {
     super(props);
     this.context = context;
@@ -87,10 +108,11 @@ export class Main extends Component {
   componentDidMount() {
     // Get initial categories without watching changes
     this.props.actions.getInitialCategories();
-    // Get browsing and watch changes
+    // User reactive dict to convert props to meteor reactive var
     this.browsingDict = new ReactiveDict('browsing');
     this.browsingDict.set('limit', this.props.browsingLimit);
     this.browsingDict.set('query', this.props.browsingQuery);
+    // Watch change and update redux state
     this.browsingTracker = Tracker.autorun(() => {
       let threads = Threads.find(this.browsingDict.get('query'), {sort: {createdAt: -1}, limit: this.browsingDict.get('limit')}).fetch();
       if (threads.length < 1) {
@@ -112,7 +134,7 @@ export class Main extends Component {
   }
 
   componentWillReceiveProps(nextProps, nextState) {
-    // Reactive var for Meteor Tracker
+    // Reactive update using reactive dict
     if (this.props.browsingLimit !== nextProps.browsingLimit) {
       this.browsingDict.set('limit', nextProps.browsingLimit);
     }
@@ -169,10 +191,15 @@ export class Main extends Component {
     }
   }
 
-  // Main view:
-  // Has featured on homepage
-  // Has list of threads contributed by user if clicked on user avatar on right nav
-  // Has Thread on viewing thread
+/** Center component in 'large' and 'medium' screens
+* Main component in 'small' screen.
+* Depending on router. Children may be:
+* Featured threads as Features component
+* User's threads as User component
+* New thread form as NewThread component
+* EditThread form as EditThread component
+* Thread component
+*/
   renderMain() {
     return (
       <div style={Layout.mainThread(this.props.windowSize)}>
@@ -183,9 +210,11 @@ export class Main extends Component {
       )
   }
 
-  // Include search, category selection and list of threads
-  // On small screen: render if 'section' is 'browsing'
-  // On medium and large screen: render as right nav
+/**
+* Browsing view is always availabe for 'large' and 'medium' screens
+* For small screen, it is opened through burger icon
+* This view has search field, categories select field and list of threads
+*/
   renderBrowsing() {
     const display = this.props.browsingOpened ? 'initial' : 'none';
     const left_wrapper_props = {
@@ -216,10 +245,12 @@ export class Main extends Component {
     )
   }
 
-  // Include featured user as in homepage
-  // Include list of users involved in thread as in thread
-  // On small and medium screen: embeded in hidden right nav (LeftNav defined by MaterialUI)
-  // On large screen: render as right nav
+/**
+* User list view is always availabe in 'large' screens
+* For 'small' and 'medium' screen', it is opened as Rightnav by clicking on SocialPerson icon in Appbar
+* If user is viewing Thread component, User list view renders ThreadUsers
+* Else: it renders FeaturedUsers
+*/
   renderUserList() {
     //Currently only filter users by comment
     if (this.props.routes[3].path) {
@@ -257,11 +288,13 @@ export class Main extends Component {
       />
     )    
   }
-
+  
+  // @params id {string} - threadId
   viewThread(id) {
     this.props.actions.pushPath(`/forum/thread/${id}`);
   }
 
+  // @params id {string} - threadId
   setUser(id) {
     this.props.actions.pushPath(`/forum/user/${id}`);
   }

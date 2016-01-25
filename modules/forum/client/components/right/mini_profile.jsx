@@ -8,7 +8,11 @@ const { Colors } = Styles;
 // Collections
 import UserAvatars from '../../../collections/user_avatars';
 
-// Small component for user to upload new avatar and signout
+/**
+* MiniProfile component
+* Is render in Popover on top right side of screen
+* Include upload new avatar form & signout button
+*/
 export default class MiniProfile extends React.Component {
   static propTypes = {
     // if user signed in
@@ -47,8 +51,11 @@ export default class MiniProfile extends React.Component {
     )
   }
 
-  // Only availabe for modern browsers
-  // Need fallback to send image directly to server on old browsers
+  /**
+   * Read file using file reader
+   * Only for modern browsers
+   * Will need fallback to iframe 
+   */
   _uploadImg(event) {
     event.preventDefault();
     let reader = new FileReader();
@@ -63,6 +70,10 @@ export default class MiniProfile extends React.Component {
     reader.readAsDataURL(file);
   }
 
+  /**
+   * User canvas to resize image
+   * Reduce upload time for avatar
+   */
   _resizeImg(src) {
     var image = new Image();
     var canvas = document.createElement('canvas');
@@ -77,6 +88,7 @@ export default class MiniProfile extends React.Component {
     image.src = src
   }
 
+  // @params img {DataUrlObject}
   updateAvatar(img) {
     this.props.updateUserAvatar(img);
   }

@@ -6,7 +6,12 @@ import ComponentStyle from 'forum/client/styles/center/thread/bottom_toolbar';
 // Helpers
 import moment from 'moment';
 
-// Component for comment text input, carousel button and new message notification
+/**
+* BottomToolbar component
+* Handling user comment input
+* Open or close carousel
+* Notify user if there is unread messages in a thread
+*/
 export default class BottomToolbar extends Component {
   static propTypes = {
     // If carousel is currently open or not
@@ -74,11 +79,13 @@ export default class BottomToolbar extends Component {
     )
   }
 
+  // Get comment value for controlled field
   typing(e) {
     e.preventDefault();
     this.setState({comment: e.target.value});
   }
 
+  // Handling submit comment action
   addCommentToThread(e) {
     e.preventDefault();
     e.stopPropagation();

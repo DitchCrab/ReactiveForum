@@ -5,8 +5,13 @@ import { List, ListItem, Checkbox, FlatButton, Styles, Avatar } from 'material-u
 import ComponentStyle from '../../styles/right/thread_users';
 const {Colors} = Styles;
 
-// Component display list of users whom commended in a thread
-// Click on user avatar will display center component of userThreads
+/**
+* ThreadUsers component
+* Render on the right side in 'large' screen
+* Render in RightNav in 'small' and 'medium' screen
+* Click on user avatar navigate to '/forum/user/:id'
+* Use to filter user to hide or show their comments in thread
+*/
 @ReactMixin.decorate(ReactMeteorData)
   export default class ThreadUsers extends Component {
     static propTypes = {
@@ -114,10 +119,14 @@ const {Colors} = Styles;
       )
     }
 
+    // @params id {string} - userId
     linkToUserPost(id) {
       this.props.onUser.bind(null, id)();
     }
 
+    // @params id {string} - userId
+    // @params event {object} - synthetic event
+    // @params checked {boolean}
     filterUser(id, event, checked) {
       if (checked == false) {
         this.props.blacklistUser(id);
@@ -126,6 +135,7 @@ const {Colors} = Styles;
       }
     }
 
+    // @params value {boolean}
     makeSelection(value) {
       if (value == true) {
         this.props.whitelistAll();

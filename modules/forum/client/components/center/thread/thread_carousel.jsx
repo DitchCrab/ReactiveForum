@@ -10,8 +10,11 @@ const { Colors, AutoPrefix } = Styles;
 // Helpers
 import { toolbarWidth, checkMobileDevice } from 'forum/client/helpers';
 
-// Carousel component for viewed threads
-// User to navigate back to previous threads
+/**
+* ThreadCarousel component
+* Use to navigate to previous thread 
+* Support swipe in mobile devices
+*/
 @ReactMixin.decorate(OnClickOutside)
 export default class ThreadCarousel extends Component {
 

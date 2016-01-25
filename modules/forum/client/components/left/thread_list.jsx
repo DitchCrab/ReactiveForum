@@ -3,10 +3,14 @@ import ReactDOM from 'react-dom';
 // Components
 import { Card, CardMedia, CardTitle, IconButton, FlatButton, Styles } from 'material-ui';
 import { ContentFlag, ToggleStar, CommunicationComment } from 'material-ui/lib/svg-icons';
+// Style
 import ComponentStyle from '../../styles/left/thread_list';
 const { Colors } = Styles;
 
-// Browsing component
+/**
+* ThreadList component
+* Responsible for rendering threads in card list
+*/
 export default  class ThreadList extends Component {
   static propTypes = {
     browsingOpened: PropTypes.bool,
@@ -104,7 +108,8 @@ export default  class ThreadList extends Component {
       </Card>          
     )
   }
-  
+
+  // Flag is only rendered if user signed in
   renderFlag(user, id) {
     if (!user) {
       return;
@@ -125,6 +130,8 @@ export default  class ThreadList extends Component {
     )
   }
 
+  // @params id {string} - threadId
+  // @params e {object} - synthetic event
   likeThread(id, e) {
     e.stopPropagation();
     if (this.props.currentUser) {
@@ -134,6 +141,8 @@ export default  class ThreadList extends Component {
     }
   }
 
+  // @params id {string} - threadId
+  // @params e {object} - synthetic event
   flagThread(id, e) {
     e.stopPropagation();
     if (this.props.currentUser) {
@@ -143,6 +152,8 @@ export default  class ThreadList extends Component {
     }
   }
 
+  // @params id {string} - threadId
+  // @params e {object} - synthetic event
   unflagThread(id, e) {
     e.stopPropagation();
     if (this.props.currentUser) {
@@ -152,6 +163,8 @@ export default  class ThreadList extends Component {
     }
   }
 
+  // @params id {string} - threadId
+  // @params e {object} - synthetic event
   editThread(id, e) {
     e.stopPropagation();
     this.props.pushPath(`/forum/edit_thread/${id}`);

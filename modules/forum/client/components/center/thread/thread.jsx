@@ -30,9 +30,12 @@ import { bindActionCreators } from 'redux';
 import moment from 'moment';
 import Meta from 'forum/client/meta';
 
-// Thread wrapper for '/forum/thread/:id' path
-// Display thread, comments, replies, comment field
-// Also display carousel to navigate to previous viewed threads
+/**
+* Thread component
+* Wrapper for '/forum/thread/:id' path
+* Responsible for fetching data and update redux state
+* Include children components of CommentList, Carousel and BottomToolbar
+*/
 export class Thread extends Component {
   static propTypes = {
     windowSize: PropTypes.string,
@@ -71,15 +74,17 @@ export class Thread extends Component {
     }
   }
 
+  // ServerSide data fetching
   componentWillMount() {
     let thread = Threads.findOne({_id: this.props.params.id});
     this.props.actions.getThread(thread);
   }
 
-  // Update threadList if current thread is not in it
   componentDidMount() {
+    // Convert react state to meteor reactive var
     this.threadDict = new ReactiveDict('thread');
     this.threadDict.set('id', this.props.params.id);
+    // Reactive update redux state
     this.tracker = Tracker.autorun(() => {
       let thread = Threads.findOne({_id: this.threadDict.get('id')});
       if (typeof thread !== 'undefined') {
@@ -237,7 +242,10 @@ export class Thread extends Component {
     )
   }
 
-  // Render viewed threads for navigation
+  /**
+  * Additional navigation for thread
+  * Use to go back to previous thread
+  */
   renderCarousel() {
     const thread_carousel_props = {
       onClickOutside: this.closeCarousel,
@@ -250,6 +258,7 @@ export class Thread extends Component {
     );
   }
 
+  // @params id {string} - threadId
   likeThread(id) {
     if (this.props.currentUser) {
       this.props.actions.likeThread(id);
@@ -258,6 +267,7 @@ export class Thread extends Component {
     }
   }
 
+  // @params vendor {string} - oneOf(['facebook', 'twitter', 'reddit'])
   share(vendor) {
     const my_url = window.location.href;
     var url;
@@ -285,6 +295,7 @@ export class Thread extends Component {
     this.setState({viewingCarousel: false});
   }
 
+  // @params id {string} - threadid
   viewThread(id) {
     this.props.actions.pushPath(`/forum/thread/${id}`)
   }

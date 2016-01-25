@@ -5,7 +5,10 @@ import ComponentStyle from 'forum/client/styles/center/lists/thread_form';
 // Colelctions
 import ThreadImgs from 'forum/collections/thread_imgs';
 
-// Form component for edit_thread and new_thread
+/**
+* ThreadForm component
+* Handling user inputs for NewThread and EditThread
+*/
 export default class ThreadForm extends Component {
   static propTypes = {
     // Thread categories from db
@@ -112,8 +115,11 @@ export default class ThreadForm extends Component {
     this.setState({description: event.target.value});
   }
 
-  // Image manipulation
-  // Need fallback on old broswers
+  /**
+   * Read file using file reader
+   * Only for modern browsers
+   * Will need fallback to iframe 
+   */
   _editImg(event) {
     event.preventDefault();
     let reader = new FileReader();
@@ -128,6 +134,10 @@ export default class ThreadForm extends Component {
     reader.readAsDataURL(file);
   }
 
+  /**
+   * Use canvas to resize image
+   * Reduce upload time for image
+   */
   _renderImg(src) {
     var image = new Image();
     var canvas = document.createElement('canvas');
@@ -142,12 +152,14 @@ export default class ThreadForm extends Component {
     image.src = src;
   }
 
+  // Convert tags from string to array
   _editTags(event) {
     event.preventDefault();
     let tags = _.map(event.target.value.split(','), (x) => {return x.trim()});
     this.setState({tags: tags});
   }
 
+  // Submission depend on props passed by NewThread or EditThread
   _submit() {
     let params_check = ['category', 'title', 'description', 'tags'];
     let blank = _.reject(params_check, (key) => { return _.has(this.state, key); });

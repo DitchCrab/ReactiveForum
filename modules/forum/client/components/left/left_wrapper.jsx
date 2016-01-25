@@ -6,11 +6,14 @@ import RefreshIndicator from 'material-ui/lib/refresh-indicator';
 import { ContentAdd } from 'material-ui/lib/svg-icons';
 import ThreadList from './thread_list';
 import InfiniteScroll from '../widgets/infinite_scroll';
+// Style
 import ComponentStyle from '../../styles/left/left_wrapper';
 const { Colors, AutoPrefix } = Styles;
 
-// Component that wrapper browing threads
-// Include search field and categories selection
+/** 
+* LeftWrapper component
+* Wrapping ThreadLists with search field and categories select field
+*/
 export default class LeftWrapper extends Component {
   static propTypes = {
     browsingOpened: PropTypes.bool,
@@ -139,7 +142,7 @@ export default class LeftWrapper extends Component {
             primaryText={category.name} />
       )
     });
-    
+    // Add user specific categoires if signed in
     if (this.props.currentUser) {
       return (
         <DropDownMenu
@@ -163,7 +166,8 @@ export default class LeftWrapper extends Component {
       )
     }
   }
-  
+
+  // Fab button use to navigate to '/forum/new_thread'
   renderNewThread() {
     return (
       <div style={ComponentStyle.newThreadDiv}>
@@ -211,6 +215,7 @@ export default class LeftWrapper extends Component {
     this.props.setBrowsingQuery(query);
   }
 
+  // If user scroll passed threadhold, increase browsing limit
   loadMore() {
     const limit = this.props.browsingLimit + 10;
     this.props.setHasMoreBrowsing(false);

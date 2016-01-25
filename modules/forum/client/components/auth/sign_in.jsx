@@ -2,7 +2,11 @@ import { Component, PropTypes } from 'react';
 import { TextField, RaisedButton, FlatButton } from 'material-ui';
 import ComponentStyle from '../../styles/auth/login';
 
-// Auth component for sign in
+/**
+ * Signin component
+ * Is rendered on top right side of screen
+ * Part of Logon component
+ */
 export default class SignIn extends Component {
   static propTypes = {
     // Switch to signup state
@@ -32,6 +36,8 @@ export default class SignIn extends Component {
     )
   }
 
+  // @params key {string} - oneOf(['username', 'password'])
+  // @params event {object} - syntheticEvent
   getSignInInfo(key, event) {
     event.preventDefault();
     let pair = {};
@@ -41,9 +47,9 @@ export default class SignIn extends Component {
   
   userSignin() {
     let {username, password} = this.state;
-    if (username === undefined || username === null) {
+    if (!username) {
       this.setState({error: 'Username is missing'});
-    } else if (password === undefined || password === null) {
+    } else if (!password) {
       this.setState({error: 'Password is missing'});
     } else  {
       this.props.signIn(username, password);

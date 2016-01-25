@@ -13,11 +13,19 @@ import { pushPath } from 'redux-simple-router';
 // Helpers
 import Meta from 'forum/client/meta';
 
-// Wrapper for featured thread for path '/forum/'
+/**
+* Featured component
+* Wrapper for for path '/forum/'
+* Responsible for fetching threads of user and update redux state
+*/
 export class Featured extends Component {
   static propTypes = {
     // List of threads queried
     featuredThreads: PropTypes.arrayOf(PropTypes.object),
+    actions: PropTypes.shape({
+      getFeaturedThreads: PropTypes.func,
+      pushPath: PropTypes.func
+    })
   };
 
   static defaultProps = {
@@ -69,6 +77,7 @@ export class Featured extends Component {
     )
   }
 
+  // @params id {string} - threadId
   viewThread(id) {
     this.props.actions.pushPath(`/forum/thread/${id}`)
   }

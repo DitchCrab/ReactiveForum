@@ -2,11 +2,16 @@ import { Component, PropTypes } from 'react';
 import ReactMixin from 'react-mixin';
 // Components
 import { List, ListItem, Checkbox, FlatButton, Styles, Avatar } from 'material-ui';
+// Styles
 import ComponentStyle from '../../styles/right/featured_users';
 const {Colors} = Styles;
 
-// Component for featuredUsers
-// Click on user will render center component with userThreads
+/**
+* FeaturedUsers component
+* Render on the right side in 'large' screen
+* Render in RightNav in 'small' and 'medium' screen
+* Click on user navigate to '/forum/user/:id'
+*/
 @ReactMixin.decorate(ReactMeteorData)
 export default class FeaturedUsers extends Component {
   static propTypes = {
@@ -29,7 +34,7 @@ export default class FeaturedUsers extends Component {
   }
 
   getMeteorData() {
-    //Users with most contributions (right nav)
+    // Get users with the most contribution
     let featured_users = Meteor.users.find({contribution: {$gt: 0}}, {sort: {contribution: -1}, limit: 20}).fetch();
     return {
       featuredUsers: featured_users
@@ -68,7 +73,8 @@ export default class FeaturedUsers extends Component {
       </ListItem>
     )
   }
-
+  
+  // @params id {string} - userId
   linkToUserPost(id) {
     this.props.onUser.bind(null, id)();
   }
