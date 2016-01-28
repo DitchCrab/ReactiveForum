@@ -1,6 +1,6 @@
 # Reactive open forum
 This project aims to modernize forum interface using Reactjs && Material Design. The idea is to simplify forum browsing experiences with accessible navigation. Besides, sometimes we don't want to view particular comments in a forum thread, this design enables us to hide particular user comments on our favour :v: .  
-Ultimately, the project should support Wordpress and I believe it is the right direction. As self-taught developer, I know how hard it is to materialise some ideas for none-technical people. Hence, I think this project can provide blueprint for people to make something themselves.  
+Ultimately, the project should support Wordpress and I believe it is the right direction. As self-taught developer, I know how hard it is to materialise some ideas for none-technical people. Hence, I think this project can provide blueprint for people to make something themselves. In addition, the front-end should also be compatible with other framework with API and socket support. Check road map for framework support in the future.
 For [proof of concept](http://188.166.213.121), it is built on top of Meteorjs. The service still lacks many forum features, if you are interested, please give me a hand to make it awesome.
 
 ### Current stacks
@@ -52,6 +52,7 @@ For [proof of concept](http://188.166.213.121), it is built on top of Meteorjs. 
 * Support view mode (focus mode) for medium and large screen
 * Interconnect forum to the other to improve user experience
 * IOS & Android support with Reactnative
+* Rails 5, Play, Flask, Phoenix API and socket support
 * Music & Video stream
 
 # Credits  
