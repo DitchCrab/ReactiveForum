@@ -16,10 +16,8 @@ import moment from 'moment';
 */
 export default class CommentList extends Component {
   static propTypes = {
-    // If user sign in
-    currentUser: PropTypes.object,
-    thread: PropTypes.object,
-    // Thread comments
+    currentUser: PropTypes.object, //User signed in object
+    thread: PropTypes.object, // Thread where comments 
     comments: PropTypes.array,
     // Filtered users
     blacklist: PropTypes.array,

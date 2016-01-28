@@ -11,7 +11,7 @@ const { Colors } = Styles;
 */
 export default class ThreadList extends Component {
   static propTypes = {
-    threads: PropTypes.arrayOf(PropTypes.object),
+    threads: PropTypes.arrayOf(PropTypes.object), // List of thread passed by Featured or Users' thread
     viewThread: PropTypes.func
   };
 
@@ -20,16 +20,17 @@ export default class ThreadList extends Component {
   }
   
   render() {
-    if (!this.props.threads) {
-      return <div/>
+    if (!this.props.threads) { // If no thread, return blank div
+      return <div/>;
     }
     let featuredThreads = this.props.threads.map((thread, index) => {
-      if (thread.user.avatar) {
-        var thread_avatar = <Avatar src={thread.user.avatar} />;
+      let thread_avatar = null;
+      if (thread.user.avatar) { // Render user avatar if exist; otherwise render first username letter
+        thread_avatar = <Avatar src={thread.user.avatar} />;
       } else {
-        var thread_avatar = <Avatar>{thread.user.username[0]}</Avatar>;
+        thread_avatar = <Avatar>{thread.user.username[0]}</Avatar>;
       };
-      let des = <p style={ComponentStyle.description}><span style={ComponentStyle.user}>{thread.user.username}</span> - {thread.description}</p>;
+      const des = <p style={ComponentStyle.description}><span style={ComponentStyle.user}>{thread.user.username}</span> - {thread.description}</p>;
       const list_item_props = {
         key: thread._id,
         leftAvatar: thread_avatar,
@@ -38,7 +39,7 @@ export default class ThreadList extends Component {
         secondaryTextLines: 2,
         onTouchTap: this.props.viewThread.bind(null, thread._id)
       };
-      if (thread.imgUrl) {
+      if (thread.imgUrl) { // Render user avatar if exist; other render ImagePhoto
         list_item_props["rightAvatar"] = <Avatar src={thread.imgUrl} style={ComponentStyle.threadImg}/>;
       } else {
         list_item_props["rightIcon"] = <ImagePhoto />;

@@ -16,23 +16,18 @@ import moment from 'moment';
 export default class Comment extends Component {
 
   static propTypes = {
-    // If user signed in
-    currentUser: PropTypes.object,
-    comment: PropTypes.object,
-    // [comment._id, reply._id] of reply just created. Used to scroll to that reply element
-    newReplyId: PropTypes.string,
-    // Id of comment just created
-    newCommentId: PropTypes.string,
-    // Callback for server methods
-    onLike: PropTypes.func,
+    currentUser: PropTypes.object, // User signed in object
+    comment: PropTypes.object, // Single comment object
+    newReplyId: PropTypes.string,     // [comment._id, reply._id] of reply just created. Used to scroll to that reply element
+    newCommentId: PropTypes.string,     // Id of comment just created
+    onLike: PropTypes.func, 
     onLikeReply: PropTypes.func,
-    // Callbacks on update events
     updateComment: PropTypes.func,
     updateReply: PropTypes.func,
     createReply: PropTypes.func,
     closeReply: PropTypes.func,
     openReply: PropTypes.func,
-    onReplying: PropTypes.string,
+    onReplying: PropTypes.string, //To check if reply is on the right comment component
     openSnackbar: PropTypes.func
   };
 
@@ -74,16 +69,17 @@ export default class Comment extends Component {
   }
   
   render() {
-    let comment = this.props.comment;
+    const comment = this.props.comment;
     if (!comment) {
       return <div/>;
     }
+    let comment_avatar = null;
     if (!comment.avatar) {
-      var comment_avatar = <Avatar>{comment.username[0]}</Avatar>;
+      comment_avatar = <Avatar>{comment.username[0]}</Avatar>;
     } else {
-      var comment_avatar = <Avatar src={comment.avatar} />;
+      comment_avatar = <Avatar src={comment.avatar} />;
     };
-    var replies;
+    let replies = null;
     if (comment.replies) {
       replies = comment.replies.map((reply, index) => {
         let reply_props = {
@@ -121,24 +117,34 @@ export default class Comment extends Component {
               <span
                   className="comment-like"
                   style={ComponentStyle.subAction}
-                  onClick={this.props.currentUser ? this.props.onLike.bind(null, comment._id) : this.props.openSnackbar}>
+                  onClick={this.props.currentUser // Like if user signed in; otherwise show call to action
+                           ? this.props.onLike.bind(null, comment._id)
+                           : this.props.openSnackbar}>
                 Like: {comment.likes}
               </span>
               <span
                   className="comment-reply"
                   style={ComponentStyle.subAction}
-                  onClick={this.props.currentUser ? this.props.openReply : this.props.openSnackbar}>
+                  onClick={this.props.currentUser // Commend if user signed in; otherwise show call to action
+                           ? this.props.openReply
+                           : this.props.openSnackbar}>
                 Reply
               </span>
-              { comment.userId === currentUserId && !this.state.editing ? <span className="comment-edit" onClick={this.editComment}>Edit</span> : null }
+              { comment.userId === currentUserId && !this.state.editing //Show edit if is the comment user and not editing
+               ? <span className="comment-edit" onClick={this.editComment}>Edit</span>
+               : null }
             </p>
           </div>
         </div>
         <div>
           <div style={ComponentStyle.commentDiv}>
             <div className="comment-text" style={AutoPrefix.all(ComponentStyle.comment)}>
-              {this.state.editing ? this.renderEditing(comment.text) : comment.text }
-              {this.props.onReplying === this.props.comment._id ? this.renderReply() : null }
+              { this.state.editing // Comment edit
+               ? this.renderEditing(comment.text)
+                 : comment.text }
+              { this.props.onReplying === this.props.comment._id //Reply to comment
+               ? this.renderReply()
+                 : null }
             </div>
             {replies}
           </div>

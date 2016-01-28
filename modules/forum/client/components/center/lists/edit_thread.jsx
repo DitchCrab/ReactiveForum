@@ -16,8 +16,7 @@ import { bindActionCreators } from 'redux';
  */
 export class EditThread extends Component {
   static propTypes = {
-    // Thread categories from db
-    categories: PropTypes.arrayOf(PropTypes.object),
+    categories: PropTypes.arrayOf(PropTypes.object), // Thread categories
     createThreadError: PropTypes.string,
     actions: PropTypes.shape({
       pushPath: PropTypes.func,
@@ -34,10 +33,12 @@ export class EditThread extends Component {
     this.state = {thread: {}};
   }
 
+  // Fetch thread object to pass to form
   componentDidMount() {
     this.setState({thread: Threads.findOne({_id: this.props.params.id})});
   }
 
+  // Fetch new data when user edit new thread
   componentWillReceiveProps(nextProps) {
     if (this.props.params.id !== nextProps.params.id) {
       this.setState({thread: Threads.findOne({_id: nextProps.params.id})});

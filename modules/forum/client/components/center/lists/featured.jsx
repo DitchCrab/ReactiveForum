@@ -20,8 +20,7 @@ import Meta from 'forum/client/meta';
 */
 export class Featured extends Component {
   static propTypes = {
-    // List of threads queried
-    featuredThreads: PropTypes.arrayOf(PropTypes.object),
+    featuredThreads: PropTypes.arrayOf(PropTypes.object),  // List of threads fetch by number of likes
     actions: PropTypes.shape({
       getFeaturedThreads: PropTypes.func,
       pushPath: PropTypes.func

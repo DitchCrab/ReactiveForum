@@ -14,7 +14,7 @@ import Meta from 'forum/client/meta';
 */
 export default class Landing extends Component {
   static contextTypes = {
-    history: PropTypes.object
+    history: PropTypes.object // Router history
   };
 
   constructor(props, context) {
@@ -24,7 +24,7 @@ export default class Landing extends Component {
   }
 
   render() {
-    // Meta tags
+    // Set meta tags 
     const description = 'Open forum';
     const image = require('forum/client/img/bgM.jpg');
     const path = '/';

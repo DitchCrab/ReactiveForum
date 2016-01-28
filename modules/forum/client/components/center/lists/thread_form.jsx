@@ -11,9 +11,8 @@ import ThreadImgs from 'forum/collections/thread_imgs';
 */
 export default class ThreadForm extends Component {
   static propTypes = {
-    // Thread categories from db
-    header: PropTypes.string,
-    categories: PropTypes.arrayOf(PropTypes.object),
+    header: PropTypes.string, // Header of thread passed by Edit or New thread
+    categories: PropTypes.arrayOf(PropTypes.object), // Thread categories
     error: PropTypes.string,
     submitThread: PropTypes.func,
     pushPath: PropTypes.func

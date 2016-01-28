@@ -23,9 +23,8 @@ import Meta from 'forum/client/meta';
 */
 export class User extends Component {
   static propTypes = {
-    // List of threads contributed by user
-    userThreads: PropTypes.arrayOf(PropTypes.object),
-    onUser: PropTypes.object,
+    userThreads: PropTypes.arrayOf(PropTypes.object), // Threads created or commended by user
+    onUser: PropTypes.object, // User object
     actions: PropTypes.shape({
       getUser: PropTypes.func,
       getUserThreads: PropTypes.func,
@@ -75,6 +74,7 @@ export class User extends Component {
     delete ReactiveDict._dictsToMigrate.onUser;
   }
 
+  // Change id of user to trigger change in autorun
   componentWillReceiveProps(nextProps) {
     if (this.props.params.id !== nextProps.params.id) {
       this.onUserDict.set('id', nextProps.params.id);
@@ -84,6 +84,7 @@ export class User extends Component {
   render() {
     const username = this.props.onUser ? this.props.onUser.username : null;
     const userId = this.props.onUser ? this.props.onUser._id : null;
+    // Meta settings
     const description = `Forum - Threads ${username} contributed to`;
     const img = this.props.userThreads[0] ? this.props.userThreads[0].imgUrl : 'bg_img';
     const path = `/forum/user/${userId}`;

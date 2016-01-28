@@ -14,8 +14,7 @@ import { bindActionCreators } from 'redux';
  */
 export class NewThread extends Component {
   static propTypes = {
-    // Thread categories from db
-    categories: PropTypes.arrayOf(PropTypes.object),
+    categories: PropTypes.arrayOf(PropTypes.object), // Thread categories
     createThreadError: PropTypes.string,
     actions: PropTypes.shape({
       pushPath: PropTypes.func,

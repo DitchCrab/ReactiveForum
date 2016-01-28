@@ -14,15 +14,11 @@ import moment from 'moment';
 */
 export default class BottomToolbar extends Component {
   static propTypes = {
-    // If carousel is currently open or not
-    viewingCarousel: PropTypes.bool,
-    // Notification if receive new messages in a thread
-    newMessages: PropTypes.number,
-    // Callback to open or close carousel
+    viewingCarousel: PropTypes.bool, // Carousel of viewed threads
     toggleCarousel: PropTypes.func,
-    // Callback with param to move to specific comment just created by user
+    newMessages: PropTypes.number, // If viewed thread receive new messages
     createComment: PropTypes.func,
-    windowSize: PropTypes.string,
+    windowSize: PropTypes.oneOf(['small', 'medium', 'large']),
   };
 
   static defaultProps = {
@@ -50,10 +46,10 @@ export default class BottomToolbar extends Component {
   }
   
   render() {
-    let open_button =  <IconButton tooltip="Star" touch={true} onClick={this.props.toggleCarousel.bind(null)}><ActionViewCarousel/></IconButton>;
-    let close_button = <NavigationClose />;
-    let commending = this.state.comment ? true : false;
-    return(
+    const open_button =  <IconButton tooltip="Star" touch={true} onClick={this.props.toggleCarousel.bind(null)}><ActionViewCarousel/></IconButton>;
+    const close_button = <NavigationClose />;
+    const commending = this.state.comment ? true : false;
+    return (
       <Toolbar style={ComponentStyle.toolbar(this.props.windowSize, commending)}>
         <TextField
             multiLine={true}
@@ -66,9 +62,13 @@ export default class BottomToolbar extends Component {
             tooltip="Star"
             touch={true}
             onClick={this.addCommentToThread}>
-          { this.state.comment ? <ActionDone/> : <EditorModeEdit/> }
+          { this.state.comment //Render right icons on comment event
+           ? <ActionDone/>
+           : <EditorModeEdit/> }
         </IconButton>
-        { this.props.viewingCarousel ? close_button : open_button }
+        { this.props.viewingCarousel //Render right icons when carousel open or not
+         ? close_button
+         : open_button }
         <Badge
             badgeContent={this.props.newMessages}
             primary={true}

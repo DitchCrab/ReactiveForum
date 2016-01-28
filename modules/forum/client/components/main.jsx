@@ -42,26 +42,22 @@ export class Main extends Component {
   };
 
   static propTypes = {
-    // React router params
-    params: PropTypes.shape({
+    params: PropTypes.shape({ // Router params
       id: PropTypes.string
     }),
-    // SideNav state and callback
-    sideNavOpened: PropTypes.bool,
-    // User signed in object
-    currentUser: PropTypes.object,
+    sideNavOpened: PropTypes.bool, // On small and medium screen, list of user are hidden in RightNav
+    currentUser: PropTypes.object, // User signed in object
     windowSize: PropTypes.oneOf(['small', 'medium', 'large']),
-    // Browing props
-    categories: PropTypes.arrayOf(PropTypes.object),
-    browsingOpened: PropTypes.bool,
-    browsingThreads: PropTypes.arrayOf(PropTypes.object),
+    categories: PropTypes.arrayOf(PropTypes.object), // Thread categories
+    browsingOpened: PropTypes.bool, // On small screen, browsing view is hidden
+    // Dynamic query
+    browsingThreads: PropTypes.arrayOf(PropTypes.object), 
     browsingLimit: PropTypes.number,
     browsingQuery: PropTypes.object,
-    hasMoreBrowsing: PropTypes.bool,
+    hasMoreBrowsing: PropTypes.bool, // Use to stop scrolling if fetch does not return any more threads
     searchError: PropTypes.string,
-    // List of users on the right
-    threadUserList: PropTypes.array,
-    blacklist: PropTypes.array,
+    threadUserList: PropTypes.array, // Users who commend on thread
+    blacklist: PropTypes.array, // Hide user in blacklist
     actions: PropTypes.shape({
       getBrowsingThreads: PropTypes.func,
       getInitialCategories: PropTypes.func,
@@ -87,13 +83,13 @@ export class Main extends Component {
   constructor(props, context) {
     super(props);
     this.context = context;
-    // Callback on click on specific thread card
-    this.viewThread = this.viewThread.bind(this);
     // Rendering methods decoupling from main render method
     this.renderMain = this.renderMain.bind(this);
     this.renderBrowsing = this.renderBrowsing.bind(this);
     this.renderUserList = this.renderUserList.bind(this);
     this.renderSnackbar = this.renderSnackbar.bind(this);
+    // Callback on click on specific thread card
+    this.viewThread = this.viewThread.bind(this);
     // Fire when click on particular user avatar.
     // Result in querying and rendering list of threads which user contributed to
     this.setUser = this.setUser.bind(this);
@@ -144,7 +140,7 @@ export class Main extends Component {
   }
 
   render() {
-    let filter_user = this.renderUserList();
+    const filter_user = this.renderUserList();
     // As defined in MaterialUI as LeftNav
     // Only show in small and medium screen
     // Include FeaturedUsers at homepage AND UserList at thread page
@@ -288,7 +284,7 @@ export class Main extends Component {
       />
     )    
   }
-  
+
   // @params id {string} - threadId
   viewThread(id) {
     this.props.actions.pushPath(`/forum/thread/${id}`);

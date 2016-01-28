@@ -28,22 +28,19 @@ import { windowSize } from '../helpers';
 */
 export  class App extends Component {
   static contextTypes = {
-    history: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired, // Router history
     router: PropTypes.object,
-    store: PropTypes.object
+    store: PropTypes.object // Redux store
   };
 
   static propTypes = {
-    // Url path
-    params: PropTypes.shape({
+    params: PropTypes.shape({ // Url path
       id: PropTypes.string
     }),
     windowSize: PropTypes.oneOf(['small', 'medium', 'large']),
-    // User session
-    session: PropTypes.object,
+    session: PropTypes.object, // User info
     authError: PropTypes.string,
-    // User to display burgon icon
-    browsingOpened: PropTypes.bool,
+    browsingOpened: PropTypes.bool, // On small screen, browsing is hide
     actions: PropTypes.shape({
       closeBrowsing: PropTypes.func,
       openBrowsing: PropTypes.func,
@@ -63,11 +60,9 @@ export  class App extends Component {
     super(props);
     this.state = {activePopover: false};
     this.context = context;
-    // Rendering methods decoupling from main render method
     this.renderRightIcon = this.renderRightIcon.bind(this);
     this.renderLeftIcon = this.renderLeftIcon.bind(this);
     this.renderUserAvatar = this.renderUserAvatar.bind(this);
-    // Update popover state
     this.openPopover = this.openPopover.bind(this);
     this.closePopover = this.closePopover.bind(this);
     this.handleResize = this.handleResize.bind(this);
@@ -102,14 +97,13 @@ export  class App extends Component {
   }
 
   render() {
-    let user = this.props.session;
+    const user = this.props.session;
     // Props for AppBar element
     let app_bar_props = {
       title: "DitchCrab",
       iconElementRight: this.renderRightIcon(),
     };
-    // Burger menu button do not show on small screen
-    if ( this.props.windowSize === 'small')  {
+    if ( this.props.windowSize === 'small')  {     // Burger menu button do show on small screen
       app_bar_props.iconElementLeft = this.renderLeftIcon();
     } else {
       app_bar_props.showMenuIconButton = false;
@@ -117,7 +111,7 @@ export  class App extends Component {
     //Props for Popover element
     // If user not signin -> Popover has LogOn form
     // Else -> Popover has MiniProfile
-    let pop_over_props = {
+    const pop_over_props = {
       open: this.state.activePopover,
       anchorEl: this.state.signinButton,
       anchorOrigin: {horizontal: "right", vertical: "bottom"},
@@ -128,7 +122,14 @@ export  class App extends Component {
       <div style={ComponentStyle.body}>
         <AppBar style={ComponentStyle.appBar} {...app_bar_props}/>
         <Popover  {...pop_over_props} >
-          {user ? <MiniProfile currentUser={this.props.session} updateUserAvatar={this.props.actions.updateUserAvatar} signOut={this.props.actions.signOut}/> : <LogOn authError={this.props.authError} {...this.props.actions}/> }
+          { user  //Render based on whether user signed in
+           ? <MiniProfile
+                 currentUser={this.props.session}
+                 updateUserAvatar={this.props.actions.updateUserAvatar}
+                 signOut={this.props.actions.signOut}/>
+           : <LogOn
+                 authError={this.props.authError}
+                 {...this.props.actions}/> }
         </Popover>
         {this.props.children}
       </div>
@@ -142,17 +143,30 @@ export  class App extends Component {
   * For large screen: SignIn button OR Avatar, AND HomeButton
   */
   renderRightIcon() {
-    let user = this.props.session;
-    var button;
-    if (user) {
+    const user = this.props.session;
+    let button = null;
+    if (user) { //Check if user exist
       button = this.renderUserAvatar();
     } else {
-      button =  <FlatButton ref="signInButton" label="Log On" style={{color: Colors.white}} onClick={this.openPopover}/> 
+      button =  <FlatButton
+                    ref="signInButton"
+                    label="Log On"
+                    style={{color: Colors.white}}
+                    onClick={this.openPopover}/> ;
     }
     return (
       <div>
-        <IconButton onClick={() => {this.props.actions.pushPath('/forum')}}><ActionHome color={Colors.white}/></IconButton>
-        { this.props.windowSize !== 'large' ? <IconButton ref="UserList" onClick={this.props.actions.openSideNav}> <SocialPerson color={Colors.white}/> </IconButton> : null }
+        <IconButton
+            onClick={() => {this.props.actions.pushPath('/forum')}}>
+          <ActionHome color={Colors.white}/>
+        </IconButton>
+        { this.props.windowSize !== 'large' // On large screen, list of users is displayed by default. Which does not need SocialIcon to display hidden list
+         ? <IconButton
+               ref="UserList"
+               onClick={this.props.actions.openSideNav}>
+         <SocialPerson color={Colors.white}/>
+         </IconButton>
+         : null }
         <div style={AutoPrefix.all(ComponentStyle.rightButton(this.props.session, this.props.windowSize))}>
           {button}
         </div>
@@ -165,7 +179,7 @@ export  class App extends Component {
   * Only render in small screen
   */
   renderLeftIcon() {
-    if (this.props.browsingOpened) {
+    if (this.props.browsingOpened) { // If thread browsing is opened on small screen, display Close button
       return (
         <IconButton onClick={this.props.actions.closeBrowsing}>
           <ContentClear />
