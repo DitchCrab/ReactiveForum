@@ -30,7 +30,6 @@ export default class BottomToolbar extends Component {
     super(props);
     this.state = { comment: null};
     this.typing = this.typing.bind(this);
-    // call server method
     this.addCommentToThread = this.addCommentToThread.bind(this);
   }
 

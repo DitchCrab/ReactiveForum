@@ -19,17 +19,14 @@ import { toolbarWidth, checkMobileDevice } from 'forum/client/helpers';
 export default class ThreadCarousel extends Component {
 
   static propTypes = {
-    // List of threads viewed
-    threadList: PropTypes.arrayOf(PropTypes.object),
-    // Callback on click
+    viewedThreads: PropTypes.arrayOf(PropTypes.object),
     viewThread: PropTypes.func,
-    // Callback to close carousel
     onClickOutside: PropTypes.func,
     windowSize: PropTypes.string
   };
 
   static defaultProps = {
-    threadList: []
+    viewedThreads: []
   };
 
   constructor(props) {
@@ -38,20 +35,18 @@ export default class ThreadCarousel extends Component {
       // Carousel helds max 3 threads
       // Use to view next or previous
       viewIndex: 0,
-      threads: props.threadList.slice(0, 3)
+      threads: props.viewedThreads.slice(0, 3)
     };
-    // Decoupling from main render method
     this.renderEachCarouselThread = this.renderEachCarouselThread.bind(this);
     this.renderLeftArrow = this.renderLeftArrow.bind(this);
     this.renderRightArrow = this.renderRightArrow.bind(this);
-    // Event handlers
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleRightSwipe = this.handleRightSwipe.bind(this);
     this.handleLeftSwipe = this.handleLeftSwipe.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const same_list =this.props.threadList.length !== nextProps.threadList.length;
+    const same_list =this.props.viewedThreads.length !== nextProps.viewedThreads.length;
     const same_index = this.state.index === nextState.index;
     if (same_list && same_index) {
       return false;
@@ -97,44 +92,53 @@ export default class ThreadCarousel extends Component {
     )    
   }
 
-  handleRightSwipe(e) {
-    e.preventDefault();
-    if (this.props.threadList.length - this.state.viewIndex <= 3) {
-      var index = 0;
-    } else {
-      var index = this.state.viewIndex + 3;
-    }
-    let threads = this.props.threadList.slice(index, index + 3);
-    if (threads.length > 0) {
-      this.setState({viewIndex: index, threads: threads});
-    }
-  }
-
-  handleLeftSwipe(e) {
-    e.preventDefault();
-    if (this.state.viewIndex == 0) {
-      var index = Math.floor(this.props.threadList.length / 3) * 3;
-    } else {
-      var index = this.state.viewIndex -3;
-    }
-    var threads = this.props.threadList.slice(index, index + 3);
-    if (threads.length > 0) {
-      this.setState({viewIndex: index, threads: threads});        
-    }
-  }
-
   renderEachCarouselThread(thread) {
     return (
       <GridTile key={thread._id}
                 title={thread.title}
                 subtitle={<span>by <b>{thread.user.username}</b></span>}
-                actionIcon={<IconButton><ToggleStarBorder color={Colors.white}/></IconButton>}
+                                                          actionIcon={<IconButton><ToggleStarBorder color={Colors.white}/></IconButton>}
                 onClick={this.props.viewThread.bind(null, thread._id)} >
         <img src={thread.imgUrl} />
       </GridTile>
     )
   }
 
+  /**
+   * On swipe right view the next three threads in list
+   */
+  handleRightSwipe(e) {
+    e.preventDefault();
+    let index = 0;
+    if (this.props.viewedThreads.length - this.state.viewIndex <= 3) { // Set index to 0 since last round viewed the last threads in list
+       index = 0; 
+    } else { // Increase index
+       index = this.state.viewIndex + 3;
+    }
+    let threads = this.props.viewedThreads.slice(index, index + 3); // Get threads by index
+    if (threads.length > 0) {
+      this.setState({viewIndex: index, threads: threads});
+    }
+  }
+
+  /**
+   * On swipe left view previous three threads in list
+   */
+  handleLeftSwipe(e) {
+    e.preventDefault();
+    let index = 0;
+    if (this.state.viewIndex == 0) { // Since previous round viewed index from 0 to 3, this round will view index from -3 to 0. Convert to integer using length
+      index = Math.floor(this.props.viewedThreads.length / 3) * 3;
+    } else { // Reduce index 
+      index = this.state.viewIndex -3;
+    }
+    var threads = this.props.viewedThreads.slice(index, index + 3);
+    if (threads.length > 0) {
+      this.setState({viewIndex: index, threads: threads});        
+    }
+  }
+
+  // Close carousel on click outside dom
   handleClickOutside(event) {
     event.preventDefault();
     this.props.onClickOutside.bind(null)();

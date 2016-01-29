@@ -18,21 +18,14 @@ export default class LeftWrapper extends Component {
   static propTypes = {
     browsingOpened: PropTypes.bool,
     thread: PropTypes.object,
-    // If user signed in
-    currentUser: PropTypes.object,
-    // If there's no search result
-    searchError: PropTypes.string,
-    // List of thread categories from db
-    categories: PropTypes.arrayOf(PropTypes.object),
-    // List of threads queried
-    threads: PropTypes.arrayOf(PropTypes.object),
-    // Callback when user click thread card
-    viewThread: PropTypes.func.isRequired,
-    windowSize: PropTypes.string,
-    // Important for infinite scrolling. Default is 'false' if no more threads to scroll
-    hasMoreBrowsing: PropTypes.bool,
-    // Default to 10 threads. Add 10 subsequently
-    browsingLimit: PropTypes.number,
+    currentUser: PropTypes.object, // User signed in object
+    searchError: PropTypes.string, // If search return no result or has error
+    categories: PropTypes.arrayOf(PropTypes.object), // Threads categories
+    threads: PropTypes.arrayOf(PropTypes.object), // Browsing threads
+    windowSize: PropTypes.oneOf(['small', 'medium', 'large']),
+    hasMoreBrowsing: PropTypes.bool, // Default to false. Use to stop inifinite scrolling if no more threads are fetch
+    browsingLimit: PropTypes.number, // Default to 10
+    viewThread: PropTypes.func.isRequired, 
     // Set to false at scroll threshold to stop subscription to scoll event
     // Set to true when there is more threads
     setHasMoreBrowsing: PropTypes.func,
@@ -59,12 +52,10 @@ export default class LeftWrapper extends Component {
       // Store the select value of category
       categoryValue: 1
     };
-    // Decoupling from main render methods
     this.renderCategory = this.renderCategory.bind(this);
     this.renderInfinite = this.renderInfinite.bind(this);
     // Render fab button to trigger New Thread Form Dialog onClick
     this.renderNewThread = this.renderNewThread.bind(this);
-    // Fire where no sesults from search
     this.clearSearch = this.clearSearch.bind(this);
     this.searchThreadsByEnter = this.searchThreadsByEnter.bind(this);
     this.handleSelectCategory = this.handleSelectCategory.bind(this);
@@ -89,9 +80,13 @@ export default class LeftWrapper extends Component {
     return (
       <div>
         <div ref="leftWrapper" style={ComponentStyle.wrapper(this.props.windowSize)}>
-          { this.props.windowSize === 'small' || this.state.parentLarge ? this.renderInfinite() : null }
+          { this.props.windowSize === 'small' || this.state.parentLarge // Only render if scroll element exist
+           ? this.renderInfinite()
+             : null }
         </div>
-        {this.props.currentUser ? this.renderNewThread() : null }
+        {this.props.currentUser // If user signed in, he/she can create new thread
+         ? this.renderNewThread()
+           : null }
       </div>
     )
   }
@@ -103,7 +98,7 @@ export default class LeftWrapper extends Component {
       hasMore: this.props.hasMoreBrowsing,
       loader: <RefreshIndicator size={40} left={80} top={5} status="loading" />,
     };
-    if (this.props.windowSize !== 'small') {
+    if (this.props.windowSize !== 'small') { // On large screen, scrolling is bind on div element instead of window
       infinite_props.parentLarge = this.state.parentLarge;
     }
     return (
@@ -183,6 +178,9 @@ export default class LeftWrapper extends Component {
     event.target.value = '';
   }
 
+  /*
+  * Set query based on search words
+  */
   searchThreadsByEnter(event) {
     event.preventDefault();
     if (event.keyCode === 13) {
@@ -193,16 +191,18 @@ export default class LeftWrapper extends Component {
     }
   }
 
+  /*
+  * Set query based on category
+  * Reset search limit to 10
+  */
   handleSelectCategory(e, index, value) {
     this.setState({categoryValue: value, hasMore: true});
     const limit = 10;
     let query = {};
     switch (value) {
-      // Hardcode id as 1. search all threads
-      case 1:
+      case 1:       // Hardcode id as 1. search all threads
         break;
-     // Hardcode id as 2. Search flag threads stored in user profile
-      case 2:
+      case 2:      // Hardcode id as 2. Search flag threads stored in user profile
         query = {_id: {$in: this.props.currentUser.profile ? this.props.currentUser.profile.flags : []}};
         break;
       case 3:

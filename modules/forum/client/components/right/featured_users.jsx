@@ -15,8 +15,7 @@ const {Colors} = Styles;
 @ReactMixin.decorate(ReactMeteorData)
 export default class FeaturedUsers extends Component {
   static propTypes = {
-    // Callback when click on user avatar
-    onUser: PropTypes.func
+    onUser: PropTypes.func // Click to view user's threads
   };
 
   static defaultProps = {
@@ -57,7 +56,7 @@ export default class FeaturedUsers extends Component {
   }
 
   renderEachUser(user, index) {
-    let avatar = <Avatar>{user.username[0]}</Avatar>;
+    const avatar = <Avatar>{user.username[0]}</Avatar>;
     if (user.profile) {
       if (user.profile.avatar) {
         avatar = <Avatar src={user.profile.avatar} />;

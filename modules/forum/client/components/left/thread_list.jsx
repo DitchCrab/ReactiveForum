@@ -14,12 +14,9 @@ const { Colors } = Styles;
 export default  class ThreadList extends Component {
   static propTypes = {
     browsingOpened: PropTypes.bool,
-    thread: PropTypes.object,
-    // List of thread queried
-    threads: PropTypes.arrayOf(PropTypes.object),
-    // When user signed in
-    currentUser: PropTypes.object,
-    // Callback on click on thread card
+    thread: PropTypes.object, // Current thread on center. On small screen, use to scroll to the right position of last browsing
+    threads: PropTypes.arrayOf(PropTypes.object),     // List of thread queried
+    currentUser: PropTypes.object, // User signed in object
     viewThread: PropTypes.func.isRequired,
     openSnackbar: PropTypes.func,
     likeThread: PropTypes.func,
@@ -33,9 +30,7 @@ export default  class ThreadList extends Component {
 
   constructor(props, context) {
     super(props);
-    // Decoupling from main render function
     this.renderEachThread = this.renderEachThread.bind(this);
-    // Server calls
     this.likeThread = this.likeThread.bind(this);
     this.flagThread = this.flagThread.bind(this);
     this.unflagThread = this.unflagThread.bind(this);
@@ -74,16 +69,16 @@ export default  class ThreadList extends Component {
   }
 
   renderEachThread(thread) {
-    let user = this.props.currentUser;
+    const user = this.props.currentUser;
     let sub_des = thread.description.split(' ');
-    var des;
+    let des = '';
     if (sub_des.length > 20) {
       des = sub_des.slice(0, 20).join(' ') + '...(more)';
     } else {
       des = thread.description;
     }
     let button = null;
-    if (user) {
+    if (user) {  // If user created thread, show edit button
       button = thread.user._id === this.props.currentUser._id ? <FlatButton style={ComponentStyle.button} label="Edit" onClick={this.editThread.bind(null, thread._id)}/> : null;
     }
     return (
@@ -109,7 +104,10 @@ export default  class ThreadList extends Component {
     )
   }
 
-  // Flag is only rendered if user signed in
+  /*
+  * When user flag thread, it is added to their profiel
+  * They can view their flaged thread by clicking on Flagged category
+  */
   renderFlag(user, id) {
     if (!user) {
       return;

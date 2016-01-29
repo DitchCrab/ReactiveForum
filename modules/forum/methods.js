@@ -6,7 +6,11 @@ import moment from 'moment';
 import * as Helper from 'forum/server/helpers';
 
 Meteor.methods({
-  // This method updates user avatar in user, thread and comments. It does not update avatar in reply
+  /**
+  * Update user avatar method
+  * Also update user avatar on thread and comments, but not replies
+  * @params imgId {string} - UserAvatars Id
+  */
   updateAvatar: function(imgId) {
     Helper.checkUser();
     let currentUser = Meteor.user();
@@ -38,7 +42,14 @@ Meteor.methods({
     return imgId;
   },
 
-  // Create new thread method
+  /**
+   * Create new thread method
+   * @params params.category{string} - category id
+   * @params params.title{string}
+   * @params params.description{string}
+   * @params params.tags{array}
+   * @params params.imgId{string} - ThreadImgs id
+   */
   createThread: function(params) {
     Helper.checkUser();
     let current_user = Meteor.user();
@@ -70,7 +81,14 @@ Meteor.methods({
     return thread;
   },
 
-  // Edit thread methods
+  /**
+   * Edit new thread method
+   * @params params.category{string} - category id
+   * @params params.title{string}
+   * @params params.description{string}
+   * @params params.tags{array}
+   * @params params.imgId{string} - ThreadImgs id
+   */
   editThread: function(id, params) {
     Helper.checkUser();
     // Check if editor is owner. Return 'Access denied'
@@ -98,7 +116,12 @@ Meteor.methods({
     }
   },
 
-  // Methods invocate to like or unlike thread
+  /**
+  * Like thread method
+  * Add user to likeIds array in thread and increase likes if not likes
+  * Remove user from likeIds array and reduce likes if likes
+  * @params threadId{string} - thread id
+  */
   likeThread: function(threadId) {
     Helper.checkUser();
     let user = Meteor.user();
@@ -112,6 +135,13 @@ Meteor.methods({
     }
   },
 
+  /**
+   * Create comment methods
+   * Add comment to comments array
+   * Add contribution point to user profile
+   * @params threadId{string} - thread id
+   * @params comment{string}
+   */
   createComment: function(threadId, comment) {
     Helper.checkUser();
     let user = Meteor.user();
@@ -129,12 +159,27 @@ Meteor.methods({
     }
   },
 
+  /**
+   * Update comment method
+   * Update comment to comments array
+   * @params threadId{string} - thread id
+   * @params commentId{string} - comment id
+   * @params text{string}
+   */
   updateComment: function(threadId, commentId, text) {
     Helper.checkUser();
     Helper.checkOwner(_.find(Threads.findOne({_id: threadId}).comments, comment => comment._id === commentId).userId);
     return Threads.update({_id: threadId, comments: {$elemMatch: {_id: commentId}}}, {$set: {"comments.$.text": text}});
   },
 
+  /**
+   * Create reply method
+   * Add reply to replies array in comment
+   * Add contribution point to user profile
+   * @params threadId{string} - thread id
+   * @params commentId{string}
+   * @params reply{string}
+   */
   createReply: function(threadId, commentId, reply) {
     Helper.checkUser();
     let user = Meteor.user();
@@ -152,7 +197,14 @@ Meteor.methods({
     }
   },
 
-  // Deeply nested array is updated through index
+  /**
+   * Update reply method
+   * Update reply in replies array in comment
+   * @params threadId{string} - thread id
+   * @params commentId{string}
+   * @params replyIndex{number}
+   * @params text{string}
+   */
   updateReply: function(threadId, commentId, replyIndex, text) {
     Helper.checkUser();
     Helper.checkOwner(_.find(Threads.findOne({_id: threadId}).comments, comment => comment._id === commentId).replies[replyIndex].userId);
@@ -161,7 +213,13 @@ Meteor.methods({
     return Threads.update({_id: threadId, comments: {$elemMatch: {_id: commentId}}}, {$set: params});
   },
 
-  // Like or unlike comment
+  /**
+   * Like comment method
+   * Increase likes and add userId to likeIds if not liked
+   * Reduce likes and remove userId  from likeIds if liked
+   * @params threadId{string} - thread id
+   * @params commentId{string} - comment id
+   */
   likeComment: function(threadId, commentId) {
     Helper.checkUser();
     let user = Meteor.user();
@@ -172,11 +230,18 @@ Meteor.methods({
       return Threads.update({_id: threadId, comments: {$elemMatch: {_id: commentId}}}, {$inc: {"comments.$.likes": -1}, $pull: {"comments.$.likeIds": user._id}});
     } else {
       return Threads.update({_id: threadId, comments: {$elemMatch: {_id: commentId}}}, {$inc: {"comments.$.likes": 1}, $push: {"comments.$.likeIds": user._id}});
-          
+      
     }
   },
 
-  // Like or unlike reply
+  /**
+   * Like reply method
+   * Increase likes and add userId to likeIds if not liked
+   * Reduce likes and remove userId  from likeIds if liked
+   * @params threadId{string} - thread id
+   * @params commentId{string} - comment id
+   * @params index{number} -reply index
+   */
   likeReply: function(threadId, commentId, index) {
     Helper.checkUser();
     let paramsId = {};
@@ -196,10 +261,20 @@ Meteor.methods({
     }
   },
 
+  /**
+   * Flag thread method
+   * Add thread id to user profile flags array
+   * @params threadId{string}
+   */
   flagThread: function(threadId) {
     return Meteor.users.update({_id: Meteor.user()._id}, {$addToSet: {"profile.flags": threadId}});
   },
   
+  /**
+   * Unflag thread method
+   * Remove thread id from user profile flags array
+   * @params threadId{string}
+   */
   unflagThread: function(threadId) {
     return Meteor.users.update({_id: Meteor.user()._id}, {$pull: {"profile.flags": threadId}});
   },

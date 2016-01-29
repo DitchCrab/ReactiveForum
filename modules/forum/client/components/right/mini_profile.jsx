@@ -15,8 +15,7 @@ import UserAvatars from '../../../collections/user_avatars';
 */
 export default class MiniProfile extends React.Component {
   static propTypes = {
-    // if user signed in
-    currentUser: PropTypes.object,
+    currentUser: PropTypes.object, // User signed in object
     signOut: PropTypes.func,
     updateUserAvatar: PropTypes.func
   };

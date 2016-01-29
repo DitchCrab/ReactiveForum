@@ -12,8 +12,7 @@ import moment from 'moment';
 */
 export default class Reply extends Component {
   static propTypes = {
-    // If user signed in
-    currentUser: PropTypes.object,
+    currentUser: PropTypes.object, // user signed in object
     reply: PropTypes.object,
     // Callbacks for server methods
     onLikeReply: PropTypes.func,
@@ -31,9 +30,7 @@ export default class Reply extends Component {
     this.state = {
       editing: false
     };
-    // Decoupling from main render method
     this.renderEditing = this.renderEditing.bind(this);
-    // Open or close editing
     this.editReply = this.editReply.bind(this);
     this.updateReply = this.updateReply.bind(this);
   }
@@ -60,12 +57,12 @@ export default class Reply extends Component {
   }
   
   render() {
-    let reply = this.props.reply;
-    let currentUserId = this.props.currentUser ? this.props.currentUser._id : null;
+    const reply = this.props.reply;
+    const currentUserId = this.props.currentUser ? this.props.currentUser._id : null;
     if (!reply) {
-      return <div/>
+      return <div/>;
     }
-    if (!reply.avatar) {
+    if (!reply.avatar) { // Reply avatar of image or first letter
       var reply_avatar = <Avatar>{reply.username[0]}</Avatar>;
     } else {
       var reply_avatar = <Avatar src={reply.avatar} />;
@@ -91,15 +88,21 @@ export default class Reply extends Component {
             </span>
             <span
                 className="reply-like"
-                onClick={this.props.currentUser ? this.props.onLikeReply.bind(null) : this.props.openSnackbar}
+                onClick={this.props.currentUser // Like reply if user signed in; otherwise show call to action
+                         ? this.props.onLikeReply.bind(null)
+                         : this.props.openSnackbar}
                 style={ComponentStyle.subAction}>
               Like: {reply.likes}
             </span>
-            { reply.userId === currentUserId && !this.state.editing ? <span className="reply-edit" onClick={this.editReply}>Edit</span> : null }
+            { reply.userId === currentUserId && !this.state.editing // only show edit text if user is owner and not editing reply
+             ? <span className="reply-edit" onClick={this.editReply}>Edit</span>
+             : null }
           </p>
         </div>
         <div className="reply-text" style={AutoPrefix.all(ComponentStyle.replyDiv)}>
-          { this.state.editing ? this.renderEditing(reply.text) : reply.text }
+          { this.state.editing // render editing text on editing event
+           ? this.renderEditing(reply.text)
+             : reply.text }
         </div>
       </div>
     )

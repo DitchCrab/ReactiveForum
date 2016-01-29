@@ -15,16 +15,12 @@ const {Colors} = Styles;
 @ReactMixin.decorate(ReactMeteorData)
   export default class ThreadUsers extends Component {
     static propTypes = {
-      // List of users who commended in thread
-      threadUsers: PropTypes.arrayOf(PropTypes.string),
-      // List of users which you don't want to see
-      blacklist: PropTypes.arrayOf(PropTypes.string),
-      // Callback to update blacklist
+      threadUsers: PropTypes.arrayOf(PropTypes.string),     // When user signed in
+      blacklist: PropTypes.arrayOf(PropTypes.string),       // List of users which you don't want to see
       blacklistUser: PropTypes.func.isRequired,
       whitelistUser: PropTypes.func.isRequired,
       blacklistAll: PropTypes.func.isRequired,
       whitelistAll: PropTypes.func.isRequired,
-      // Callback to view threads which user contributed to
       onUser: PropTypes.func.isRequired
     };
 
@@ -52,6 +48,7 @@ const {Colors} = Styles;
     }
 
     // Get full information of user from list of threadUsers _id
+    // Use meteor data for convenience
     getMeteorData() {
       let user_list = [];
       if (this.props.threadUsers) {
@@ -87,7 +84,9 @@ const {Colors} = Styles;
         <div style={ComponentStyle.wrapper}>
           <div style={ComponentStyle.selectDiv}>
             <p><span style={ComponentStyle.text}>Select:</span><span style={ComponentStyle.selectButtons}>
-              <FlatButton label="All" style={ComponentStyle.button} onClick={this.makeSelection.bind(null, true)}/><FlatButton label="None" style={ComponentStyle.button} onClick={this.makeSelection.bind(null, false)}/></span></p>
+              <FlatButton label="All" style={ComponentStyle.button} onClick={this.makeSelection.bind(null, true)}/>
+              <FlatButton label="None" style={ComponentStyle.button} onClick={this.makeSelection.bind(null, false)}/>
+            </span></p>
           </div>
           <List subheader="Users in thread">
             {user_list}

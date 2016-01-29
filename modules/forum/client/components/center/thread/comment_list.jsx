@@ -19,8 +19,7 @@ export default class CommentList extends Component {
     currentUser: PropTypes.object, //User signed in object
     thread: PropTypes.object, // Thread where comments 
     comments: PropTypes.array,
-    // Filtered users
-    blacklist: PropTypes.array,
+    blacklist: PropTypes.array, // Filtered users
     // State of new comment or reply just created
     newCommentId: PropTypes.string,
     newReplyHash: PropTypes.object,
@@ -53,11 +52,9 @@ export default class CommentList extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.thread) {
-      // If there are new comments, add to viewNumber
-      if (this.props.thread._id === nextProps.thread._id) {
+      if (this.props.thread._id === nextProps.thread._id) {       // If there are new comments, add to viewNumber
         this.setState({viewNumber: this.state.viewNumber + nextProps.thread.comments.length - this.props.thread.comments.length});
-      } else {
-        // If thread is different, reset viewNumber
+      } else {         // If thread is different, reset viewNumber
         this.setState({viewNumber: 8});
       }
     }
@@ -78,14 +75,14 @@ export default class CommentList extends Component {
   
   render() {
     if (this.props.comments.length < 1) {
-      return <div/>
+      return <div/>;
     }
-    let comments = _.last(this.props.comments, this.state.viewNumber);
+    const comments = _.last(this.props.comments, this.state.viewNumber); // Get the last comments based on state
     if (!comments) {
-      return <div/>
+      return <div/>;
     }
-    let comment_list = comments.map((comment) => {
-      if (_.find(this.props.blacklist, user => user === comment.userId)) {
+    const comment_list = comments.map((comment) => {
+      if (_.find(this.props.blacklist, user => user === comment.userId)) {  // If comment is in blacklist, return empty div
         return <div/>;
       }
       let comment_props = {
@@ -102,28 +99,39 @@ export default class CommentList extends Component {
         openReply: this.props.openReply.bind(null, comment._id),
         openSnackbar: this.props.openSnackbar
       };
-      if (comment._id === this.props.newReplyHash.commentId) {
+      // pass additional prop if comment is just created by user.
+      // Use to scroll into new comment
+      if (comment._id === this.props.newReplyHash.commentId) { 
         comment_props.newReplyId = this.props.newReplyHash.replyIndex;
       }
       return (
-        <div key={comment._id} ref={comment._id} style={AutoPrefix.all(ComponentStyle.wrapper)}>
+        <div key={comment._id}
+             ref={comment._id}
+             style={AutoPrefix.all(ComponentStyle.wrapper)}>
           <Comment  {...comment_props}/>
         </div>
       )
     });
     const viewMoreIcon =  (
-      <IconButton touch={true} style={ComponentStyle.iconButton} onClick={this.getMoreComments} className="more-comments">
+      <IconButton
+          touch={true}
+          style={ComponentStyle.iconButton}
+          onClick={this.getMoreComments}
+          className="more-comments">
         <NavigationMoreHoriz/>
       </IconButton>);
 
     return (
       <div className="s-grid-top">
-        { this.state.viewNumber > comments.length ? null : viewMoreIcon}
+        { this.state.viewNumber > comments.length // If there is more comment to open, show button
+         ? null
+         : viewMoreIcon}
         {comment_list}
       </div>
     )
   }
 
+  // Increase state of view to 8 everytime click on ViewMoreIcon
   getMoreComments() {
     this.setState({viewNumber: this.state.viewNumber + 8});
   }

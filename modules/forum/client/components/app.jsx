@@ -22,7 +22,7 @@ import { bindActionCreators } from 'redux';
 import { windowSize } from '../helpers';
 
 /** Wrapper for forum
-* All forum session share the same Appbar component
+* All forum all pages share the same Appbar component
 * Responsible for handling authentication
 * Display respective icons based on windowSize
 */

@@ -38,22 +38,16 @@ import Meta from 'forum/client/meta';
 */
 export class Thread extends Component {
   static propTypes = {
-    windowSize: PropTypes.string,
-    // Current viewing thread
-    thread: PropTypes.object,
-    // If user signed in
-    currentUser: PropTypes.object,
+    windowSize: PropTypes.oneOf(['small', 'medium', 'large']),
+    thread: PropTypes.object, // Current thread
+    currentUser: PropTypes.object, // User signed in object
     // Update when new comment or reply is created by user.
     // Used to scroll to the right element
     newCommentId: PropTypes.string,
     newReplyHash: PropTypes.object,
-    // Choose to view or hide user in comment section
-    blacklist: PropTypes.array,
-    // List of threads that were viewed
-    // Use for thread_carousel
-    viewedThreads: PropTypes.arrayOf(PropTypes.object),
-    // Use to locate comment id to display reply textfield
-    onReplying: PropTypes.string,
+    blacklist: PropTypes.array, // Filtered list of user
+    viewedThreads: PropTypes.arrayOf(PropTypes.object), // List of viewed threads for carousel
+    onReplying: PropTypes.string,     // Use to locate comment id to display reply textfield
   };
 
   componentWillReceiveProps(nextProps) {
@@ -61,7 +55,7 @@ export class Thread extends Component {
     if (this.props.params.id !== nextProps.params.id) {
       this.threadDict.set('id', nextProps.params.id);
     }
-    // Check if the viewed thread has new message and display
+    // Check if the viewed thread has new comments and display notification
     if (this.props.thread) {
       if (this.props.thread._id !== nextProps.thread._id) {
         const found = _.find(this.props.viewedThreads, thread => thread._id === nextProps.thread._id);
@@ -89,8 +83,10 @@ export class Thread extends Component {
       let thread = Threads.findOne({_id: this.threadDict.get('id')});
       if (typeof thread !== 'undefined') {
         this.props.actions.getThread(thread);
+        // Get list of users who comments on thread
         const thread_users = _.uniq(_.map(thread.comments, comment => comment.userId));
         this.props.actions.getThreadUserList(thread_users);
+        // Add to viewedThreads if current thread is not in list
         const found = _.find(this.props.viewedThreads, (t) => { return t._id === thread._id});
         if (!found) {
           this.props.actions.addViewedThread(thread);
@@ -129,11 +125,9 @@ export class Thread extends Component {
       showReplyDialog: false,
       viewingCarousel: false
     };
-    // Decoupling from main render methods
     this.renderCommentList = this.renderCommentList.bind(this);
     this.renderCarousel = this.renderCarousel.bind(this);
-    // Handle Social share event
-    this.share = this.share.bind(this);
+    this.share = this.share.bind(this); // Social share
     this.toggleCarousel = this.toggleCarousel.bind(this);
     this.closeCarousel = this.closeCarousel.bind(this);
     this.viewThread = this.viewThread.bind(this);
@@ -141,11 +135,11 @@ export class Thread extends Component {
   }
 
   render() {
-    let thread = this.props.thread;
+    const thread = this.props.thread;
     if (!thread) {
       return <div />;
     }
-    var comment_field;
+    let comment_field = null;
     if (this.props.currentUser !== null && this.props.currentUser !== undefined) {
       const comment_field_props = {
         newMessages: this.state.newMessages,
@@ -156,7 +150,7 @@ export class Thread extends Component {
       };
       comment_field = <BottomToolbar {...comment_field_props}/>;
     }
-    var avatar = require('forum/client/img/avatar.png');
+    let avatar = require('forum/client/img/avatar.png');
     if (thread.user.avatar) {
       avatar = thread.user.avatar;
     };
@@ -249,7 +243,7 @@ export class Thread extends Component {
   renderCarousel() {
     const thread_carousel_props = {
       onClickOutside: this.closeCarousel,
-      threadList: this.props.viewedThreads,
+      viewedThreads: this.props.viewedThreads,
       viewThread: this.viewThread,
       windowSize: this.props.windowSize
     };
