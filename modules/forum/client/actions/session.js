@@ -40,6 +40,7 @@ export function signOut() {
   }
 };
 
+// @params err{string}
 export function authErr(err) {
   return {
     type: AUTH_ERROR,
@@ -54,6 +55,7 @@ export function clearAuthErr() {
   }
 };
 
+// @params user(object)
 export function getCurrentUser(user = null) {
   return {
     type: USER_SESSION,
@@ -61,6 +63,7 @@ export function getCurrentUser(user = null) {
   }
 };
 
+// @params img{imageObj}
 export function updateUserAvatar(img) {
   return dispatch => {
     UserAvatars.insert(img, (err, imgObj) => {

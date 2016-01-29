@@ -24,7 +24,10 @@ export function closeBrowsing() {
   }
 };
 
-// Dynamic query & limit
+/*
+* Dynamic query & limit
+* @params query{object} - Mongo query
+*/
 export function setBrowsingQuery(query) {
   return {
     type: SET_BROWSING_QUERY,
@@ -32,6 +35,10 @@ export function setBrowsingQuery(query) {
   }
 };
 
+/*
+* Set browsing limit of query
+* @params limit{number}
+*/
 export function setBrowsingLimit(limit) {
   return {
     type: SET_BROWSING_LIMIT,
@@ -39,7 +46,10 @@ export function setBrowsingLimit(limit) {
   }
 };
 
-// Set threads for browsing
+/*
+* Set browing thread
+* @params threads{arrayOf{object}
+*/
 export function getBrowsingThreads(threads) {
   return {
     type: BROWSING_THREADS,
@@ -47,8 +57,10 @@ export function getBrowsingThreads(threads) {
   }
 };
 
-// If no new threads are fetch. Set to false
-// Use to stop scrolling
+/*
+* Set if more threads are fetch
+* @params bool{boolean}
+*/
 export function setHasMoreBrowsing(bool) {
   return {
     type: HAS_MORE_BROWSING,
@@ -56,7 +68,10 @@ export function setHasMoreBrowsing(bool) {
   }
 };
 
-// If no browsing return err
+/* 
+* If no browsing return err
+* @params err{string}
+*/
 export function setSearchErr(err) {
   return {
     type: SEARCH_ERROR,

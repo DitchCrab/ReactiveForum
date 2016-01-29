@@ -20,6 +20,14 @@ import {
   CLOSE_REPLY
 } from '../constants';
 
+/*
+ * Create new thread
+ * @params params.category{id}
+ * @params params.title{string}
+ * @params params.description(string)
+ * @params params.tags{array}
+ * @params params.imgId{string}
+ */
 export function createThread(params) {
   return dispatch => {
     Meteor.call('createThread', params, (err, res) => {
@@ -32,6 +40,15 @@ export function createThread(params) {
   }
 };
 
+/*
+ * Edit thread
+* @params id{string} - threadId
+ * @params params.category{id}
+ * @params params.title{string}
+ * @params params.description(string)
+ * @params params.tags{array}
+ * @params params.imgId{string}
+ */
 export function editThread(id, params) {
   return dispatch => {
     Meteor.call('editThread', id, params, (err, res) => {
@@ -44,6 +61,7 @@ export function editThread(id, params) {
   }
 };
 
+// @params err{string}
 export function createThreadErr(err) {
   return {
     type: CREATE_THREAD_ERROR,
@@ -51,12 +69,16 @@ export function createThreadErr(err) {
   }
 };
 
-export function clearThreadErr(err) {
+export function clearThreadErr() {
   return {
     type: CLEAR_THREAD_ERROR,
   }
 };
 
+/*
+* Thread
+* @params thread{object}
+*/
 export function getThread(thread = null) {
   return {
     type: GET_THREAD,
@@ -64,6 +86,10 @@ export function getThread(thread = null) {
   }
 };
 
+/*
+* Like thread
+* @params id{string} - threadId
+*/
 export function likeThread(id) {
   Meteor.call('likeThread', id);
   return {
@@ -71,6 +97,11 @@ export function likeThread(id) {
   }
 };
 
+/*
+* Create comment in thread
+* @params threadId{string}
+* @params comment{string}
+*/
 export function createComment(threadId, comment) {
   return dispatch => {
     Meteor.call('createComment', threadId, comment, (err, res) => {
@@ -81,6 +112,10 @@ export function createComment(threadId, comment) {
   }
 };
 
+/*
+* Notify if new comment is created
+* @params commentId{string}
+*/
 export function notifyNewComment(commentId) {
   return {
     type: CREATE_COMMENT,
@@ -88,6 +123,12 @@ export function notifyNewComment(commentId) {
   }
 };
 
+/*
+ * Update comment
+ * @params threadId{string} 
+ * @params commentId{string}
+ * @params text{string}
+ */
 export function updateComment(threadId, commentId, text) {
   Meteor.call('updateComment', threadId, commentId, text);
   return {
@@ -95,6 +136,12 @@ export function updateComment(threadId, commentId, text) {
   }
 };
 
+/*
+ * Create reply
+ * @params threadId{string} 
+ * @params commentId{string}
+ * @params text{string}
+ */
 export function createReply(threadId, commentId, text) {
   return dispatch => {
     Meteor.call('createReply', threadId, commentId, text, (err, res) => {
@@ -105,6 +152,11 @@ export function createReply(threadId, commentId, text) {
   }
 };
 
+/*
+* Notify when new reply is created by user
+* @params commentId{string}
+* @params replyIndex{number}
+*/
 export function notifyNewReplyHash(commentId, replyIndex) {
   return {
     type: CREATE_REPLY,
@@ -112,6 +164,13 @@ export function notifyNewReplyHash(commentId, replyIndex) {
   }
 }
 
+/*
+* Update reply
+* @params threadId{string}
+* @params commentId{string}
+* @params replyIndex{number}
+* @params text{string}
+*/
 export function updateReply(threadId, commentId, replyIndex, text) {
   Meteor.call('updateReply', threadId, commentId, replyIndex, text);
   return {
@@ -119,6 +178,11 @@ export function updateReply(threadId, commentId, replyIndex, text) {
   }
 };
 
+/*
+* Like comment
+* @params threadId{string}
+* @params commentId{string}
+*/
 export function likeComment(threadId, commentId) {
   Meteor.call('likeComment', threadId, commentId);
   return {
@@ -126,6 +190,12 @@ export function likeComment(threadId, commentId) {
   }
 };
 
+/*
+* Like reply
+* @params threadId{string}
+* @params commentId{string}
+* @params replyIndex{number}
+*/
 export function likeReply(threadId, commentId, replyIndex) {
   Meteor.call('likeReply', threadId, commentId, replyIndex);
   return {
@@ -133,6 +203,10 @@ export function likeReply(threadId, commentId, replyIndex) {
   }
 };
 
+/*
+* Flag thread
+* @params threadId{string}
+*/
 export function flagThread(threadId) {
   Meteor.call('flagThread', threadId);
   return {
@@ -140,6 +214,10 @@ export function flagThread(threadId) {
   }
 };
 
+/*
+* Unflag thread
+* @params threadId{string}
+*/
 export function unflagThread(threadId) {
   Meteor.call('unflagThread', threadId);
   return {
@@ -147,6 +225,10 @@ export function unflagThread(threadId) {
   }
 };
 
+/*
+ * Open Reply field
+ * @params id{string} - CommentId
+ */
 export function openReply(id) {
   return {
     type: OPEN_REPLY,
