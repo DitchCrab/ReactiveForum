@@ -47,7 +47,7 @@ For [proof of concept](http://188.166.213.121), it is built on top of Meteorjs. 
 # Roadmap  
 * Support nodejs
 * Add admin panel
-* Improve text editor
+* Rich-text editor
 * Add push notifications
 * Support view mode (focus mode) for medium and large screen
 * Interconnect forum to the other to improve user experience
