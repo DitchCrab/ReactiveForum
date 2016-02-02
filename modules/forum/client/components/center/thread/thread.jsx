@@ -28,7 +28,7 @@ import { pushPath } from 'redux-simple-router';
 import { bindActionCreators } from 'redux';
 // Helpers
 import moment from 'moment';
-import Meta from 'forum/client/meta';
+import Meta from 'forum/client/utils/meta';
 
 /**
 * Thread component

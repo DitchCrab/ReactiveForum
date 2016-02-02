@@ -8,7 +8,7 @@ import OnClickOutside from 'react-onclickoutside';
 import ComponentStyle from 'forum/client/styles/center/thread/thread_carousel';
 const { Colors, AutoPrefix } = Styles;
 // Helpers
-import { toolbarWidth, checkMobileDevice } from 'forum/client/helpers';
+import { toolbarWidth, checkMobileDevice } from 'forum/client/utils/helpers';
 
 /**
 * ThreadCarousel component

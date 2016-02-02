@@ -7,7 +7,7 @@ import { Styles } from 'material-ui';
 import ComponentStyle from '../styles/landing';
 const { AutoPrefix } = Styles;
 //Helpers
-import Meta from 'forum/client/meta';
+import Meta from 'forum/client/utils/meta';
 
 /**
 * Landing page component

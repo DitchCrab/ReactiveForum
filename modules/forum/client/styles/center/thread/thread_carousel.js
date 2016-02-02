@@ -1,4 +1,4 @@
-import {toolbarWidth} from 'forum/client/helpers';
+import {toolbarWidth} from 'forum/client/utils/helpers';
 
 export default {
   wrapper: function(windowSize) {

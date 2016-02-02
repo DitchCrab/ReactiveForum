@@ -11,7 +11,7 @@ import { FeaturesActions } from 'forum/client/actions';
 import { bindActionCreators } from 'redux';
 import { pushPath } from 'redux-simple-router';
 // Helpers
-import Meta from 'forum/client/meta';
+import Meta from 'forum/client/utils/meta';
 
 /**
 * Featured component

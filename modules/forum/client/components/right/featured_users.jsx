@@ -56,7 +56,7 @@ export default class FeaturedUsers extends Component {
   }
 
   renderEachUser(user, index) {
-    const avatar = <Avatar>{user.username[0]}</Avatar>;
+    let avatar = <Avatar>{user.username[0]}</Avatar>;
     if (user.profile) {
       if (user.profile.avatar) {
         avatar = <Avatar src={user.profile.avatar} />;

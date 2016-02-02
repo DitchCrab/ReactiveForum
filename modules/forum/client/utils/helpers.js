@@ -8,7 +8,10 @@ export function checkMobileDevice() {
   }
 }
 
-// Set breakpoint for window
+/*
+* Set breakpoint for responsive layout
+* Use for inline style css
+*/
 export function windowSize() {
   if (typeof document === 'undefined') {
     return 'large';
@@ -23,7 +26,10 @@ export function windowSize() {
   }
 }
 
-// Get window height. If in server, return default of 900
+/*
+* Calculate window height
+* Use to set div height for scrolling
+*/
 export function windowHeight() {
   if (typeof document === 'undefined') {
     return 900;
@@ -31,6 +37,9 @@ export function windowHeight() {
   return Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 }
 
+/*
+* Toolbar adjustment based on window width
+*/
 export function toolbarWidth(windowSize) {
   if (typeof document === 'undefined') {
     return 700;

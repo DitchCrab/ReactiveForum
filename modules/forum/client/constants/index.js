@@ -6,7 +6,7 @@ export const USER_SESSION = 'USER_SESSION';
 export const OPEN_SNACKBAR = 'OPEN_SNACKBAR';
 export const CLOSE_SNACKBAR = 'CLOSE_SNACKBAR';
 
-// Clear error
+// Errors
 export const AUTH_ERROR = 'AUTH_ERROR';
 export const CLEAR_AUTH_ERROR = 'CLEAR_AUTH_ERROR';
 

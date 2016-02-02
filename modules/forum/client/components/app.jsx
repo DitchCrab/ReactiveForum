@@ -19,7 +19,7 @@ import {
 import { pushPath } from 'redux-simple-router';
 import { bindActionCreators } from 'redux';
 // Import helpers
-import { windowSize } from '../helpers';
+import { windowSize } from '../utils/helpers';
 
 /** Wrapper for forum
 * All forum all pages share the same Appbar component

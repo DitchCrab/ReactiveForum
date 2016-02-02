@@ -1,4 +1,4 @@
-// Meta helper for social media
+// Meta helper for react helmet
 export default function(path, description, img) {
   const domain = 'http://mydomain.com';
   const url = domain + path;

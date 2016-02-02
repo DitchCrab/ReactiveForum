@@ -53,7 +53,9 @@ export default class SignUp extends Component {
     } else if (!password) {
       this.setState({error: 'Password is missing'});
     } else  if (wrongChars.test(username)) {
-      this.setState({error: 'Invalid username. Please only user letters, numbers or underscore in username!'});
+      this.setState({error: 'Invalid username. Please only user letters, numbers or underscore in username!'}); 
+    } else if (password.length < 6) {
+      this.setState({error: 'Password is too short. I must have more than 6 characters.'});
     } else {
       this.props.signUp(username, password)();
     }

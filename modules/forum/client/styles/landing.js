@@ -1,4 +1,4 @@
-import { windowSize, windowHeight } from 'forum/client/helpers';
+import { windowSize, windowHeight } from 'forum/client/utils/helpers';
 
 export default {
   wrapper: (function() {
