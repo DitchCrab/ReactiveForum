@@ -13,7 +13,7 @@ import UserAvatars from '../../../collections/user_avatars';
 * Is render in Popover on top right side of screen
 * Include upload new avatar form & signout button
 */
-export default class MiniProfile extends React.Component {
+export default class MiniProfile extends Component {
   static propTypes = {
     currentUser: PropTypes.object, // User signed in object
     signOut: PropTypes.func,
