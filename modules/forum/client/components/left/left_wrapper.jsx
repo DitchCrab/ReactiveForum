@@ -185,8 +185,13 @@ export default class LeftWrapper extends Component {
     event.preventDefault();
     if (event.keyCode === 13) {
       let search = event.target.value;
-      let tags = _.map(search.split(' '), x => x.trim());
-      let query = {tags: {$all: tags}};
+      // Naive implementation of search
+      // Search by tags and title
+      // Need further implementation of fulltext search
+      let words  = search.trim().split(/[ \s\-\:]+/);
+      let reg = "(" + words.join('|') + ")";
+      let query = {$or: [{tags: {$all: words}}, {title: {$regex: reg}}]};
+      console.log(query);
       this.props.setBrowsingQuery(query);
     }
   }
