@@ -39,7 +39,7 @@ describe('Thread Carousel', () => {
         {_id: 2, imgUrl: 'none', title: 'None1', user: {username: 'Tom1'}},        
       ];
       component = TestUtils.renderIntoDocument(
-        <ThreadCarousel {...foo} threadList={threads}/>
+        <ThreadCarousel {...foo} viewedThreads={threads}/>
       );
     });
 
