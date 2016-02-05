@@ -8,7 +8,9 @@ import ThreadList from './thread_list';
 import InfiniteScroll from '../widgets/infinite_scroll';
 // Style
 import ComponentStyle from '../../styles/left/left_wrapper';
-const { Colors, AutoPrefix } = Styles;
+const { Colors } = Styles;
+import Prefixer from 'inline-style-prefixer';
+const prefixer = new Prefixer();
 
 /** 
 * LeftWrapper component
@@ -166,7 +168,7 @@ export default class LeftWrapper extends Component {
   renderNewThread() {
     return (
       <div style={ComponentStyle.newThreadDiv}>
-        <IconButton style={AutoPrefix.all(ComponentStyle.newThreadButton)} onClick={this.props.pushPath.bind(null, '/forum/create_thread')}>
+        <IconButton style={prefixer.prefix(ComponentStyle.newThreadButton)} onClick={this.props.pushPath.bind(null, '/forum/create_thread')}>
           <ContentAdd color={Colors.white}/>
         </IconButton>
       </div>

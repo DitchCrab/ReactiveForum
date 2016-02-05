@@ -11,8 +11,9 @@ export default class LogOn extends Component {
   static propTypes = {
     signIn: PropTypes.func,
     signUp: PropTypes.func,
+    authErr: PropTypes.func,
+    clearAuthErr: PropTypes.func,
     authError: PropTypes.string,
-    clearAuthErr: PropTypes.func
   };
   
   constructor(props) {
@@ -24,9 +25,9 @@ export default class LogOn extends Component {
   render() {
     switch (this.state.view) {
       case 'signin':
-        return <SignIn switchTo={this.switchView} signIn={this.props.signIn} authError={this.props.authError}/>;
+        return <SignIn switchTo={this.switchView} signIn={this.props.signIn} authError={this.props.authError} authErr={this.props.authErr}/>;
       case 'signup':
-        return <SignUp switchTo={this.switchView} signUp={this.props.signUp} authError={this.props.authError} />;
+        return <SignUp switchTo={this.switchView} signUp={this.props.signUp} authError={this.props.authError} authErr={this.props.authErr}/>;
     }
   }
 

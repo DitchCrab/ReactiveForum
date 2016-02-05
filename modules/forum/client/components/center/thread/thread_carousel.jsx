@@ -6,7 +6,9 @@ import { GridTile, IconButton, GridList, Styles } from 'material-ui';
 import { ToggleStarBorder, HardwareKeyboardArrowLeft, HardwareKeyboardArrowRight } from 'material-ui/lib/svg-icons';
 import OnClickOutside from 'react-onclickoutside';
 import ComponentStyle from 'forum/client/styles/center/thread/thread_carousel';
-const { Colors, AutoPrefix } = Styles;
+const { Colors } = Styles;
+import Prefixer from 'inline-style-prefixer';
+const prefixer = new Prefixer();
 // Helpers
 import { toolbarWidth, checkMobileDevice } from 'forum/client/utils/helpers';
 
@@ -59,7 +61,7 @@ export default class ThreadCarousel extends Component {
     let threads = this.state.threads.map(thread => this.renderEachCarouselThread(thread));
     return (
       <Swipeable
-          style={AutoPrefix.all(ComponentStyle.wrapper(this.props.windowSize))}
+          style={prefixer.prefix(ComponentStyle.wrapper(this.props.windowSize))}
           onSwipedRight={this.handleRightSwipe}
           onSwipedLeft={this.handleLeftSwipe}>
         { checkMobileDevice() ? null : this.renderLeftArrow() }

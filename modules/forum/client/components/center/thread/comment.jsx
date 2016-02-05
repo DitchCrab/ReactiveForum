@@ -4,7 +4,9 @@ import ReactDOM from 'react-dom';
 import Reply from './reply';
 import { FlatButton, TextField, Avatar, Styles } from 'material-ui';
 import ComponentStyle from 'forum/client/styles/center/thread/comment';
-const { Colors, AutoPrefix } = Styles;
+const { Colors } = Styles;
+import Prefixer from 'inline-style-prefixer';
+const prefixer = new Prefixer();
 // Helpers
 import moment from 'moment';
 
@@ -138,7 +140,7 @@ export default class Comment extends Component {
         </div>
         <div>
           <div style={ComponentStyle.commentDiv}>
-            <div className="comment-text" style={AutoPrefix.all(ComponentStyle.comment)}>
+            <div className="comment-text" style={prefixer.prefix(ComponentStyle.comment)}>
               { this.state.editing // Comment edit
                ? this.renderEditing(comment.text)
                  : comment.text }

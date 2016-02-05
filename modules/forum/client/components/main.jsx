@@ -7,7 +7,8 @@ import FeaturedUsers from './right/featured_users';
 import Layout from '../styles/layout';
 import { FlatButton, LeftNav, Snackbar, Styles } from 'material-ui';
 import ComponentStyle from 'forum/client/styles/main';
-const { AutoPrefix } = Styles;
+import Prefixer from 'inline-style-prefixer';
+const prefixer = new Prefixer();
 // Helpers
 import moment from 'moment';
 // Collections
@@ -151,7 +152,7 @@ export class Main extends Component {
       disableSwipeToOpen: true,
       openRight: true,
     };
-    const section_style = AutoPrefix.all(Layout.section);
+    const section_style = prefixer.prefix(Layout.section);
     // Render based on screen size
     switch (this.props.windowSize) {
       case 'small':

@@ -2,10 +2,11 @@ import { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 // Components
 import Comment from './comment';
-import { IconButton, Styles } from 'material-ui';
+import { IconButton } from 'material-ui';
 import { NavigationMoreHoriz } from 'material-ui/lib/svg-icons';
 import ComponentStyle from 'forum/client/styles/center/thread/comment_list';
-const { AutoPrefix } = Styles;
+import Prefixer from 'inline-style-prefixer';
+const prefixer = new Prefixer();
 // Helpers
 import moment from 'moment';
 
@@ -107,7 +108,7 @@ export default class CommentList extends Component {
       return (
         <div key={comment._id}
              ref={comment._id}
-             style={AutoPrefix.all(ComponentStyle.wrapper)}>
+             style={prefixer.prefix(ComponentStyle.wrapper)}>
           <Comment  {...comment_props}/>
         </div>
       )

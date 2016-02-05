@@ -1,4 +1,4 @@
-const Threads = new Mongo.Collection("groups");
+const Threads = new Mongo.Collection("threads");
 
 Threads.allow({
   insert: function() {

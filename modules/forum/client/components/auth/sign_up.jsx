@@ -10,7 +10,10 @@ import ComponentStyle from '../../styles/auth/login';
 export default class SignUp extends Component {
   static propTypes = {
     // Switch to signin state
-    switchTo: PropTypes.func
+    switchTo: PropTypes.func,
+    signUp: PropTypes.func,
+    authErr: PropTypes.func,
+    authError: PropTypes.string
   };
 
   constructor(props) {
@@ -49,13 +52,13 @@ export default class SignUp extends Component {
     let wrongChars = /\W/;
     let {username, password} = this.state;
     if (!username) {
-      this.setState({error: 'Username is missing'});
+      this.props.authErr({reason: 'Username is missing'});
     } else if (!password) {
-      this.setState({error: 'Password is missing'});
+      this.props.authErr({reason: 'Password is missing'});
     } else  if (wrongChars.test(username)) {
-      this.setState({error: 'Invalid username. Please only user letters, numbers or underscore in username!'}); 
+      this.props.authErr({reason: 'Invalid username. Please only user letters, numbers or underscore in username!'}); 
     } else if (password.length < 6) {
-      this.setState({error: 'Password is too short. I must have more than 6 characters.'});
+      this.props.authErr({reason: 'Password is too short. I must have more than 6 characters.'});
     } else {
       this.props.signUp(username, password);
     }

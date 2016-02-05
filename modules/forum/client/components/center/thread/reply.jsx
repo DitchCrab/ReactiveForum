@@ -2,7 +2,9 @@ import { Component, PropTypes } from 'react';
 // Components
 import { TextField, FlatButton, Avatar, Styles } from 'material-ui';
 import ComponentStyle from 'forum/client/styles/center/thread/reply';
-const { Colors, AutoPrefix } = Styles;
+const { Colors } = Styles;
+import Prefixer from 'inline-style-prefixer';
+const prefixer = new Prefixer();
 // Helpers
 import moment from 'moment';
 
@@ -99,7 +101,7 @@ export default class Reply extends Component {
              : null }
           </p>
         </div>
-        <div className="reply-text" style={AutoPrefix.all(ComponentStyle.replyDiv)}>
+        <div className="reply-text" style={prefixer.prefix(ComponentStyle.replyDiv)}>
           { this.state.editing // render editing text on editing event
            ? this.renderEditing(reply.text)
              : reply.text }

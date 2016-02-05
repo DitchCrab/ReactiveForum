@@ -8,7 +8,9 @@ import LogOn from './auth/log_on';
 import { LeftNav, IconButton, Avatar, FlatButton, AppBar, Popover, Styles } from 'material-ui';
 import { ActionHome, ActionViewList, ActionHistory, SocialPerson, ContentClear } from 'material-ui/lib/svg-icons';
 import ComponentStyle from '../styles/app';
-const { Colors, AutoPrefix } = Styles;
+const { Colors } = Styles;
+import Prefixer from 'inline-style-prefixer';
+const prefixer = new Prefixer();
 // Import redux actions
 import {
   SessionActions,
@@ -167,7 +169,7 @@ export  class App extends Component {
          <SocialPerson color={Colors.white}/>
          </IconButton>
          : null }
-        <div style={AutoPrefix.all(ComponentStyle.rightButton(this.props.session, this.props.windowSize))}>
+        <div style={prefixer.prefix(ComponentStyle.rightButton(this.props.session, this.props.windowSize))}>
           {button}
         </div>
       </div>

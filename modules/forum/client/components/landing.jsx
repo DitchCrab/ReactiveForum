@@ -3,9 +3,9 @@ import { Component, PropTypes } from 'react';
 import Helmet from 'react-helmet';
 import RaisedButton from 'material-ui/lib/raised-button';
 // Styles
-import { Styles } from 'material-ui';
 import ComponentStyle from '../styles/landing';
-const { AutoPrefix } = Styles;
+import Prefixer from 'inline-style-prefixer';
+const prefixer = new Prefixer();
 //Helpers
 import Meta from 'forum/client/utils/meta';
 
@@ -30,7 +30,7 @@ export default class Landing extends Component {
     const path = '/';
     const meta = Meta(path, description, image);
     return (
-      <div style={AutoPrefix.all(ComponentStyle.wrapper)}>
+      <div style={prefixer.prefix(ComponentStyle.wrapper)}>
         <Helmet
             title="Forum"
             meta={meta}
@@ -39,9 +39,9 @@ export default class Landing extends Component {
           <h1>DitchCrab</h1>
         </div>
         <div style={ComponentStyle.main}>
-          <p>Don't know where to whin after a shitty day?</p>
+          <p>Don't know where to whin?</p>
           <br/>
-          <RaisedButton label="Punch here" style={AutoPrefix.all(ComponentStyle.button)} primary={true} onClick={this.redirect}/>
+          <RaisedButton label="Punch here" style={prefixer.prefix(ComponentStyle.button)} primary={true} onClick={this.redirect}/>
         </div>
       </div>
     );

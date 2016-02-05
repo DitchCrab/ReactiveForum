@@ -10,7 +10,10 @@ import ComponentStyle from '../../styles/auth/login';
 export default class SignIn extends Component {
   static propTypes = {
     // Switch to signup state
-    switchTo: PropTypes.func
+    switchTo: PropTypes.func,
+    signIn: PropTypes.func,
+    authErr: PropTypes.func,
+    authError: PropTypes.string
   };
 
   constructor(props) {
@@ -48,9 +51,9 @@ export default class SignIn extends Component {
   userSignin() {
     let {username, password} = this.state;
     if (!username) {
-      this.setState({error: 'Username is missing'});
+      this.props.authErr({reason: 'Username is missing'});
     } else if (!password) {
-      this.setState({error: 'Password is missing'});
+      this.props.authErr({reason: 'Password is missing'});
     } else  {
       this.props.signIn(username, password);
     }
