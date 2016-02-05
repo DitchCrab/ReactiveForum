@@ -151,11 +151,12 @@ export class Main extends Component {
       disableSwipeToOpen: true,
       openRight: true,
     };
+    const section_style = AutoPrefix.all(Layout.section);
     // Render based on screen size
     switch (this.props.windowSize) {
       case 'small':
         return (
-          <section style={AutoPrefix.all(Layout.section)}>        
+          <section style={section_style}>        
             {this.renderBrowsing()}
             { !this.props.browsingOpened ? this.renderMain() : null }
             <LeftNav ref="rightNav" {...right_nav_props}>
@@ -166,7 +167,7 @@ export class Main extends Component {
         );
       case 'medium':
         return (
-          <section style={Layout.section}>        
+          <section style={section_style}>        
             {this.renderBrowsing()}
             {this.renderMain()}
             <LeftNav ref="rightNav" {...right_nav_props}>
@@ -177,7 +178,7 @@ export class Main extends Component {
         );
       case 'large':
         return (
-          <section style={Layout.section}>
+          <section style={section_style}>
             { this.renderBrowsing() }
             {this.renderMain()}
             {filter_user}

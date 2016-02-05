@@ -21,11 +21,9 @@ export default {
         break;
       case 'medium':
         style.width = '33.33%';
-//        style.padding = '0.625rem';
         break;
       case 'large':
         style.width = '25%';
-//        style.padding = '0.625rem';
         break;
     }
     return style;

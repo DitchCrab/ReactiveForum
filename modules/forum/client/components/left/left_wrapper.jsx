@@ -222,6 +222,9 @@ export default class LeftWrapper extends Component {
 
   // If user scroll passed threadhold, increase browsing limit
   loadMore() {
+    if (!this.props.browsingOpened && this.props.windowSize === 'small') { // Stop loadmore when not browsing on small screen
+      return;
+    }
     const limit = this.props.browsingLimit + 10;
     this.props.setHasMoreBrowsing(false);
     this.props.setBrowsingLimit(limit);

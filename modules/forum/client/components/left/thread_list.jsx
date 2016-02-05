@@ -53,8 +53,10 @@ export default  class ThreadList extends Component {
   componentDidUpdate(preProps) {
     if (this.props.windowSize === 'small' && this.props.thread) {
       if (!preProps.browsingOpened && this.props.browsingOpened) {
-        const thread = ReactDOM.findDOMNode(this.refs[this.props.thread._id]);
-        thread.scrollIntoView();
+        let thread = ReactDOM.findDOMNode(this.refs[this.props.thread._id]);
+        if (thread) {
+          thread.scrollIntoView();
+        }
       }
     }
   }

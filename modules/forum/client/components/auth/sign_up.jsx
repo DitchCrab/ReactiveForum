@@ -57,7 +57,7 @@ export default class SignUp extends Component {
     } else if (password.length < 6) {
       this.setState({error: 'Password is too short. I must have more than 6 characters.'});
     } else {
-      this.props.signUp(username, password)();
+      this.props.signUp(username, password);
     }
   }
   
