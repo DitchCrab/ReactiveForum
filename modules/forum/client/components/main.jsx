@@ -280,7 +280,7 @@ export class Main extends Component {
     return (
       <Snackbar
           open={this.props.snackbarOpen}
-          message="Please sign in for more activities"
+          message="Please log on to unlock more fun"
           autoHideDuration={3000}
           onRequestClose={this.props.actions.closeSnackbar}
       />
