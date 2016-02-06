@@ -42,7 +42,9 @@ For [proof of concept](http://188.166.213.121), it is built on top of Meteorjs. 
     meteor build .
 
 ### Deploy with MUP
-    mup deploy
+    mup deploy  
+
+The project use cfs-filesystem for image upload, make sure you change folder permission for that.
 
 # Roadmap  
 * Support nodejs
