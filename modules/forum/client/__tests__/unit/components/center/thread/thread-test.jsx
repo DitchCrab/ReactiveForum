@@ -30,7 +30,8 @@ describe('Thread', () => {
     newMessages: 0,
     threadList: [],
     windowSize: 'large',
-    thread: {_id: 1, title: 'None', imgUrl: 'None', description: 'None', user: {_id: 1, username: 'Tom', avatar: null}, comments: []},
+    categories: [{_id: 1, name: 'yo'}],
+    thread: {_id: 1, category: 1, title: 'None', imgUrl: 'None', description: 'None', user: {_id: 1, username: 'Tom', avatar: null}, comments: []},
     params: {}
   };
   

@@ -21,6 +21,26 @@ export default {
     padding: 0
   },
 
+  tags: {
+    paddingTop: '1.25rem',
+  },
+
+  tag: {
+    backgroundColor: Colors.lightBlue300,
+    padding: '0.3rem',
+    marginRight: '0.625rem',
+    color: Colors.white,
+    borderRadius: '20%'
+  },
+
+  category: {
+    backgroundColor: Colors.pink500,
+    padding: '0.3rem',
+    marginRight: '0.625rem',
+    color: Colors.white,
+    borderRadius: '20%'
+  },
+
   cardAction: {
     margin: 0,
     padding: 0

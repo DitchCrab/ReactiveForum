@@ -48,6 +48,7 @@ export class Thread extends Component {
     blacklist: PropTypes.array, // Filtered list of user
     viewedThreads: PropTypes.arrayOf(PropTypes.object), // List of viewed threads for carousel
     onReplying: PropTypes.string,     // Use to locate comment id to display reply textfield
+    categories: PropTypes.arrayOf(PropTypes.object)
   };
 
   componentWillReceiveProps(nextProps) {
@@ -111,7 +112,8 @@ export class Thread extends Component {
     const same_messages_count = this.state.newMessages == nextState.newMessages;
     const same_reply_hash = this.props.newReplyHash === nextProps.newReplyHash;
     const same_reply = this.props.onReplying === nextProps.onReplying;
-    if ( same_user && same_thread && same_list && same_blacklist && same_carousel && view_dialog && same_messages_count && same_reply_hash && same_reply) {
+    const same_categories = _.isEqual(this.props.categories, nextProps.categories);
+    if ( same_user && same_thread && same_list && same_blacklist && same_carousel && view_dialog && same_messages_count && same_reply_hash && same_reply && same_categories) {
       return false;
     } else {
       return true;
@@ -201,6 +203,16 @@ export class Thread extends Component {
           </div>
           <CardText>
             <span style={ComponentStyle.description} className="thread-main-description">{thread.description}</span>
+            <p style={ComponentStyle.tags}>
+              <span style={ComponentStyle.category}>
+                {this.props.categories.length > 0
+                 ? _.find(this.props.categories, category => category._id === thread.category).name
+                 : null }
+              </span>
+              { thread.tags
+               ? thread.tags.map((tag, index) => <span key={index} style={ComponentStyle.tag}>{tag}</span>)
+               : null }
+            </p>
           </CardText>
           <CardActions style={ComponentStyle.cardAction}>
             { this.props.thread.comments ? this.renderCommentList() : null }
@@ -300,6 +312,7 @@ function mapStateToProps(state) {
   return {
     windowSize: state.windowSize,
     currentUser: state.session,
+    categories: state.categories,
     thread: state.thread,
     onReplying: state.onReplying,
     viewedThreads: state.viewedThreads,
