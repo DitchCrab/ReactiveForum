@@ -8,9 +8,9 @@ export default {
   },
 
   description: {
-    paddingRight: '1.25rem',
+    paddingRight: '2.2rem',
     wordWrap: 'break-word',
-    whiteSpace: 'pre'
+    whiteSpace: 'pre-line'
   },
 
   threadImg: {
