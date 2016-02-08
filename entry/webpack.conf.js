@@ -8,6 +8,7 @@ module.exports = {
     'react': 'React',
     'react-dom': 'ReactDOM',
     'react-router': 'ReactRouter',
+    'react-helmet': 'ReactHelmet',
     'react-addons-transition-group': 'React.addons.TransitionGroup',
     'react-addons-create-fragment': 'React.addons.createFragment',
     'react-addons-pure-render-mixin': 'React.addons.PureRenderMixin',

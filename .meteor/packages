@@ -32,3 +32,4 @@ reactrouter:react-router-ssr
 reactive-dict
 standard-minifiers
 react-runtime@=0.14.3
+nfl:react-helmet
