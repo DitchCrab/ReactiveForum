@@ -17,11 +17,11 @@ if (Meteor.isServer) {
     global.navigator = {
       userAgent: obj.httpHeaders['user-agent']
     }
-  })
+  });
 }
 
 ReactRouterSSR.Run(
   forumRoutes,
-  {props: {history: history}},
+  {props: {history: history}}
 );
 
