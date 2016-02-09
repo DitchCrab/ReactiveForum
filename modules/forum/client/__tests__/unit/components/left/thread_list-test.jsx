@@ -47,9 +47,9 @@ describe('Thread list', () => {
       expect(cards.length).toEqual(2);
     });
 
-    it('has no flag', () => {
+    it('has two flag', () => {
       const flags = TestUtils.scryRenderedComponentsWithType(component, ContentFlag);
-      expect(flags.length).toEqual(0);
+      expect(flags.length).toEqual(2);
     });
 
     it('has zero like', () => {

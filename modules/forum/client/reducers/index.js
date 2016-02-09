@@ -13,7 +13,7 @@ import { viewedThreads } from './viewed_thread';
 import { threadUserList } from './thread_user_list';
 import { blacklist } from './blacklist';
 import { sideNavOpened } from './side_nav';
-import { snackbarOpen } from './snackbar';
+import { snackbarOpen, snackbarMessage } from './snackbar';
 import { routeReducer } from 'redux-simple-router';
 
 export default combineReducers(Object.assign({}, {
@@ -39,5 +39,6 @@ export default combineReducers(Object.assign({}, {
   blacklist,
   sideNavOpened,
   threadUserList,
-  snackbarOpen
+  snackbarOpen,
+  snackbarMessage
 }, {routing: routeReducer}));

@@ -4,9 +4,10 @@ import {
   CLOSE_SNACKBAR
 } from '../constants';
 
-export function openSnackbar() {
+export function openSnackbar(message) {
   return {
-    type: OPEN_SNACKBAR
+    type: OPEN_SNACKBAR,
+    message: message
   }
 };
 

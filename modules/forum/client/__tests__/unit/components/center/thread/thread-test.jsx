@@ -122,24 +122,4 @@ describe('Thread', () => {
 
   });
 
-  describe('when user not sign in', () => {
-    beforeEach(() => {
-      const viewingCarousel = false;
-      const notSeenUser = [1, 2];
-      component = TestUtils.renderIntoDocument(
-        <Thread viewingCarousel={viewingCarousel} notSeenUser={notSeenUser} {...foo}/>
-      );
-    });
-
-    afterEach(() => {
-      delete ReactiveDict._dictsToMigrate.thread;
-    });
-
-    it('does not have BottomToolbar', () => {
-      const comps = TestUtils.scryRenderedComponentsWithType(component, BottomToolbar);
-      expect(comps.length).toEqual(0);
-    });
-
-  })
-    
 })

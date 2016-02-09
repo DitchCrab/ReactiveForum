@@ -92,7 +92,7 @@ export default class Reply extends Component {
                 className="reply-like"
                 onClick={this.props.currentUser // Like reply if user signed in; otherwise show call to action
                          ? this.props.onLikeReply.bind(null)
-                         : this.props.openSnackbar}
+                         : this.props.openSnackbar.bind(null, 'Hi there, please log on to like this reply')}
                 style={ComponentStyle.subAction}>
               Like: {reply.likes}
             </span>

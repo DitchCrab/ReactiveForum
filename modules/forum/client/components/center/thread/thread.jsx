@@ -141,17 +141,16 @@ export class Thread extends Component {
     if (!thread) {
       return <div />;
     }
-    let comment_field = null;
-    if (this.props.currentUser !== null && this.props.currentUser !== undefined) {
-      const comment_field_props = {
-        newMessages: this.state.newMessages,
-        createComment: this.props.actions.createComment.bind(null, this.props.thread._id),
-        toggleCarousel: this.toggleCarousel,
-        viewingCarousel: this.state.viewingCarousel,
-        windowSize: this.props.windowSize
-      };
-      comment_field = <BottomToolbar {...comment_field_props}/>;
-    }
+    const comment_field_props = {
+      currentUser: this.props.currentUser,
+      openSnackbar: this.props.actions.openSnackbar,
+      newMessages: this.state.newMessages,
+      createComment: this.props.actions.createComment.bind(null, this.props.thread._id),
+      toggleCarousel: this.toggleCarousel,
+      viewingCarousel: this.state.viewingCarousel,
+      windowSize: this.props.windowSize
+    };
+    let comment_field = <BottomToolbar {...comment_field_props}/>;
     let avatar = require('forum/client/img/avatar.png');
     if (thread.user.avatar) {
       avatar = thread.user.avatar;
@@ -269,7 +268,7 @@ export class Thread extends Component {
     if (this.props.currentUser) {
       this.props.actions.likeThread(id);
     } else {
-      this.props.actions.openSnackbar();
+      this.props.actions.openSnackbar('Hi there, please log on to like');
     }
   }
 

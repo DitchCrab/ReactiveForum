@@ -121,7 +121,7 @@ export default class Comment extends Component {
                   style={ComponentStyle.subAction}
                   onClick={this.props.currentUser // Like if user signed in; otherwise show call to action
                            ? this.props.onLike.bind(null, comment._id)
-                           : this.props.openSnackbar}>
+                           : this.props.openSnackbar.bind(null, 'hi there, please log on to like this comment')}>
                 Like: {comment.likes}
               </span>
               <span
@@ -129,7 +129,7 @@ export default class Comment extends Component {
                   style={ComponentStyle.subAction}
                   onClick={this.props.currentUser // Commend if user signed in; otherwise show call to action
                            ? this.props.openReply
-                           : this.props.openSnackbar}>
+                           : this.props.openSnackbar.bind(null, 'hi there, please log on to reply to this comment')}>
                 Reply
               </span>
               { comment.userId === currentUserId && !this.state.editing //Show edit if is the comment user and not editing

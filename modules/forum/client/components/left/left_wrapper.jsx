@@ -86,9 +86,7 @@ export default class LeftWrapper extends Component {
            ? this.renderInfinite()
              : null }
         </div>
-        {this.props.currentUser // If user signed in, he/she can create new thread
-         ? this.renderNewThread()
-           : null }
+        { this.renderNewThread() }
       </div>
     )
   }

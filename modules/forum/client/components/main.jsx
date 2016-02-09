@@ -59,6 +59,7 @@ export class Main extends Component {
     searchError: PropTypes.string,
     threadUserList: PropTypes.array, // Users who commend on thread
     blacklist: PropTypes.array, // Hide user in blacklist
+    snackbarMessage: PropTypes.string,
     actions: PropTypes.shape({
       getBrowsingThreads: PropTypes.func,
       getInitialCategories: PropTypes.func,
@@ -280,7 +281,7 @@ export class Main extends Component {
     return (
       <Snackbar
           open={this.props.snackbarOpen}
-          message="Please log on to unlock more fun"
+          message={this.props.snackbarMessage}
           autoHideDuration={3000}
           onRequestClose={this.props.actions.closeSnackbar}
       />
@@ -314,6 +315,7 @@ function mapStateToProps(state) {
     blacklist: state.blacklist,
     windowSize: state.windowSize,
     snackbarOpen: state.snackbarOpen,
+    snackbarMessage: state.snackbarMessage,
     thread: state.thread
   }
 }

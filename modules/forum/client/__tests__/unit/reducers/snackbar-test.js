@@ -1,4 +1,4 @@
-import {snackbarOpen} from 'forum/client/reducers/snackbar';
+import {snackbarOpen, snackbarMessage} from 'forum/client/reducers/snackbar';
 import {
   OPEN_SNACKBAR,
   CLOSE_SNACKBAR
@@ -23,4 +23,27 @@ describe('snackbarOpen reducer', () => {
     });
     expect(reducer).toEqual(false);
   })
+});
+
+describe('snackbarMessage reducer', () => {
+  it('should return initial state of message', () => {
+    const reducer = snackbarMessage(undefined, {});
+    expect(reducer).toEqual('Please log on to unlock more activities');
+  });
+
+  it('should return specific message with OPEN_SNACKBAR', () => {
+    const reducer = snackbarMessage('yay', {
+      type: OPEN_SNACKBAR,
+      message: 'Please log on'
+    });
+    expect(reducer).toEqual('Please log on');
+  });
+
+  it('should return state with CLOSE_SNACKBAR', () => {
+    const reducer = snackbarMessage('yay', {
+      type: CLOSE_SNACKBAR
+    });
+    expect(reducer).toEqual('yay');
+  });
+  
 })

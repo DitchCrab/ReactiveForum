@@ -111,8 +111,9 @@ export default  class ThreadList extends Component {
   * They can view their flaged thread by clicking on Flagged category
   */
   renderFlag(user, id) {
+    let flag = <IconButton touch={true} onClick={this.flagThread.bind(null, id)} ><ContentFlag/></IconButton>;
     if (!user) {
-      return;
+      return flag;
     }
     if (user.profile) {
       if (user.profile.flags) {
@@ -125,9 +126,7 @@ export default  class ThreadList extends Component {
         }
       }
     }
-    return (
-      <IconButton touch={true} onClick={this.flagThread.bind(null, id)} ><ContentFlag/></IconButton>
-    )
+    return flag;
   }
 
   // @params id {string} - threadId
@@ -137,7 +136,7 @@ export default  class ThreadList extends Component {
     if (this.props.currentUser) {
       this.props.likeThread(id);
     } else {
-      this.props.openSnackbar();
+      this.props.openSnackbar('Hi there, please log on to like');
     }
   }
 
@@ -148,7 +147,7 @@ export default  class ThreadList extends Component {
     if (this.props.currentUser) {
       this.props.flagThread(id);
     } else {
-      this.props.openSnackbar();
+      this.props.openSnackbar('Hi there, please log on to flag and read later');
     }
   }
 
@@ -159,7 +158,7 @@ export default  class ThreadList extends Component {
     if (this.props.currentUser) {
       this.props.unflagThread(id);
     } else {
-      this.props.openSnackbar();
+      this.props.openSnackbar('Hi there, please log on to flag and read later');
     }
   }
 

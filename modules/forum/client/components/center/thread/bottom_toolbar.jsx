@@ -14,6 +14,8 @@ import moment from 'moment';
 */
 export default class BottomToolbar extends Component {
   static propTypes = {
+    currentUser: PropTypes.object,
+    openSnackbar: PropTypes.func,
     viewingCarousel: PropTypes.bool, // Carousel of viewed threads
     toggleCarousel: PropTypes.func,
     newMessages: PropTypes.number, // If viewed thread receive new messages
@@ -88,12 +90,16 @@ export default class BottomToolbar extends Component {
   addCommentToThread(e) {
     e.preventDefault();
     e.stopPropagation();
-    let comment = this.state.comment;
-    //Reset comment toolbar
-    this.refs.commentField.clearValue();
-    this.setState({comment: null});
-    if (comment && comment.length > 1) {
-      this.props.createComment.bind(null, comment)();
+    if (this.props.currentUser) {
+      let comment = this.state.comment;
+      //Reset comment toolbar
+      this.refs.commentField.clearValue();
+      this.setState({comment: null});
+      if (comment && comment.length > 1) {
+        this.props.createComment.bind(null, comment)();
+      }
+    } else {
+      this.props.openSnackbar('Hi there, please log on to commend to this thread');
     }
   }
 };

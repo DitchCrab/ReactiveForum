@@ -3,7 +3,10 @@ import { Component, PropTypes } from 'react';
 // Components
 import ThreadForm from './thread_form';
 // Redux actions
-import * as ThreadActions from 'forum/client/actions/thread';
+import {
+  ThreadActions,
+  SnackbarActions
+} from 'forum/client/actions';
 import { pushPath } from 'redux-simple-router';
 import { bindActionCreators } from 'redux';
 
@@ -16,9 +19,11 @@ export class NewThread extends Component {
   static propTypes = {
     categories: PropTypes.arrayOf(PropTypes.object), // Thread categories
     createThreadError: PropTypes.string,
+    currentUser: PropTypes.object,
     actions: PropTypes.shape({
       pushPath: PropTypes.func,
-      createThread: PropTypes.func
+      createThread: PropTypes.func,
+      openSnackbar: PropTypes.func
     })
   };
 
@@ -28,6 +33,7 @@ export class NewThread extends Component {
 
   constructor(props, context) {
     super(props);
+    this.submitThread = this.submitThread.bind(this);
   }
 
   render() {
@@ -38,8 +44,16 @@ export class NewThread extends Component {
           categories={this.props.categories}
           error={this.props.createThreadError}
           pushPath={this.props.actions.pushPath}
-          submitThread={this.props.actions.createThread} />
+          submitThread={this.submitThread} />
     )
+  }
+
+  submitThread(params) {
+    if (this.props.currentUser) {
+      this.props.actions.createThread(params);
+    } else {
+      this.props.actions.openSnackbar('Sorry, you need to log on to post');
+    }
   }
 }
 
@@ -48,10 +62,11 @@ function mapStateToProps(state) {
   return {
     categories: state.categories,
     createThreadError: state.createThreadError,
+    currentUser: state.session
   }
 }
 
-const actions = _.extend(ThreadActions, {pushPath: pushPath});
+const actions = _.extend(ThreadActions, SnackbarActions, {pushPath: pushPath});
 
 function mapDispatchToProps(dispatch) {
   return { actions: bindActionCreators(actions, dispatch) };

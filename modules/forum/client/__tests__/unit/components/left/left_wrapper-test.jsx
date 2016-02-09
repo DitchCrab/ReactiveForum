@@ -56,9 +56,9 @@ describe('Left wrapper', () => {
       expect(menu.props.children[1].length).toEqual(0);
     });
 
-    it('has no button to create new thread if user is not logged in', () => {
+    it('has button to create new thread if user is not logged in', () => {
       const button = TestUtils.scryRenderedComponentsWithType(component, IconButton);
-      expect(button.length).toEqual(0);
+      expect(button.length).toEqual(1);
     })
   });
 

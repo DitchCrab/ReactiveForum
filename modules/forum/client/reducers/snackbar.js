@@ -15,3 +15,14 @@ export function snackbarOpen(state = false, action) {
       return state;
   }
 };
+
+export function snackbarMessage(state = 'Please log on to unlock more activities', action) {
+  switch (action.type) {
+    case OPEN_SNACKBAR:
+      return action.message || state;
+    case CLOSE_SNACKBAR:
+      return state;
+    default:
+      return state;
+  }
+};
