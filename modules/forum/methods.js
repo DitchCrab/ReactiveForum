@@ -3,7 +3,7 @@ import UserAvatars from 'forum/collections/user_avatars';
 import Threads from 'forum/collections/threads';
 import Categories from 'forum/collections/categories';
 import moment from 'moment';
-import * as Helper from 'forum/server/helpers';
+import * as Helper from 'forum/helpers';
 
 Meteor.methods({
   /**
@@ -58,6 +58,9 @@ Meteor.methods({
       avatar = current_user.profile.avatar;
     }
     params['user'] = {_id: current_user._id, username: current_user.username, avatar: avatar};
+    if (params.tags) {
+      params.tags = _.map(params.tags.split(','), x => x.trim());
+    }
     params['comments'] = [];
     params['createdAt'] = moment.utc().format();
     params['updatedAt'] = moment.utc().format();
@@ -93,6 +96,9 @@ Meteor.methods({
     Helper.checkUser();
     // Check if editor is owner. Return 'Access denied'
     Helper.checkOwner(Threads.findOne({_id: id}).user._id);
+    if (params.tags) {
+      params.tags = _.map(params.tags.split(','), x => x.trim());
+    }
     let thread = Threads.update({_id: id}, {$set: params});
     if (params.imgId) {
       // Watch if thread edited with image. Update thread image url

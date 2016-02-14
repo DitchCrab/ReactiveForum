@@ -1,4 +1,5 @@
 import { Component, PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 // Components
 import { FlatButton, RaisedButton, MenuItem, SelectField, TextField } from 'material-ui';
 import ComponentStyle from 'forum/client/styles/center/lists/thread_form';
@@ -78,14 +79,14 @@ export default class ThreadForm extends Component {
             onChange={this._editDescription}
             style={ComponentStyle.div}/>
         <TextField
-            value={this.state.tags? this.state.tags.join(", ") : null}
+            value={this.state.tags}
             hintText="Seperate by ','"
             floatingLabelText="Tag"
             onChange={this._editTags}
             style={ComponentStyle.div}/>
         <div style={ComponentStyle.imageDiv}>
-          <FlatButton primary={true} label="Choose an Image">
-            <input type="file" id="imageButton" style={ComponentStyle.fileInput} onChange={this._editImg}/>
+          <FlatButton primary={true} label="Choose an Image" onTouchTap={() => { ReactDOM.findDOMNode(this.refs.ImageUpload).click()}}>
+            <input type="file" ref="ImageUpload" id="imageButton" style={ComponentStyle.fileInput} onChange={this._editImg}/>
           </FlatButton>
         </div>
         <div>
@@ -154,8 +155,7 @@ export default class ThreadForm extends Component {
   // Convert tags from string to array
   _editTags(event) {
     event.preventDefault();
-    let tags = _.map(event.target.value.split(','), (x) => {return x.trim()});
-    this.setState({tags: tags});
+    this.setState({tags: event.target.value});
   }
 
   // Submission depend on props passed by NewThread or EditThread

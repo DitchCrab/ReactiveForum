@@ -33,7 +33,7 @@ describe('Server integration test', () => {
       category: '123',
       title: 'Mock',
       description: 'Mock text',
-      tags: ['hi', 'there'],
+      tags: 'hi, there',
     };
 
     beforeEach(() => {
